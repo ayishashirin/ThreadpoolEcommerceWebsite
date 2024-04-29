@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>custom pdf</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <style>
+      /*---------- font family ----------*/
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Lemon&family=Ubuntu:wght@300;400;500;700&display=swap");
+      /*---------- end of font family ----------*/
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        height: fit-content;
+        width: fit-content;
+      }
+      .headingOrder{
+        width: max-content;
+      }
+      .invoiceBody {
+        margin: 5%;
+        border: 1px solid #e0e0e0;
+        background: #fff;
+        width: fit-content;
+      }
+      .session {
+        padding: 1.5rem;
+        border-bottom: 1px solid #e0e0e0;
+        background: #fff;
+      }
+      .session:last-child {
+        border: 0;
+      }
+      .heading {
+        color: #000;
+        font-family: Ubuntu;
+        font-size: 1.125rem;
+        font-style: normal;
+        font-weight: 700;
+        line-height: normal;
+        text-transform: capitalize;
+      }
+      .session-2 {
+        padding: 1.25rem;
+      }
+      .headText p {
+        color: #000;
+        font-family: Ubuntu;
+        font-size: 0.625rem;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+        margin: 0;
+        margin-bottom: 0.75rem;
+      }
+      .headText span {
+        color: rgba(0, 0, 0, 0.75);
+        font-weight: 400;
+      }
+      th {
+        color: #000;
+        font-family: Ubuntu;
+        font-size: 0.625rem;
+        font-style: normal;
+        font-weight: 700;
+        line-height: normal;
+        text-transform: capitalize;
+        width: fit-content;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+      .tableHead {
+        border-bottom: 1px solid #e0e0e0;
+      }
+      .tableHead th {
+        padding: 1.25rem 0;
+      }
+      .tableHead th:first-child {
+        padding-left: 1.5rem;
+      }
+      .tableHead th:last-child {
+        padding-right: 1.5rem;
+      }
+      .subject {
+        border-bottom: 1px solid #e0e0e0;
+      }
+      .subject td {
+        color: rgba(0, 0, 0, 0.75);
+        font-family: Ubuntu;
+        font-size: 0.625rem;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+        text-transform: capitalize;
+        padding: 0.75rem 0;
+      }
+      .subject td:first-child {
+        padding-left: 1rem;
+      }
+      .subject td:last-child {
+        padding-right: 1rem;
+      }
+      .subject .total {
+        color: #000;
+        font-family: Ubuntu;
+        font-size: 0.625rem;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+        text-transform: capitalize;
+      }
+      .totalGrand {
+        color: rgba(0, 0, 0, 0.75);
+        font-family: Ubuntu;
+        font-size: 0.75rem;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+        text-transform: capitalize;
+      }
+      .priceTag {
+        color: #000;
+        font-family: Ubuntu;
+        font-size: 0.625rem;
+        font-style: normal;
+        font-weight: 700;
+        line-height: normal;
+        text-transform: capitalize;
+      }
+      .conclution svg {
+        margin-bottom: 0.25rem;
+      }
+      .conclution p {
+        margin: 0;
+        font-family: Ubuntu;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+      }
+      .conclution p:first-child {
+        color: #000;
+        font-size: 0.875rem;
+      }
+      .conclution p:last-child {
+        color: rgba(0, 0, 0, 0.75);
+        font-size: 0.75rem;
+      }
+      .page {
+        color: #000;
+        font-family: Ubuntu;
+        font-size: 0.625rem;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+        text-transform: capitalize;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body class="d-flex justify-content-center align-items-center">
+    <main>
+      <div class="invoiceBody">
+        <div class="session">
+          <div class="d-flex gap-2">
+            <h2 class="heading">Invoice</h2>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M6.66732 15H13.334V13.3334H6.66732V15ZM6.66732 11.6667H13.334V10H6.66732V11.6667ZM5.00065 18.3334C4.54232 18.3334 4.14996 18.1702 3.82357 17.8438C3.49718 17.5174 3.33398 17.125 3.33398 16.6667V3.33335C3.33398 2.87502 3.49718 2.48266 3.82357 2.15627C4.14996 1.82988 4.54232 1.66669 5.00065 1.66669H11.6673L16.6673 6.66669V16.6667C16.6673 17.125 16.5041 17.5174 16.1777 17.8438C15.8513 18.1702 15.459 18.3334 15.0007 18.3334H5.00065ZM10.834 7.50002V3.33335H5.00065V16.6667H15.0007V7.50002H10.834Z"
+                fill="black"
+              />
+            </svg>
+          </div>
+        </div>
+        <div class="session session-2">
+          <div class="d-flex gap-4 justify-content-between">
+            <div class="headText">
+              <p class="headingOrder">Order ID : <%= data.information.orderId %></p>
+              <p>Order Date: <span><%= data.information.orderDate %></span></p>
+              <p>Invoice Date: <span><%= data.information.date %></span></p>
+            </div>
+            <div class="headText">
+              <p>Bill To</p>
+              <p><%= data.client.name %></p>
+              <p><span><%= data.client.address %></span></p>
+              <p><span>Phone: <%= data.client.phoneNumber %></span></p>
+            </div>
+            <div class="headText">
+              <p>Ship To</p>
+              <p><%= data.client.name %></p>
+              <p><span><%= data.client.address %></span></p>
+              <p><span>Phone: <%= data.client.phoneNumber %></span></p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <table>
+            <thead>
+              <tr class="tableHead">
+                <th>Product</th>
+                <th>Title</th>
+                <th>Qty</th>
+                <th>Amount</th>
+                <th>Discounts<br />/Coupons ₹</th>
+                <th>Total ₹</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% for( let i = 0; i < data.products.length; i++ ) { %>
+              <tr class="subject">
+                <td><%= data.products[i].category %></td>
+                <td class="text-capitalize"><%= data.products[i].name %></td>
+                <td><%= data.products[i].quantity %></td>
+                <td><%= (data.products[i].amount * data.products[i].quantity) %></td>
+                <td><%= ((data.products[i].discounts * data.products[i].quantity) + data.products[i].couponDiscountAmount + data.products[i].offerDiscountAmount) %></td>
+                <td><%= ((data.products[i].price * data.products[i].quantity) + data.products[i].couponDiscountAmount + data.products[i].offerDiscountAmount) %></td>
+              </tr>
+              <% } %>
+              <tr class="subject">
+                <td class="text-center total" colspan="2">Total</td>
+                <td>
+                  <%= data.products.reduce((total, value) => { return total +=
+                  value.quantity }, 0) %>
+                </td>
+                <td>
+                  <%= data.products.reduce((total, value) => { return total +=
+                  (value.amount * value.quantity)}, 0) %>
+                </td>
+                <td>
+                  <%= data.products.reduce((total, value) => { return total +=
+                  ((value.discounts * value.quantity) + value.couponDiscountAmount + value.offerDiscountAmount) }, 0) %>
+                </td>
+                <td>
+                  <%= data.products.reduce((total, value) => { return total +=
+                  ((value.price * value.quantity) + value.couponDiscountAmount + value.offerDiscountAmount) }, 0) %>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="session session-2 pe-3">
+          <div class="d-flex justify-content-end gap-4">
+            <p class="totalGrand">Grand Total</p>
+            <p class="priceTag">
+              ₹ <%= data.products.reduce((total, value) => { return total +=
+              ((value.price * value.quantity) + value.couponDiscountAmount + value.offerDiscountAmount) }, 0) %>
+            </p>
+          </div>
+          
+        </div>
+        <div class="session session-2 pt-2 pb-2 pe-3 text-end">
+        </div>
+      </div>
+    </main>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+    <script src="/js/invoice.js"></script>
+  </body>
+</html>

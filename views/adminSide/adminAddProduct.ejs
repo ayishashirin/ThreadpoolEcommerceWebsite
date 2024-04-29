@@ -1,0 +1,284 @@
+<!-- header -->
+<%- include('../includes/adminSide/header') %>
+<!-- end of header -->
+<link rel="stylesheet" href="/adminSide/css/adminAddProduct.css" />
+
+  
+
+    <!-- CONTENT -->
+    <section id="content" style=" margin:40px;">
+
+      <!-- MAIN -->
+      <div>
+        <div class="head-title">
+          <div class="left">
+            <h1>Add Product</h1>
+            <ul class="breadcrumb">
+              <li>
+                <a href="/adminHome">Dashboard</a>
+              </li>
+              <li><i class="bx bx-chevron-right"></i></li>
+              <li>
+                <a href="/adminProductManagement">Product Management</a>
+              </li>
+              <li><i class="bx bx-chevron-right"></i></li>
+              <li>
+                <a class="active" href="/adminAddProduct">Add Product</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="manageOptions">
+          <a href="/adminProductManagement">
+            <button>Go Back</button>
+          </a>
+        </div>
+
+       
+      </div>
+      <div class="table-data justify-content-center">
+        <div id="addProduct" class="order">
+          <form class="addProductForm" action="/adminAddProduct" enctype="multipart/form-data" method="post">
+              <div class="d-flex align-items-center formRow">
+                  <div class="<%= errMesg?.pName?'errDiv':'' %>">
+                      <label for="pName" class="d-block">Product Name</label>
+                      <input type="text" name="pName" value="<%= savedDetails?.pName?savedDetails?.pName:'' %>">
+                      <p class="err"><%= errMesg?.pName %></p>
+                  </div>
+                  <div>
+                      <label for="Category" class="d-block">Category</label>
+                      <select name="category">
+                        <% for( let i = 0; i < category.length; i++ ) { %>
+                            <option class="text-capitalize" value="<%= category[i].name %>" <%= (savedDetails?.category === category[i].name)?'selected':'' %>><%= category[i].name %></option>
+                        <% } %>
+                      </select>
+                  </div>
+              </div>
+
+              
+
+              <div class="d-flex align-items-center formRow pDescription">
+                  <div class="<%= errMesg?.pDes?'errDiv':'' %>">
+                      <label for="pDescription" class="d-block">Product Description</label>
+                      <input type="text" name="pDescription" value="<%= savedDetails?.pDescription?savedDetails?.pDescription:'' %>">
+                      <p class="err"><%= errMesg?.pDes %></p>
+                  </div>
+              </div>
+
+              <div class="d-flex align-items-center formRow priceInput">
+                  <div class="position-relative <%= errMesg?.fPrice?'errDiv':'' %>">
+                      <label for="fPrice" class="d-block">First Price</label>
+                      <input class="fPrice" type="number" name="fPrice" value="<%= savedDetails?.fPrice?savedDetails?.fPrice:'' %>">
+                      <p class="err position-absolute errMesg"><%= errMesg?.fPrice %></p>
+                  </div>
+                  <div  class="dheading <%= errMesg?.lPrice?'errDiv':'' %>">
+                      <label for="lPrice" class="d-block">Last Price</label>
+                      <input class="lPrice" type="number" name="lPrice" value="<%= savedDetails?.lPrice?savedDetails?.lPrice:'' %>">
+                      <p class="err lErr"><%= errMesg?.lPrice %></p>
+                  </div>
+                  <div  class="dheading <%= errMesg?.discount?'errDiv':'' %>">
+                      <label for="discount" class="d-block">Discount (%)</label>
+                      <input class="discount" type="text" name="discount" value="<%= savedDetails?.discount?savedDetails?.discount:'' %>">
+                      <p class="err"><%= errMesg?.discount %></p>
+                  </div>
+              </div>
+
+              <div class="d-flex align-items-center formRow priceInput">
+                  <div class="<%= errMesg?.color?'errDiv':'' %>">
+                      <label for="color" class="d-block">Color</label>
+                      <input type="text" name="color" value="<%= savedDetails?.color?savedDetails?.color:'' %>">
+                      <p class="err"><%= errMesg?.color %></p>
+                  </div>
+                  <div class="<%= errMesg?.qty?'errDiv':'' %>">
+                      <label for="quantity" class="d-block">Quantity</label>
+                      <input type="number" name="quantity" value="<%= savedDetails?.quantity?savedDetails?.quantity:'' %>">
+                      <p class="err"><%= errMesg?.qty %></p>
+                  </div>
+                  <div class="<%= errMesg?.size?'errDiv':'' %>">
+                    <label for="size" class="d-block">size</label>
+                    <input type="string" name="size" value="<%= savedDetails?.size?savedDetails?.size:'' %>">
+                    <p class="err"><%= errMesg?.size %></p>
+                </div>
+              </div>
+
+
+          <div class="d-flex align-items-center formRow">
+    <div class="<%= errMesg?.file?'errDiv':'' %>" id="fileDiv">
+        <label for="image" class="d-block">Image</label>
+        <input class="p-1" type="file" name="image" accept="image/jpeg, image/jpg, image/png, image/svg+xml, image/webp" id="imageFile" multiple>
+        <p class="err" id="err"><%= errMesg?.file %></p>
+    </div>
+    <div class="newlyLauch d-flex align-items-center gap-2">
+        <input type="checkbox" value="true" name="newlyLanch">
+        <label for="newlyLanch">Newly Launched</label>
+        <p class="err"></p>
+    </div>
+</div>
+
+<div class="uploadedImg d-flex gap-3">
+    <div class="adminUpload d-flex gap-3">
+        <img id="previewImage" src="#" alt="Preview">
+    </div>
+</div>
+
+
+            <div class="d-flex justify-content-center">
+                <button type="submit" class="addBtn" id="addBtn">Add Product</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <!-- MAIN -->
+    </section>
+    <!-- CONTENT -->
+
+<script>const lPrice = document.querySelector('.lPrice');
+  const fPrice = document.querySelector('.fPrice');
+  const discount = document.querySelector('.discount');
+  const errMesg = document.querySelector('.errMesg');
+  const addBtn = document.querySelector('.addBtn');
+  const lErr = document.querySelector('.lErr');
+  
+  lPrice.addEventListener('keyup', () => {
+    if(Number(fPrice.value) >= Number(lPrice.value)){
+      console.log(fPrice.value, typeof fPrice.value, lPrice.value, typeof lPrice.value);
+      errMesg.style.display = 'none';
+      errMesg.innerHTML = ``;
+      fPrice.style.border = `none`
+      addBtn.setAttribute('type', 'submit');
+      discount.value = `${((fPrice.value - lPrice.value) / fPrice.value) * 100}`
+    }else{
+      discount.value = `0`;
+      fPrice.style.border = `1px solid red`
+      addBtn.setAttribute('type', 'button');
+      lErr.innerHTML = ``;
+      errMesg.innerHTML = `First Price needs to be greater than Last Price`;
+      errMesg.style.display = 'block';
+    }
+  });
+  
+  discount.addEventListener('keyup', () => {
+    if((Number(discount.value) < 100 && Number(discount.value) >= 0) || !discount.value){
+      lPrice.value = `${fPrice.value - ((fPrice.value * discount.value) / 100)}`
+    }else{
+      if(Number(discount.value) > 100){
+        discount.value = `100`;
+        lPrice.value = `0`
+      }else{
+        discount.value = `0`;
+        lPrice.value = `0`;
+      }
+    }
+  });
+  
+  fPrice.addEventListener('keyup', () => {
+    if(Number(fPrice.value) >= Number(lPrice.value)){
+      if(lPrice.value){
+        discount.value = `${((fPrice.value - lPrice.value) / fPrice.value) * 100}`
+      }else{
+        discount.value = `0`
+      }
+      errMesg.style.display = 'none';
+      errMesg.innerHTML = ``;
+      fPrice.style.border = `none`
+      addBtn.setAttribute('type', 'submit');
+    }else{
+      discount.value = `0`;
+      fPrice.style.border = `1px solid red`
+      addBtn.setAttribute('type', 'button');
+      lErr.innerHTML = ``;
+      errMesg.style.display = 'block';
+      errMesg.innerHTML = `First Price needs to be greater than Last Price`;
+    }
+  });
+  
+  
+  
+  const allSideMenu = document.querySelectorAll('#sidebar .side-menu.top li a');
+  
+  allSideMenu.forEach(item=> {
+    const li = item.parentElement;
+  
+    item.addEventListener('click', function () {
+      allSideMenu.forEach(i=> {
+        i.parentElement.classList.remove('active');
+      })
+      li.classList.add('active');
+    })
+  });
+  
+  const uploadedImg = document.querySelector('.adminUpload');
+  
+  const inputBox = document.querySelector('#imageFile');
+  
+  const files = [];
+  
+  function showImg(){
+    let images = ``;
+  
+    files.forEach((element, index) => { 
+      return images += `<div class="img">
+      <img src="${URL.createObjectURL(element)}" alt="">
+      <a onclick='deleteImg(${index})'>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="10" cy="10" r="10" fill="white"/>
+          <path d="M10 0C4.47679 0 0 4.47679 0 10C0 15.5232 4.47679 20 10 20C15.5232 20 20 15.5232 20 10C20 4.47679 15.5232 0 10 0ZM13.7946 12.5321C14.1429 12.8804 14.1429 13.4464 13.7946 13.7946C13.4464 14.1429 12.8804 14.1429 12.5321 13.7946L10 11.2625L7.46786 13.7946C7.11964 14.1429 6.55357 14.1429 6.20536 13.7946C5.85714 13.4464 5.85714 12.8804 6.20536 12.5321L8.7375 10L6.20536 7.46786C5.85714 7.11964 5.85714 6.55357 6.20536 6.20536C6.55357 5.85714 7.11964 5.85714 7.46786 6.20536L10 8.7375L12.5321 6.20536C12.8804 5.85714 13.4464 5.85714 13.7946 6.20536C14.1429 6.55357 14.1429 7.11964 13.7946 7.46786L11.2625 10L13.7946 12.5321Z" fill="#FF0000"/>
+        </svg>
+      </a>
+      </div>`
+    });
+  
+    uploadedImg.innerHTML = images;
+  }
+  
+  inputBox.addEventListener('change', () => {
+    document.querySelector('#fileDiv').classList.remove('errDiv');
+    const inputFiles = inputBox.files;
+    if(files.length + inputFiles.length > 4){
+      const dataTransfer = new DataTransfer();
+      for (let i = 0; i < files.length; i++) {
+        dataTransfer.items.add(files[i]);
+      }
+      inputBox.files = dataTransfer.files;
+      document.querySelector('#fileDiv').classList.add('errDiv');
+      document.querySelector('#err').innerHTML = `Please select 4 images Only`
+    }else{
+      const validImageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
+      const dataTransfer = new DataTransfer();
+      document.querySelector('#fileDiv').classList.remove('errDiv');
+      for (let i = 0; i < inputFiles.length; i++) {
+        if(!validImageExtensions.includes(inputFiles[i].name.substring(inputFiles[i].name.lastIndexOf('.')))){
+          document.querySelector('#fileDiv').classList.add('errDiv');
+          document.querySelector('#err').innerHTML = `Please select ${validImageExtensions.toString().split(',').join(', ')} images Only`;
+          continue;
+        }
+        files.push(inputFiles[i]);
+      }
+      for (let i = 0; i < files.length; i++) {
+        dataTransfer.items.add(files[i]);
+      }
+      inputBox.files = dataTransfer.files;
+      showImg();
+    }
+    console.log(inputBox.files);
+  });
+  
+  function deleteImg(index) {
+      const dataTransfer = new DataTransfer();
+    files.splice(index, 1);
+      for (let i = 0; i < files.length; i++) {
+          dataTransfer.items.add(files[i]);
+      }
+  
+      inputBox.files = dataTransfer.files;
+  
+      showImg();
+  }
+  
+  </script>
+
+<!-- footer -->
+<%- include('../includes/adminSide/footer') %>
+<script src="/adminSide/js/adminAddProduct.js"></script>
+<!-- end of footer -->

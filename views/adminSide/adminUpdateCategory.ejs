@@ -1,0 +1,80 @@
+
+<!-- header -->
+<%- include('../includes/adminSide/header') %>
+<!-- end of header -->
+
+<link rel="stylesheet" href="/adminSide/css/adminUpdateCategory.css" />
+
+    <!-- SIDEBAR -->
+
+    <!-- CONTENT -->
+    <section id="content" style=" margin:40px;">
+
+      <!-- MAIN -->
+      <main>
+        <div class="head-title">
+          <div class="left">
+            <h1>Update Category</h1>
+            <ul class="breadcrumb">
+              <li>
+                <a href="/adminHome">Dashboard</a>
+              </li>
+              <li><i class="bx bx-chevron-right"></i></li>
+              <li>
+                <a href="/adminCategoryManagement">Category Management</a>
+              </li>
+              <li><i class="bx bx-chevron-right"></i></li>
+              <li>
+                <a class="active" href="/adminAddCategory">Update Category</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="manageOptions">
+          <a href="/adminCategoryManagement">
+            <button>Go Back</button>
+          </a>
+        </div>
+
+        <div class="table-data justify-content-center">
+          <div id="addProduct" class="order">
+            <form class="addProductForm" id="updateForm" action="/adminUpdateCategory/<%= singleCategory._id %>" method="post">
+              <h2 class="fs-3 text-black fw-bold text-center">Update Category</h2>
+                <div class="d-flex align-items-center formRow">
+                    <div class="<%= errMesg?.catErr?'err':'' %>">
+                        <label for="name" class="d-block fs-6">Category Name</label>
+                        <input class="name" type="text" name="name" value="<%= sDetails?.name?sDetails.name:singleCategory.name %>">
+                        <% if (errMesg?.catErr) { %>
+                          <p class="err p-0 d-block text-danger"><%= errMesg.catErr %></p>
+                        <% } %>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center formRow w-100">
+                  <div class="w-100 <%= errMesg?.dErr?'err':'' %>">
+                    <label for="name" class="d-block fs-6">Description</label>
+                    <textarea name="description" id="description" class="w-100"><%= sDetails?.description?sDetails.description:singleCategory.description %></textarea>
+                    <% if (errMesg?.dErr) { %>
+                      <p class="err p-0 d-block text-danger"><%= errMesg.dErr %></p>
+                    <% } %>
+                  </div>
+                </div>
+
+                <div class="d-flex justify-content-center">
+                    <button type="submit" class="addBtn">Update Category</button>
+                </div>
+            </form>
+          </div>
+        </div>
+      </main>
+      <!-- MAIN -->
+    </section>
+    <!-- CONTENT -->
+
+
+
+
+  <!-- footer -->
+  <%- include('../includes/adminSide/footer') %>
+  <script src="/adminSide/js/adminUpdateCategory.js"></script>
+  <!-- end of footer -->

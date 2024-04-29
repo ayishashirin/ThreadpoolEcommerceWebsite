@@ -1,0 +1,146 @@
+         <!-- header -->
+         <%- include('../includes/adminSide/header') %>
+         <!-- end of header -->
+
+
+
+            <section class="content-main" style="padding-left: 340px;">
+                <div class="content-header">
+                    <div>
+                        <h2 class="content-title card-title">Order List</h2>
+                    </div>
+                    
+                </div>
+                <div class="card mb-4">
+                    <header class="card-header">
+                        <div class="row gx-3">
+                            <div class="col-lg-4 col-md-6 me-auto">
+                                <form action="/adminFilterProducts" method="get">
+
+                                <input type="text" placeholder="Search..." class="form-control" name="Search" spellcheck="false" required />
+                            </form>
+
+                            </div>
+                            <form action="/adminOrderManagement" id="form-Filter" method="get">
+                                <% if (currentPage) { %>
+                                    <input name="page" type="text" value="<%= currentPage %>" hidden>
+                                <% } %>
+                                
+                                <div class="col-lg-2 col-6 col-md-3">
+                                <select class="form-select">
+                                    <option value="All" <%= (filter === "All" || !filter)?"selected":"" %> >Show all</option>
+                                    <option <%= (filter === "Ordered")?"selected":"" %> >Ordered</option>
+                                    <option <%= (filter === "Shipped")?"selected":"" %> >Shipped</option>
+                                    <option <%= (filter === "Delivered")?"selected":"" %> >Delivered</option>
+                                    <option <%= (filter === "Cancelled")?"selected":"" %> >Cancelled</option>
+                                </select>
+                           
+                            </div>
+                            </form>
+                        </div>
+                    </header>
+                    <!-- card-header end// -->
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Email</th>
+                                        <th scope="col">Total</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Action</th> <!-- Add a new column for the action button -->
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% for( let i = 0; i < orders.length; i++ ) { %>
+                                        <tr>
+                                            <td><%= i + 1 %></td>
+                                            <td><%= orders[i].userInfo[0].fullName %></td>
+                                            <td><%= orders[i].userInfo[0].email %></td>
+                                            <td>$<%= (orders[i].orderItems.lPrice * orders[i].orderItems.quantity) %></td>
+                                            <td>
+                                                <form action="/adminChangeOrderStatus/<%= orders[i]._id %>/<%= orders[i].orderItems.productId %>" class="changeStatus" method="post">
+                                                    <div class="d-flex gap-3">
+                                                        <input name="page" type="text" value="<%= currentPage ? currentPage : '' %>" hidden>
+                                                        <input type="text" name="filter" value="<%= filter ? filter : '' %>" hidden>
+                                                        <% if ((orders[i].orderItems.orderStatus === "Delivered") || (orders[i].orderItems.orderStatus === "Cancelled")  || (orders[i].orderItems.orderStatus === "Ordered") || (orders[i].orderItems.orderStatus === "Shipped")) { %>
+                                                            <p class="badge rounded-pill <%= (orders[i].orderItems.orderStatus === 'Cancelled') ? 'alert-danger text-danger' : 'alert-success text-success' %>">
+                                                                <%= orders[i].orderItems.orderStatus %>
+                                                            </p>
+                                                        <% } else { %>
+                                                            <select name="orderStatus" id="filler" class="bg-white border-1 border-black">
+                                                                <option value="Ordered" <%= (orders[i].orderItems.orderStatus === "Ordered") ? "selected" : "" %>>Ordered</option>
+                                                                <option value="Shipped" <%= (orders[i].orderItems.orderStatus === "Shipped") ? "selected" : "" %>>Shipped</option>
+                                                                <option value="Delivered">Delivered</option>
+                                                                <option value="Cancelled">Cancelled</option>
+                                                            </select>
+                                                            <button type="submit" class="btn btn-primary"> <!-- Ensure the button is of type "submit" to submit the form -->
+                                                                Change Status
+                                                            </button>
+                                                        <% } %>
+                                                    </div>
+                                                </form>
+
+                                                <td><a href="/adminOrderDetails?id=<%= orders[i]._id %>&&productId=<%=orders[i].orderItems.productId%>" class="btn btn-md rounded font-sm">Detail</a></td>
+                                            </td>
+                                        </tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- table-responsive //end -->
+                    </div>
+
+                    <!-- card-body end// -->
+
+
+                    <% if (orders.length === 0) { %>
+                        <div class="text-center">\(^Д^)/ <br>No Orders.</div>
+                    <% } %>
+                    </div> 
+                </div>
+                <!-- card end// -->
+                <% if (orderLength !== 0) { %>
+                <div class="pagination-area mt-15 mb-50">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-start">
+                            <li class="page-item active"><a class="page-link" href="/adminOrderManagement?<%= filter?`filter=${filter}&`:'' %>page=<%= (currentPage === 1 || !currentPage)?1:(currentPage - 1) %>" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                            <% for( let i = 0; i < (Math.ceil(orderLength / 10)); i++ ) { %>
+                            <li class="page-item"><a class="page-link"  href="/adminOrderManagement?<%= filter?`filter=${filter}&`:'' %>page=<%= (i + 1) %>" ><%= (i + 1) %></a></li>
+                            <% } %>
+                           
+                            <li class="page-item"><a class="page-link"href="/adminOrderManagement?<%= filter?`filter=${filter}&`:'' %>page=<%= (((Math.ceil(orderLength / 10)) === currentPage) || (Math.ceil(orderLength / 10)) && !currentPage)?(currentPage?currentPage:1):(currentPage === 1 || !currentPage)?2:(currentPage + 1) %>" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            
+                        </ul>
+                    </nav>
+                </div>
+            </section>
+            <% } %>
+
+            <!-- content-main end// -->
+            <footer class="main-footer font-xs">
+                <div class="row pb-30 pt-15">
+                    <div class="col-sm-6">
+                        <script>
+                            document.write(new Date().getFullYear());
+                        </script>
+                        &copy; Threadpool- HTML Ecommerce Template .
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="text-sm-end">All rights reserved</div>
+                    </div>
+                </div>
+            </footer>
+        </main>
+
+
+
+      <!-- header -->
+   <%- include('../includes/adminSide/footer') %>
+   <script src="/adminSide/js/adminProductManagement.js"></script>
+   <!-- end of header -->

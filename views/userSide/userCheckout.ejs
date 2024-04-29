@@ -1,0 +1,310 @@
+<!-- header -->
+<%- include('../includes/userSide/header') %>
+<!-- end of header -->
+<link rel="stylesheet" href="/userSide/css/userPayment.css" />
+
+
+<div class="page-title-area">
+<div class="container">
+<div class="page-title-content">
+<h2>Checkout</h2>
+<ul>
+<li><a href="/">Home</a></li>
+<li>Checkout</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+<section class="checkout-area ptb-100">
+<div class="container">
+<div class="user-actions">
+</div>
+<form id="form" method="post">
+<div class="row">
+<div class="col-lg-6 col-md-12">
+<div class="billing-details">
+<h3 class="title">Billing Details</h3>
+<div class="row">
+
+<div class="payment-box">
+
+<div class="orderHeading">
+  <h5>Delivery Address</h5>
+</div>
+<div class="deleviryContent">
+  <div class="chooseAdd position-relative">
+    <% if (userInfo.variations[0]?.address.length === 0 || !userInfo.variations[0]) { %>
+    <% } else { %>
+          <div class="existingAddress">
+            <p class="name text-capitalize"> Hi <%= userInfo.fullName %></p>
+            <p><%= userInfo.variations[0]?.address.find((value) => String(value._id) === String(userInfo.variations[0]?.defaultAddress))?.structuredAddress %></p>
+           
+            <input type="text" name="adId" value="<%= userInfo.variations[0]?.defaultAddress %>" hidden>
+          </div>
+    <% } %>
+    <% if (userInfo.variations[0]?.address.length === 0 || !userInfo.variations[0]) { %>
+
+
+      <a
+    href="/addAddress"
+    >
+      <button type="button" class="position-absolute button default-btn ">
+        Add Address
+      </button>
+    </a>
+    
+
+    <% } else { %>
+      <a
+      href="/editAddress"
+    >
+      <button type="button" class="position-absolute button  default-btn">
+        Change
+      </button>
+    </a>
+
+    <% } %>
+    
+  </div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ------------------------------------------ -->
+<!-- <div class="coupon">
+  <div class="coupon__tag">
+    ✶ Coupon ✶
+  </div>
+  <div class="coupon__body">
+    <div class="coupon__title">Chocolate "themilk"</div>
+    <div class="coupon__value"><strong>-5€</strong></div>
+  </div>
+</div> -->
+<!-- ------------------------------------------- -->
+
+<!-- 
+<style>.coupon {
+  position: relative;
+  width: 200px;
+  height: auto;
+  border-radius: 10px;
+  border: 2px dashed  #fa5b7d;
+  background-color: pink;
+
+  .coupon__tag {
+    position: absolute;
+    left: -27%;
+    bottom: 45%;
+    width: 70%;
+    transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    -webkit-transform: rotate(-90deg);
+    font-size: 0.65em;
+    text-align: center;
+    font-family: Helvetica;
+    color: #fa5b7d;
+  }
+ 
+ .coupon__body {
+    margin-left: 30px;
+    padding: 10px;
+    border-left: 1px dotted #fa5b7d;
+    
+    .coupon__title, .coupon__value {
+      text-align: center;
+    }
+    
+    .coupon__title {
+      font-family: Helvetica;
+      font-size: 1em;
+      text-shadow: 1px 1px 0 white;
+      color: #fa5b7d;
+     }
+    
+    .coupon__value {
+      font-family: Museo slab;
+      font-size: 2em;
+      color: white;
+      text-shadow: 2px 2px 0 #fa5b7d;
+     }
+   }
+}</style> -->
+<!-- ---------------------------------------------->
+
+</div>
+
+
+
+<div class="col-lg-6 col-md-12">
+<div class="order-details">
+<h3 class="title">Your Order</h3>
+<div class="order-table table-responsive">
+<table class="table table-bordered">
+<thead>
+<tr>
+<th scope="col">Product Name</th>
+<th scope="col">Total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <% for( let i = 0; i < cartItems.length; i++ ) { %>
+
+<td class="product-name">
+<a href="#"><%= cartItems[i].pDetails[0].pName %></a>
+</td>
+<td class="product-total">
+<span class="subtotal-amount">$<%= (cartItems[i].products.quantity)*(cartItems[i].pDetails[0].fPrice ) %></span>
+</td>
+</tr>
+<% } %>
+<tr>
+<td class="order-subtotal">
+<span>Subtotal</span>
+</td>
+<td class="order-subtotal-price">
+<span class="order-subtotal-amount">$<%= cartItems.reduce((total, value) => { return total +=
+  (value.pDetails[0].fPrice * value.products.quantity); }, 0);
+  %></span>
+</td>
+</tr>
+<tr>
+<td class="order-shipping">
+<span>Shipping</span>
+</td>
+<td class="shipping-price">
+<span>Free</span>
+</td>
+</tr>
+<tr>
+  <td class="order-shipping">
+  <span>Discount</span>
+  </td>
+  <td class="shipping-price">
+  <span> -<%= cartItems.reduce((total, value) => {
+    const fPrice = value.pDetails[0].fPrice;
+    const lPrice = value.pDetails[0].lPrice;
+    const discountAmount = (fPrice - lPrice) * value.products.quantity;
+    return total + discountAmount;
+}, 0).toFixed(2); %></span>
+  </td>
+  </tr>
+<tr>
+<td class="total-price">
+<span>Order Total</span>
+</td>
+<td class="product-subtotal">
+<span class="subtotal-amount">$<%= cartItems.reduce((total, value) => { return total +=
+  (value.pDetails[0].lPrice * value.products.quantity); }, 0);
+  %></span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="payment-box">
+  <div class="payment-method">
+    <p>
+      <input type="radio" id="paypal" name="payMethode" value="paypal" onclick="handlePaymentSelection('paypal')">
+      <label for="paypal">razorpay</label>
+    </p>
+    <p>
+      <input type="radio" id="COD" name="payMethode" value="COD" onclick="handlePaymentSelection('cod')">
+      <label for="COD">Cash on Delivery</label>
+    </p>
+
+    <p>
+      <input type="radio" id="wallet" name="payMethode" value="wallet" onclick="handlePaymentSelection('wallet')">
+      <label for="wallet">Wallet</label>
+    </p>
+  </div>
+  <a href="" class="default-btn" id="placeOrderBtn" disabled>Place Order</a>
+</div>
+
+<script>
+  function handlePaymentSelection(paymentMethode) {
+    const paypalRadio = document.getElementById('creditCard');
+    const codRadio = document.getElementById('COD');
+    const walletRadio = document.getElementById('wallet');
+    const placeOrderBtn = document.getElementById('placeOrderBtn');
+    
+    if (paymentMethode === 'paypal') {
+      // Enable paypal and disable COD and Wallet
+      paypalRadio.checked = true;
+      codRadio.checked = false;
+      walletRadio.checked = false;
+      placeOrderBtn.href = "/paypalOrder";
+    } else if (paymentMethode === 'cod') {
+      // Enable COD and disable paypal and Wallet
+      codRadio.checked = true;
+      paypalRadio.checked = false;
+      walletRadio.checked = false;
+      placeOrderBtn.href = "/orderSuccessfull";
+    } else if (paymentMethode === 'wallet') {
+      // Enable Wallet and disable paypal and COD
+      walletRadio.checked =true;
+      codRadio.checked = false;
+      paypalRadio.checked = false;
+      
+      placeOrderBtn.href = "/walletOrder";
+
+    }
+
+    
+    placeOrderBtn.removeAttribute('disabled');
+  }
+</script>
+
+</div>
+</div>
+</div>
+</form>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+  // Event listener for the "Place Order" button
+  document.getElementById('placeOrderBtn').addEventListener('click', async function(event) {
+    event.preventDefault(); // Prevent the default form submission behavior
+
+    // Fetch all input values
+    const paymentMethode = document.querySelector('input[name="payMethode"]:checked').value;
+    const adId = document.querySelector('input[name="adId"]').value;
+console.log(paymentMethode);
+console.log(adId);
+    // Example: You can fetch other input values similarly
+
+    try {
+      // Make an Axios POST request to send the data to the server
+      const response = await axios.post('/cartCheckOut', {
+        paymentMethode,
+        adId
+        // Add other input values as needed
+      });
+
+      // Handle the response from the server
+      console.log(response.data); // Log the response data
+      // Example: Redirect to a success page
+      window.location.href = '/orderSuccessfull'; // Redirect to a success page after successful order placement
+    } catch (error) {
+      // Handle errors
+      console.error('Error:', error);
+      // Example: Show an error message to the user
+      alert('An error occurred while placing the order. Please try again later.');
+    }
+  });
+</script>
+</div>
+</section>
+
+
+
+
+<script src="/userSide/js/userPayment.js"></script>
+
+<!-- footer -->
+<%- include('../includes/userSide/footer') %>
+<!-- end of footer -->

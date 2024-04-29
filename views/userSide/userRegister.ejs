@@ -1,0 +1,62 @@
+
+   <!-- header -->
+   <%- include('../includes/userSide/header') %>
+   <!-- end of header -->
+
+<div class="page-title-area">
+<div class="container">
+<div class="page-title-content">
+<h2>My Account</h2>
+<ul>
+<li><a href="/">Home</a></li>
+<li>Signup</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+<section class="signup-area ptb-100">
+<div class="container">
+<div class="signup-content">
+<h2>Create an Account</h2>
+<form class="signup-form" action="<%= (isReffered?.referralCode)?(`/register?referralCode=${isReffered.referralCode}`):('/register') %>" method="post">
+<div class="form-group">
+<label>FullName</label>
+<input type="text" class="form-control <%= errMesg?.fName?'errDiv':'' %>" placeholder="Enter your name" id="fname" name="fullName" value="<%= userInfo?.fName ? userInfo.fName:'' %>">
+</div>
+<p class="err <%= errMesg?.fName?'':'d-none' %>"><%= errMesg?.fName %></p>
+<div class="form-group">
+<label>Email</label>
+<input type="email" class="form-control  <%= errMesg?.email?'errDiv':'' %>" placeholder="Enter your email" id="email" name="email" value="<%= userInfo?.email?userInfo.email:'' %>">
+</div>
+<p class="err <%= errMesg?.email?'':'d-none' %>"><%= errMesg?.email %></p>
+<div class="form-group">
+<label>Phone</label>
+<input type="number" class="form-control <%= errMesg?.phone?'errDiv':'' %>" placeholder="Enter your phoneNumber" id="phone" name="phoneNumber" value="<%= userInfo?.phone?userInfo.phone:'' %>">
+</div>
+<p class="err <%= errMesg?.phone?'':'d-none' %>"><%= errMesg?.phone %></p>
+
+<div class="form-group">
+<label>Password</label>
+<input type="password" class="form-control   <%= (errMesg?.pass || errMesg?.bothPass || errMesg?.conPass)?'errDiv':'' %>" placeholder="Enter your password" id="pass" name="password">
+</div>
+<p class="err w-100 <%= errMesg?.pass?'':'d-none' %>"><%= errMesg?.pass %></p>
+
+
+<div class="form-group">
+   <label>Confirm Password</label>
+   <input type="password" class="form-control  <%= (errMesg?.conPass || errMesg?.bothPass || errMesg?.pass)?'errDiv':'' %>" placeholder=" Confirm password" id="pass" name="confirmPassword">
+</div>
+<p class="err <%= (errMesg?.conPass || errMesg?.bothPass)?'':'d-none' %>"><%= errMesg?.conPass || errMesg?.bothPass %></p>
+<button type="submit" class="default-btn"> Create Account</button>
+<a href="/" class="return-store">or Return to Store</a>
+</form>
+</div>
+</div>
+</section>
+
+
+  <!-- footer -->
+  <%- include('../includes/userSide/footer') %>
+  <!-- end of footer -->

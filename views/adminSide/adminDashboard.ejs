@@ -1,0 +1,167 @@
+
+    <!-- header -->
+   <%- include('../includes/adminSide/header') %>
+   <!-- end of header -->
+   
+   <link rel="stylesheet" href="/adminSide/css/adminDashboard.css" />
+   <link rel="stylesheet" href="/public/adminSide/sass/layout/_layout.scss" />
+
+
+
+  <!-- CONTENT -->
+    <section id="content">
+        <!-- MAIN -->
+        <main>
+          <div class="head-title">
+            <div class="left">
+              <h1>Dashboard</h1>
+              <ul class="breadcrumb">
+                <li>
+                  <a href="#">Dashboard</a>
+                </li>
+                <li><i class="bx bx-chevron-right"></i></li>
+                <li>
+                  <a class="active" href="#">Home</a>
+                </li>
+              </ul>
+            </div>
+            <a data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn-download">
+              <i class="bx bxs-cloud-download"></i>
+              <span class="text">Download Sales Report</span>
+            </a>
+          </div>
+  
+          <!-- Modal -->
+          <form id="downloadSalesReportPDFOrExcel" action="/downloadSalesReport" method="post">
+            <div
+              class="modal fade"
+              id="exampleModal"
+              tabindex="-1"
+              aria-labelledby="exampleModalLabel"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">PDF or Excel</h5>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="d-flex">
+                      <div class="form-check w-50 showErr">
+                        <input value="pdf" class="form-check-input formVal" type="radio" name="type" id="flexRadioDefault1">
+                        <label class="form-check-label" for="type">
+                          PDF
+                        </label>
+                        <p class="err"></p>
+                      </div>
+                      <div class="form-check w-50 showErr">
+                        <input value="excel" class="form-check-input formVal" type="radio" name="type" id="flexRadioDefault2">
+                        <label class="form-check-label" for="type">
+                          Excel
+                        </label>
+                      </div>
+                    </div>
+                    <div class="d-flex">
+                      <div class="form-check">
+                        <input class="form-check-input checkBox" name="full" type="checkbox" value="full" id="flexCheckIndeterminate">
+                        <label class="form-check-label" for="flexCheckIndeterminate1">
+                          Download All Sales
+                        </label>
+                      </div>
+                    </div>
+                    <div class="d-flex">
+                      <div class="w-50 showErr">
+                        <label class="d-block mb-2 mt-2" for="fromDate">From Date</label>
+                        <input class="formVal" type="date" name="fromDate">
+                        <p class="err"></p>
+                      </div>
+                      <div class="w-50 showErr">
+                        <label class="d-block mb-2 mt-2" for="toDate">To Date</label>
+                        <input class="formVal" type="date" name="toDate">
+                        <p class="err"></p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      data-bs-dismiss="modal"
+                    >
+                      Close
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                      Download Now
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+  
+          <ul class="box-info">
+            <li>
+              <i class="bx bxs-calendar-check"></i>
+              <span class="text">
+                <h3 class="counter">
+               
+                </h3>
+                <p>New Order</p>
+              </span>
+            </li>
+            <li>
+              <i class="bx bxs-group"></i>
+              <span class="text">
+                <h3 class="counter">
+                 
+                </h3>
+                <p>Users</p>
+              </span>
+            </li>
+            <li>
+              <i class="bx bxs-dollar-circle"></i>
+              <span class="text">
+                <h3>
+                  $<span class="counter"
+                    ></span
+                  >
+                </h3>
+                <p>Total Sales</p>
+              </span>
+            </li>
+          </ul>
+  
+          <div class="mb-2">
+            <div class="custom-select ms-auto" style="width: 200px">
+              <select id="filterSales">
+                <option value="Monthly">Monthly</option>
+                <option value="Yearly">Yearly</option>
+                <option value="Weekly">Weekly</option>
+                <option value="Daily">Daily</option>
+              </select>
+            </div>
+          </div>
+  
+          <div>
+            <canvas id="myChart"></canvas>
+          </div>
+  
+         
+          
+        </main>
+        <!-- MAIN -->
+      </section>
+      <!-- CONTENT -->
+            
+        <!-- </main> -->
+
+   <!-- header -->
+   <%- include('../includes/adminSide/footer') %>
+   <script src="/adminSide/js/adminDashboard.js"></script>
+   <!-- end of header -->

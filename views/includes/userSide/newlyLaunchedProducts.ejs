@@ -1,0 +1,61 @@
+<section class="products-area pb-70">
+    <div class="container">
+        <div class="section-title">
+            <span class="sub-title">See Our Collection</span>
+            <h2>newly Launched Products </h2>
+        </div>
+        <div class="row">
+            
+            <div class="col-lg-4 col-md-6 col-sm-6">
+                <% for( let i = 0; i < newProducts.length; i++ ) { %>
+                
+                <div class="single-products-box">
+                    <div class="products-image">
+                        <a href="/productDetail/<%= newProducts[i]._id %>">
+                            <img src="<%= newProducts[i].variations[0].images[0] %>" alt="" />
+                            <img src="<%= newProducts[i].variations[0].images[0] %>" alt="" />
+                        </a>
+                        <div class="products-button">
+                            <ul>
+                                <li>
+                                    <div class="wishlist-btn">
+                                        <a href="#">
+                                            <i class="bx bx-heart"></i>
+                                            <span class="tooltip-label">Add to Wishlist</span>
+                                        </a>
+                                    </div>
+                                </li>
+                               
+                                <li>
+                                    <div class="quick-view-btn">
+                                        <a href="#" data-bs-toggle="modal" data-bs-target="#productsQuickView">
+                                            <i class="bx bx-search-alt"></i>
+                                            <span class="tooltip-label">Quick View</span>
+                                        </a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="products-content">
+                        <h3><a href="/productDetail"><%= newProducts[i].pName %></a></h3>
+                        <div class="price">
+                            <span class="old-price">$<%= newProducts[i].lPrice - Math.round(newProducts[i].lPrice * newProducts[i].allOffers / 100) %></span>
+                            <span class="new-price">$<%= newProducts[i].fPrice %></span>
+                        </div>
+                        <div class="star-rating">
+                            <i class="bx bxs-star"></i>
+                            <i class="bx bxs-star"></i>
+                            <i class="bx bxs-star"></i>
+                            <i class="bx bxs-star"></i>
+                            <i class="bx bxs-star"></i>
+                        </div>
+                        <a href="#" class="add-to-cart">Add to Cart</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% } %>
+    </div>
+</section>
+
