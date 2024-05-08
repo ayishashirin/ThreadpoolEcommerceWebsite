@@ -2,9 +2,11 @@ const express = require('express');
 const router = express.Router();
 const adminRender = require('../../services/adminSide/adminRender');
 const adminController = require('../../controller/adminSide/adminController');
+const adminCategoryController = require('../../controller/adminSide/adminCategoryController');
+const adminProductController = require('../../controller/adminSide/adminProductController');
 const adminAuthMiddleware = require('../../../middleware/adminSide/authMiddleware/adminAuthMiddleware');
 const store = require('../../controller/adminSide/multer');
-const referralOfferController = require('../../controller/adminSide/referralOfferController');
+const referralOfferController = require('../../controller/adminSide/adminReferralOfferController');
 const adminOfferController = require('../../controller/adminSide/adminOfferController');
 const adminCouponController = require('../../controller/adminSide/adminCouponController');
 
@@ -41,19 +43,19 @@ router.route('/adminAddProduct')
     )
     .post(
         adminAuthMiddleware.isAdminAuth,
-        store.array('image', 5),
-        adminController.adminAddProduct
+        store.array('image', 4),
+        adminProductController.adminAddProduct
     );
 
-router.get('/adminSoftDeleteProduct/:id', adminAuthMiddleware.isAdminAuth, adminController.adminSoftDeleteProduct);// Option to make product unlisted 
+router.get('/adminSoftDeleteProduct/:id', adminAuthMiddleware.isAdminAuth, adminProductController.adminSoftDeleteProduct);// Option to make product unlisted 
 
-router.get('/adminRestoreProduct/:id',adminAuthMiddleware.isAdminAuth, adminController.adminRestoreProduct);// Option to make product listed
+router.get('/adminRestoreProduct/:id',adminAuthMiddleware.isAdminAuth, adminProductController.adminRestoreProduct);// Option to make product listed
 
 router.get('/adminUpdateProduct/:id', adminAuthMiddleware.isAdminAuth, adminRender.adminUpdateProduct); // Update product page
 
-router.get('/adminDeleteProductImg', adminAuthMiddleware.isAdminAuth, adminController.adminDeleteProductImg);// Option to delete img of product without unlink it's soft delete
+router.get('/adminDeleteProductImg', adminAuthMiddleware.isAdminAuth, adminProductController.adminDeleteProductImg);// Option to delete img of product without unlink it's soft delete
 
-router.post('/adminUpdateProduct', adminAuthMiddleware.isAdminAuth, store.array('fileInput', 4), adminController.adminUpdateProduct);// Updates the product
+router.post('/adminUpdateProduct', adminAuthMiddleware.isAdminAuth, store.array('fileInput', 4), adminProductController.adminUpdateProduct);// Updates the product
 
 
 
@@ -69,7 +71,7 @@ router.route('/adminAddCategory')
     )
     .post(
         adminAuthMiddleware.isAdminAuth,
-        adminController.adminAddCategory
+        adminCategoryController.adminAddCategory
     );
 
 router.route('/adminUpdateCategory/:categoryId')
@@ -79,12 +81,12 @@ router.route('/adminUpdateCategory/:categoryId')
     )
     .post(
         adminAuthMiddleware.isAdminAuth,
-        adminController.updateCategory
+        adminCategoryController.updateCategory
     );
 
-router.get('/adminSoftDeleteCategory/:id', adminAuthMiddleware.isAdminAuth, adminController.adminSoftDeleteCategory);// Option to make category unlisted
+router.get('/adminSoftDeleteCategory/:id', adminAuthMiddleware.isAdminAuth, adminCategoryController.adminSoftDeleteCategory);// Option to make category unlisted
 
-router.get('/adminRestoreCategory/:id', adminAuthMiddleware.isAdminAuth, adminController.adminRestoreCategory);// Option to make category listed
+router.get('/adminRestoreCategory/:id', adminAuthMiddleware.isAdminAuth, adminCategoryController.adminRestoreCategory);// Option to make category listed
 
 
 

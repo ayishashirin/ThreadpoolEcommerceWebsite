@@ -53,8 +53,8 @@
                       <img src="<%= orders[i].orderItems.images %>" alt="">
                       <div class="textOrder d-flex flex-column gap-2">
                         <h2 class="m-0 text-capitalize"><%= orders[i].orderItems.pName %></h2>
-                        <p class="m-0">COLOR<span class="text-capitalize">: <%= orders[i].orderItems.color %></span></p>
-                        <p class="m-0">Qty: <%= orders[i].orderItems.quantity %></p>
+                        <p class="m-0"><span class="text-capitalize"><%= orders[i].orderItems.pDescription %></span></p>
+                        <p class="m-0">Order Placed: <%= orders[i].orderDate.toString().split(' ').slice(0, 4).join(' ') %></p>
                       </div>
                     </div>
                     <div>

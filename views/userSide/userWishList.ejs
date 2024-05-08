@@ -1,14 +1,14 @@
 <!-- header -->
 <%- include('../includes/userSide/header') %>
 <!-- end of header -->
-<% console.log("coming here to ejs"); %>
+
 <div class="page-title-area">
   <div class="container">
     <div class="page-title-content">
-      <h2>Wish List</h2>
+      <h2>Wishlist</h2>
       <ul>
         <li><a href="/">Home</a></li>
-        <li>Wish List</li>
+        <li>Wishlist</li>
       </ul>
     </div>
   </div>
@@ -23,81 +23,84 @@
             <tr>
               <th scope="col">Product</th>
               <th scope="col">Name</th>
-              <th scope="col">Unit Price</th>
-              <th scope="col">Quantity</th>
-              <th scope="col">Total</th>
+              <th scope="col">Price</th>
+              <th scope="col">Stock Status</th>
+              <!-- <th scope="col">Total</th> -->
+              
             </tr>
           </thead>
           <tbody>
-            <% for( let i = 0; i < cartItems.length; i++ ) { %>
+            <%# for( let i = 0; i < cartItems.length; i++ ) { %>
             <tr>
               <td
                 class="product-thumbnail"
-                data-productId="<%= cartItems[i].products.productId %>"
-                onclick="location.href='/productDetail/<%= cartItems[i].products.productId %>'"
+                data-productId="<%#= wishlistItems[i].wishlistProducts.productId %>"
+                onclick="location.href='/productDetail/<%#= wishlistItems[i].wishlistProducts.productId %>'"
               >
                 <a href="#">
                   <img
-                    src="<%= cartItems[i].variations[0].images[0] %>"
+                    src="<%#= wishlistItems[i].variations[0].images[0] %>"
                     alt="item"
                   />
                 </a>
               </td>
               <td class="product-name">
-                <a href="#"><%= cartItems[i].pDetails[0].pName %></a>
+                <a href="#"><%#= wishItems[i].pDetails[0].pName %></a>
                 <ul>
                   <li>
-                    Color: <span><%= cartItems[i].variations[0].color %></span>
+                    Color: <span><%##= cartItems[i].variations[0].color %></span>
                   </li>
                   <li>
-                    Size: <span><%= cartItems[i].variations[0].size %></span>
+                    Size: <span><%##= cartItems[i].variations[0].size %></span>
                   </li>
-                  <% if (cartItems[i].variations[0].quantity === 0) { %>
+                  <%## if (cartItems[i].variations[0].quantity === 0) { %>
                   <p
-                    class="position-absolute stockErr <%= (cartItems[i].variations[0].quantity < cartItems[i].products.quantity)?'d-block':'' %>"
+                    class="position-absolute stockErr <%##= (cartItems[i].variations[0].quantity < cartItems[i].products.quantity)?'d-block':'' %>"
                   >
                     Out Of Stock
                   </p>
-                  <% } else { %>
+                  <%## } else { %>
                   <p
-                    class="position-absolute stockErr <%= (cartItems[i].variations[0].quantity < cartItems[i].products.quantity)?'d-block':'' %>"
+                    class="position-absolute stockErr <%##= (cartItems[i].variations[0].quantity < cartItems[i].products.quantity)?'d-block':'' %>"
                   >
-                    Only <%= cartItems[i].variations[0].quantity %> stocks
+                    Only <%##= cartItems[i].variations[0].quantity %> stocks
                     available
                   </p>
-                  <% } %>
+                  <%## } %>
                 </ul>
               </td>
               <td class="product-price">
-                <span class="unit-amount " id="unit_price_<%= i %>"
-                  >$<%=cartItems[i].pDetails[0].fPrice %></span
+                <span class="unit-amount " id="unit_price_<%##= i %>"
+                  >$<%##=cartItems[i].pDetails[0].fPrice %></span
                 >
               </td>
-              <td class="product-quantity" >
-    <div class="input-counter">
-        <span class="minus-btn" onclick="decreaseQuantity('<%= i %>', '<%= cartItems[i].products.productId %>')"><i class="bx bx-minus"></i></span>
-        <input id="quantity_<%= i %>" type="text" min="1" value="<%= cartItems[i].products.quantity %>" readonly />
-        <span class="plus-btn" onclick="increaseQuantity('<%= i %>', '<%= cartItems[i].products.productId %>')"><i class="bx bx-plus"></i></span>
-    </div>
-</td>
+
+
+
               <td class="product-subtotal">
-                <span class="subtotal-amount"  id="total_price_<%= i%>" onclick="updateTotalPrice('<%=i%>')">$<%= (cartItems[i].products.quantity)*(cartItems[i].pDetails[0].fPrice ) %></span>
-                <a href="/cartDelete/<%= cartItems[i].products.productId %>" class="remove"><i class="bx bx-trash"></i></a>
+                
+                <a href="/cartDelete/<%#= cartItems[i].products.productId %>" class="remove"><i class="bx bx-trash" style="padding-left:100px;"></i></a>
                 </td> 
+
+
+                <td class="" style="margin-left: 100px; padding-left: 100px;"><div class="addToCart" >
+                  <a href="/cartDeleteAll" class="default-btn remove">Add To Cart</a>
+                </div></td>
+
             </tr>
-            <% } %>
+            <%# } %>
           </tbody>
         </table>
 
-        <% if (cartItems.length === 0) { %>
+        <%# if (cartItems.length === 0) { %>
         <div
           class="d-flex justify-content-center align-items-center mb-4 noProduct ptb-100"
         >
           <p class="text-center fs-5">\(^Д^)/<br />No Products In Cart</p>
         </div>
-        <% if(cartErr) { %>
-        <p class="err"><%= cartErr %></p>
-        <% } %> <% } %>
+        <%# if(cartErr) { %>
+        <p class="err"><%#= cartErr %></p>
+        <%# } %> <%# } %>
       </div>
       <div class="cart-buttons">
         <div class="row align-items-center">
@@ -109,29 +112,9 @@
           </div>
         </div>
       </div>
-      <div class="cart-totals">
-        <h3>Cart Totals</h3>
-        <ul>
-          <li>Subtotal <span id="subtotal1">$<%= cartItems.reduce((total, value) => { return total +=
-            (value.pDetails[0].fPrice * value.products.quantity); }, 0);
-            %></span></li>
-          <li>Shipping <span>Free</span></li>
-          <li>Discount <span id="discount1">
-            -<%= cartItems.reduce((total, value) => {
-                const fPrice = value.pDetails[0].fPrice;
-                const lPrice = value.pDetails[0].lPrice;
-                const discountAmount = (fPrice - lPrice) * value.products.quantity;
-                return total + discountAmount;
-            }, 0).toFixed(2); %>
-        </span></li>
-
-          <li>Total <span id="totalAmt1">$<%= cartItems.reduce((total, value) => { return total +=
-            (value.pDetails[0].lPrice * value.products.quantity); }, 0);
-            %></span></li>
-        </ul>
-          <a href="/cartCheckOut" class="default-btn">Proceed to Checkout</a>
+      
+        
       </form>
-      </div>
     </form>
   </div>
 </section>
@@ -139,68 +122,9 @@
 
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<script>
-  function increaseQuantity(index, productId) {
-    // Make Axios request to increase quantity
-    axios.get(`/cartItemUpdate/${productId}/1`)
-      .then(response => {
-        if (response.data.result) {
-          // Update the displayed quantity on success
-          const input = document.getElementById(`quantity_${index}`);
-          // input.value = parseInt(input.value) + 1;
-          // Update the displayed price based on the updated quantity
-          updateTotalPrice(index);
-          updateOrderSummary(response);
-        } else {
-          const input = document.getElementById(`quantity_${index}`);
-          input.value = parseInt(input.value) - 1;
-          alert(response.data.message); // Display error message if update fails
-        }
-      })
-      .catch(error => {
-        console.error(error); // Log any errors to the console
-      });
-  }
 
-  function decreaseQuantity(index, productId) {
-    // Make Axios request to decrease quantity
-    axios.get(`/cartItemUpdate/${productId}/-1`)
-      .then(response => {
-        if (response.data.result) {
-          // Update the displayed quantity on success
-          const input = document.getElementById(`quantity_${index}`);
-          // input.value = parseInt(input.value) - 1;
-          // Update the displayed price based on the updated quantity
-          updateTotalPrice(index);
-          updateOrderSummary(response);
-        } else {
-          alert(response.data.message); // Display error message if update fails
-          
-        }
-      })
-      .catch(error => {
-        console.error(error); // Log any errors to the console
-      });
-  }
-
-  function updateOrderSummary(res) {
-    document.getElementById('totalAmt1').innerText = '$' + res.data.total;
-    document.getElementById('discount1').innerText = '-' + res.data.discount;
-    document.getElementById('subtotal1').innerText = '$' + (res.data.total + res.data.discount);
-  }
-
-  function updateTotalPrice(index) {
-    console.log(`up ${index}`);
-    // Calculate the new total price based on the updated quantity
-    const quantity = parseInt(document.getElementById(`quantity_${index}`).value);
-    const unitPrice = parseFloat(document.getElementById(`unit_price_${index}`).innerText.replace('$', ''));
-    const totalPrice = quantity * unitPrice;
-    // Update the displayed total price
-    document.getElementById(`total_price_${index}`).innerText = '$' + totalPrice.toFixed(2);
-  }
-</script>
 
 
 <!-- footer -->
-<%- include('../includes/userSide/footer') %>
+<%#- include('../includes/userSide/footer') %>
 <!-- end of footer -->

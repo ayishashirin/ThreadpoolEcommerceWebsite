@@ -2,6 +2,7 @@
 <%- include('../includes/userSide/header') %>
 <!-- end of header -->
 <link rel="stylesheet" href="/userSide/css/userPayment.css" />
+<link rel="stylesheet" href="/userSide/css/checkout.css" />
 
 
 <div class="page-title-area">
@@ -60,7 +61,7 @@
       <a
       href="/editAddress"
     >
-      <button type="button" class="position-absolute button  default-btn">
+      <button type="button" class="button  default-btn mb-5">
         Change
       </button>
     </a>
@@ -71,69 +72,69 @@
 </div>
 </div>
 </div>
+<!-- -------------------------------------- -->
+
+<!--Modal Launch Button-->
+<div class="button-row d-flex">
+  <% for(let i = 0; i < coupons.length; i++) { %>
+    <button type="button" class="btn btn-info btn-lg openmodal m-1" data-toggle="modal" data-target="#myModal<%=i%>" >
+      <i class="fa fa-tag"></i> COUPON<br><h5>Category:<%= coupons[i].category %></h5><h3><%= coupons[i].discount %>% OFF</h3>
+    </button>
+
+    <!--Division for Modal-->
+    <div id="myModal<%=i%>" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <!--Modal Content-->
+        <div class="modal-content">
+          <!-- Modal Header-->
+          <div class="modal-header">
+            <h3><%= coupons[i].category %> Category : <%= coupons[i].discount %>% OFF</h3>
+            <!--Close/Cross Button-->
+            <button type="button" class="close" data-dismiss="modal" style="color: white;">&times;</button>
+          </div>
+          <!-- Modal Body-->
+          <div class="modal-body">
+            <div class="row">
+              <!--Gift Icon-->
+              <div class="col text-center">
+                <i class="fa fa-gift fa-4x icon2"></i>
+              </div>
+              <!--Modal Text-->
+              <div class="col-8">
+                <p>We care for our visitors and from time to time we provide small gifts to them. You are the lucky one today!</p>
+                <p><h6>Order of $ <%= coupons[i].minPrice %> or more..!</h6></p>
+                <p>Hurry! Copy the below code and use it at checkout within <u><%= coupons[i].expiry.toString().split(' ').slice(0, 4).join(' ') %></u></p>
+                <h3 class="text1" id="couponCode<%=i%>"><%= coupons[i].code %></h3>
+              </div>
+            </div>
+          </div>
+          <!-- Modal Footer-->
+          <div class="modal-footer">
+            <a href="#" class="btn btn-danger" onclick="copyCouponCode('<%= coupons[i].code %>')" data-dismiss="modal">Get it now <i class="fa fa-gem"></i></a>
+            <a href="" class="btn btn-outline-danger" data-dismiss="modal">No, thanks</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% } %>
 </div>
 
-<!-- ------------------------------------------ -->
-<!-- <div class="coupon">
-  <div class="coupon__tag">
-    ✶ Coupon ✶
-  </div>
-  <div class="coupon__body">
-    <div class="coupon__title">Chocolate "themilk"</div>
-    <div class="coupon__value"><strong>-5€</strong></div>
-  </div>
-</div> -->
-<!-- ------------------------------------------- -->
 
-<!-- 
-<style>.coupon {
-  position: relative;
-  width: 200px;
-  height: auto;
-  border-radius: 10px;
-  border: 2px dashed  #fa5b7d;
-  background-color: pink;
 
-  .coupon__tag {
-    position: absolute;
-    left: -27%;
-    bottom: 45%;
-    width: 70%;
-    transform: rotate(-90deg);
-    -ms-transform: rotate(-90deg);
-    -webkit-transform: rotate(-90deg);
-    font-size: 0.65em;
-    text-align: center;
-    font-family: Helvetica;
-    color: #fa5b7d;
-  }
- 
- .coupon__body {
-    margin-left: 30px;
-    padding: 10px;
-    border-left: 1px dotted #fa5b7d;
-    
-    .coupon__title, .coupon__value {
-      text-align: center;
-    }
-    
-    .coupon__title {
-      font-family: Helvetica;
-      font-size: 1em;
-      text-shadow: 1px 1px 0 white;
-      color: #fa5b7d;
-     }
-    
-    .coupon__value {
-      font-family: Museo slab;
-      font-size: 2em;
-      color: white;
-      text-shadow: 2px 2px 0 #fa5b7d;
-     }
-   }
-}</style> -->
-<!-- ---------------------------------------------->
 
+
+
+<form action="" method="post">
+  <label for="coupon">Enter your coupon code:</label><br>
+  <input type="text" id="coupon" name="coupon" placeholder="Enter coupon code"><br>
+  <button type="button" onclick="applyCoupon()" >Apply Coupon</button>
+</form>
+
+
+
+
+<!-- ------------------------------------------------------------------------ -->
+</div>
 </div>
 
 
@@ -154,7 +155,7 @@
   <% for( let i = 0; i < cartItems.length; i++ ) { %>
 
 <td class="product-name">
-<a href="#"><%= cartItems[i].pDetails[0].pName %></a>
+<p><%= cartItems[i].pDetails[0].pName %> x  <%= cartItems[i].products.quantity %></p> 
 </td>
 <td class="product-total">
 <span class="subtotal-amount">$<%= (cartItems[i].products.quantity)*(cartItems[i].pDetails[0].fPrice ) %></span>
@@ -166,7 +167,7 @@
 <span>Subtotal</span>
 </td>
 <td class="order-subtotal-price">
-<span class="order-subtotal-amount">$<%= cartItems.reduce((total, value) => { return total +=
+<span class="order-subtotal-amount" id="totalAmount">$<%= cartItems.reduce((total, value) => { return total +=
   (value.pDetails[0].fPrice * value.products.quantity); }, 0);
   %></span>
 </td>
@@ -180,11 +181,11 @@
 </td>
 </tr>
 <tr>
-  <td class="order-shipping">
+  <td class="discount-price">
   <span>Discount</span>
   </td>
-  <td class="shipping-price">
-  <span> -<%= cartItems.reduce((total, value) => {
+  <td class="discount-price">
+  <span id="discountPrice" > -$<%= cartItems.reduce((total, value) => {
     const fPrice = value.pDetails[0].fPrice;
     const lPrice = value.pDetails[0].lPrice;
     const discountAmount = (fPrice - lPrice) * value.products.quantity;
@@ -192,14 +193,57 @@
 }, 0).toFixed(2); %></span>
   </td>
   </tr>
+  <tr>
+    <td class="offer-price">
+    <span>Offer</span>
+    </td>
+    <td class="offer-price" >
+      <span id="offerPrice"> - $<%= cartItems.reduce((total, value) => {
+        const offerAmount = Math.round((value.pDetails[0].fPrice * value.allOffers) / 100) * value.products.quantity;
+        return total + offerAmount;
+      }, 0).toFixed(2); %></span>
+ </td>  
+    
+    </tr>
+    <tr id="couponOffer">
+      <td class="coupon-offer" >
+      <span>Coupon Offer</span>
+      </td>
+      <td class="coupon-offer">
+      <span id="cDPrice">-$0.00</span>
+    </td>
+  </tr>
+  <tr  id="couponRow" style="display: none;">
+    <td>
+      <!-- Display the coupon code -->
+      <p class="commonSub commonText m-0 p-0 text-danger" id="code" style="display: none;"></p>
+    </td>
+    <td>
+      <!-- Button to remove the coupon code -->
+      <p class="commonSub m-0 p-0 text-danger remove " onclick="removeCoupon()">
+        <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4.41602 9.21669H12.416V7.61669H4.41602V9.21669ZM8.41602 16.4167C7.30935 16.4167 6.26935 16.2067 5.29602 15.7867C4.32268 15.3667 3.47602 14.7967 2.75602 14.0767C2.03602 13.3567 1.46602 12.51 1.04602 11.5367C0.626016 10.5634 0.416016 9.52335 0.416016 8.41669C0.416016 7.31002 0.626016 6.27002 1.04602 5.29669C1.46602 4.32335 2.03602 3.47669 2.75602 2.75669C3.47602 2.03669 4.32268 1.46669 5.29602 1.04669C6.26935 0.626687 7.30935 0.416687 8.41602 0.416687C9.52268 0.416687 10.5627 0.626687 11.536 1.04669C12.5093 1.46669 13.356 2.03669 14.076 2.75669C14.796 3.47669 15.366 4.32335 15.786 5.29669C16.206 6.27002 16.416 7.31002 16.416 8.41669C16.416 9.52335 16.206 10.5634 15.786 11.5367C15.366 12.51 14.796 13.3567 14.076 14.0767C13.356 14.7967 12.5093 15.3667 11.536 15.7867C10.5627 16.2067 9.52268 16.4167 8.41602 16.4167ZM8.41602 14.8167C10.2027 14.8167 11.716 14.1967 12.956 12.9567C14.196 11.7167 14.816 10.2034 14.816 8.41669C14.816 6.63002 14.196 5.11669 12.956 3.87669C11.716 2.63669 10.2027 2.01669 8.41602 2.01669C6.62935 2.01669 5.11602 2.63669 3.87602 3.87669C2.63602 5.11669 2.01602 6.63002 2.01602 8.41669C2.01602 10.2034 2.63602 11.7167 3.87602 12.9567C5.11602 14.1967 6.62935 14.8167 8.41602 14.8167Z" fill="#DC3545"/>
+        </svg> remove
+      </p>
+    </td>
+  </tr>
+  
+
+
+  
+  
+    
 <tr>
 <td class="total-price">
 <span>Order Total</span>
 </td>
 <td class="product-subtotal">
-<span class="subtotal-amount">$<%= cartItems.reduce((total, value) => { return total +=
-  (value.pDetails[0].lPrice * value.products.quantity); }, 0);
-  %></span>
+<span class="subtotal-amount" id="orderTotal" >$<%= cartItems.reduce((total, value) => {
+  const offerAmount = Math.round((value.pDetails[0].fPrice * value.allOffers) / 100) * value.products.quantity;
+  const discountedPrice = (value.pDetails[0].lPrice * value.products.quantity) - offerAmount;
+  return total + discountedPrice;
+}, 0).toFixed(2);
+%></span>
 </td>
 </tr>
 </tbody>
@@ -209,8 +253,8 @@
 <div class="payment-box">
   <div class="payment-method">
     <p>
-      <input type="radio" id="paypal" name="payMethode" value="paypal" onclick="handlePaymentSelection('paypal')">
-      <label for="paypal">razorpay</label>
+      <input type="radio" id="razorpay" name="payMethode" value="razorpay" onclick="handlePaymentSelection('razorpay')">
+      <label for="razorpay">razorpay</label>
     </p>
     <p>
       <input type="radio" id="COD" name="payMethode" value="COD" onclick="handlePaymentSelection('cod')">
@@ -225,86 +269,20 @@
   <a href="" class="default-btn" id="placeOrderBtn" disabled>Place Order</a>
 </div>
 
-<script>
-  function handlePaymentSelection(paymentMethode) {
-    const paypalRadio = document.getElementById('creditCard');
-    const codRadio = document.getElementById('COD');
-    const walletRadio = document.getElementById('wallet');
-    const placeOrderBtn = document.getElementById('placeOrderBtn');
-    
-    if (paymentMethode === 'paypal') {
-      // Enable paypal and disable COD and Wallet
-      paypalRadio.checked = true;
-      codRadio.checked = false;
-      walletRadio.checked = false;
-      placeOrderBtn.href = "/paypalOrder";
-    } else if (paymentMethode === 'cod') {
-      // Enable COD and disable paypal and Wallet
-      codRadio.checked = true;
-      paypalRadio.checked = false;
-      walletRadio.checked = false;
-      placeOrderBtn.href = "/orderSuccessfull";
-    } else if (paymentMethode === 'wallet') {
-      // Enable Wallet and disable paypal and COD
-      walletRadio.checked =true;
-      codRadio.checked = false;
-      paypalRadio.checked = false;
-      
-      placeOrderBtn.href = "/walletOrder";
 
-    }
-
-    
-    placeOrderBtn.removeAttribute('disabled');
-  }
-</script>
 
 </div>
 </div>
 </div>
 </form>
 
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<script>
-  // Event listener for the "Place Order" button
-  document.getElementById('placeOrderBtn').addEventListener('click', async function(event) {
-    event.preventDefault(); // Prevent the default form submission behavior
 
-    // Fetch all input values
-    const paymentMethode = document.querySelector('input[name="payMethode"]:checked').value;
-    const adId = document.querySelector('input[name="adId"]').value;
-console.log(paymentMethode);
-console.log(adId);
-    // Example: You can fetch other input values similarly
-
-    try {
-      // Make an Axios POST request to send the data to the server
-      const response = await axios.post('/cartCheckOut', {
-        paymentMethode,
-        adId
-        // Add other input values as needed
-      });
-
-      // Handle the response from the server
-      console.log(response.data); // Log the response data
-      // Example: Redirect to a success page
-      window.location.href = '/orderSuccessfull'; // Redirect to a success page after successful order placement
-    } catch (error) {
-      // Handle errors
-      console.error('Error:', error);
-      // Example: Show an error message to the user
-      alert('An error occurred while placing the order. Please try again later.');
-    }
-  });
-</script>
 </div>
 </section>
-
-
-
-
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="/userSide/js/userPayment.js"></script>
-
+<script src="/userSide/js/checkout.js"></script>
 <!-- footer -->
 <%- include('../includes/userSide/footer') %>
 <!-- end of footer -->

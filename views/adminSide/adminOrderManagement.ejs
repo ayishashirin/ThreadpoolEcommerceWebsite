@@ -49,7 +49,7 @@
                                         <th scope="col">Name</th>
                                         <th scope="col">Email</th>
                                         <th scope="col">Total</th>
-                                        <th scope="col">Status</th>
+                                        <th scope="col">Date</th>
                                         <th scope="col">Action</th> <!-- Add a new column for the action button -->
                                         
                                     </tr>
@@ -60,32 +60,16 @@
                                             <td><%= i + 1 %></td>
                                             <td><%= orders[i].userInfo[0].fullName %></td>
                                             <td><%= orders[i].userInfo[0].email %></td>
-                                            <td>$<%= (orders[i].orderItems.lPrice * orders[i].orderItems.quantity) %></td>
-                                            <td>
-                                                <form action="/adminChangeOrderStatus/<%= orders[i]._id %>/<%= orders[i].orderItems.productId %>" class="changeStatus" method="post">
-                                                    <div class="d-flex gap-3">
-                                                        <input name="page" type="text" value="<%= currentPage ? currentPage : '' %>" hidden>
-                                                        <input type="text" name="filter" value="<%= filter ? filter : '' %>" hidden>
-                                                        <% if ((orders[i].orderItems.orderStatus === "Delivered") || (orders[i].orderItems.orderStatus === "Cancelled")  || (orders[i].orderItems.orderStatus === "Ordered") || (orders[i].orderItems.orderStatus === "Shipped")) { %>
-                                                            <p class="badge rounded-pill <%= (orders[i].orderItems.orderStatus === 'Cancelled') ? 'alert-danger text-danger' : 'alert-success text-success' %>">
-                                                                <%= orders[i].orderItems.orderStatus %>
-                                                            </p>
-                                                        <% } else { %>
-                                                            <select name="orderStatus" id="filler" class="bg-white border-1 border-black">
-                                                                <option value="Ordered" <%= (orders[i].orderItems.orderStatus === "Ordered") ? "selected" : "" %>>Ordered</option>
-                                                                <option value="Shipped" <%= (orders[i].orderItems.orderStatus === "Shipped") ? "selected" : "" %>>Shipped</option>
-                                                                <option value="Delivered">Delivered</option>
-                                                                <option value="Cancelled">Cancelled</option>
-                                                            </select>
-                                                            <button type="submit" class="btn btn-primary"> <!-- Ensure the button is of type "submit" to submit the form -->
-                                                                Change Status
-                                                            </button>
-                                                        <% } %>
-                                                    </div>
-                                                </form>
+                                            <td>$<%= orders[i].orderItems.reduce((total, value) => total + (value.fPrice * value.quantity), 0) %>
 
-                                                <td><a href="/adminOrderDetails?id=<%= orders[i]._id %>&&productId=<%=orders[i].orderItems.productId%>" class="btn btn-md rounded font-sm">Detail</a></td>
                                             </td>
+
+                                            <td><%=orders[i].orderDate.toISOString().split('T')[0].split('-').reverse().join('-')%></td>
+                                            
+                                              
+
+                                                <td><a href="/adminOrderDetails?id=<%= orders[i]._id %>" class="btn btn-md rounded font-sm">Detail</a></td>
+                                           
                                         </tr>
                                     <% } %>
                                 </tbody>
@@ -103,24 +87,24 @@
                     </div> 
                 </div>
                 <!-- card end// -->
-                <% if (orderLength !== 0) { %>
-                <div class="pagination-area mt-15 mb-50">
+                <%# if (orderLength !== 0) { %>
+                <!-- <div class="pagination-area mt-15 mb-50">
                     <nav aria-label="Page navigation example">
                         <ul class="pagination justify-content-start">
-                            <li class="page-item active"><a class="page-link" href="/adminOrderManagement?<%= filter?`filter=${filter}&`:'' %>page=<%= (currentPage === 1 || !currentPage)?1:(currentPage - 1) %>" aria-label="Previous">
+                            <li class="page-item active"><a class="page-link" href="/adminOrderManagement?<%#= filter?`filter=${filter}&`:'' %>page=<%#= (currentPage === 1 || !currentPage)?1:(currentPage - 1) %>" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
-                            <% for( let i = 0; i < (Math.ceil(orderLength / 10)); i++ ) { %>
-                            <li class="page-item"><a class="page-link"  href="/adminOrderManagement?<%= filter?`filter=${filter}&`:'' %>page=<%= (i + 1) %>" ><%= (i + 1) %></a></li>
-                            <% } %>
+                            <%# for( let i = 0; i < (Math.ceil(orderLength / 10)); i++ ) { %>
+                            <li class="page-item"><a class="page-link"  href="/adminOrderManagement?<%#= filter?`filter=${filter}&`:'' %>page=<%#= (i + 1) %>" ><%#= (i + 1) %></a></li>
+                            <%# } %>
                            
-                            <li class="page-item"><a class="page-link"href="/adminOrderManagement?<%= filter?`filter=${filter}&`:'' %>page=<%= (((Math.ceil(orderLength / 10)) === currentPage) || (Math.ceil(orderLength / 10)) && !currentPage)?(currentPage?currentPage:1):(currentPage === 1 || !currentPage)?2:(currentPage + 1) %>" aria-label="Next">
+                            <li class="page-item"><a class="page-link"href="/adminOrderManagement?<%#= filter?`filter=${filter}&`:'' %>page=<%#= (((Math.ceil(orderLength / 10)) === currentPage) || (Math.ceil(orderLength / 10)) && !currentPage)?(currentPage?currentPage:1):(currentPage === 1 || !currentPage)?2:(currentPage + 1) %>" aria-label="Next">
                                 <span aria-hidden="true">&raquo;</span>
                             
                         </ul>
                     </nav>
-                </div>
+                </div> -->
             </section>
-            <% } %>
+            <%# } %>
 
             <!-- content-main end// -->
             <footer class="main-footer font-xs">
@@ -142,5 +126,5 @@
 
       <!-- header -->
    <%- include('../includes/adminSide/footer') %>
-   <script src="/adminSide/js/adminProductManagement.js"></script>
+   <script src="/adminSide/js/adminOrderManagement.js"></script>
    <!-- end of header -->

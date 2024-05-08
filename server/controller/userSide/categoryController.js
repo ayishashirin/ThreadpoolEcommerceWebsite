@@ -1,6 +1,7 @@
 const { Productdb } = require('../../model/adminSide/productModel');
-
 const Categorydb = require('../../model/adminSide/category').Categorydb;
+const mongoose = require("mongoose");
+const categoryId = mongoose.Types.ObjectId(category);
 
 function capitalizeFirstLetter(str) {
     str = str.toLowerCase();

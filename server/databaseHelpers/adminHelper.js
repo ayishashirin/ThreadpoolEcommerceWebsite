@@ -2,7 +2,7 @@ const Categorydb = require('../model/adminSide/category').Categorydb;
 const Productdb = require('../model/adminSide/productModel').Productdb;
 const ProductVariationdb = require('../model/adminSide/productModel').ProductVariationdb;
 const Userdb = require('../model/userSide/userModel');
-const { default: mongoose, isObjectIdOrHexString } = require('mongoose');
+const { mongoose, isObjectIdOrHexString } = require('mongoose');
 const ReferralOfferdb = require('../model/adminSide/referralOfferModel');
 const Orderdb = require('../model/userSide/orderModel');
 const UserWalletdb = require('../model/userSide/walletModel');
@@ -128,7 +128,7 @@ module.exports = {
             if(orderStatus === 'Cancelled'){
                 const qty = await Orderdb.findOne({$and: [{_id: new mongoose.Types.ObjectId(orderId)}, {'orderItems.productId': productId}]}, {'orderItems.$': 1, _id: 0, userId: 1, paymentMethode: 1,});
 
-                if(qty.paymentMethode === 'onlinePayment'){
+                if(qty.paymentMethode === 'onlinePay'){
                     await UserWalletdb.updateOne({userId: qty.userId}, {
                         $inc: {
                             walletBalance: Math.round((qty.orderItems[0].quantity * qty.orderItems[0].lPrice) -  qty.orderItems[0].couponDiscountAmount)
@@ -151,11 +151,7 @@ module.exports = {
         try {
             const skip = Number(page)?(Number(page) - 1):0;
             const agg = [
-                {
-                  $unwind: {
-                    path: "$orderItems",
-                  },
-                },
+              
                 {
                   $lookup: {
                     from: "userdbs",
@@ -245,6 +241,7 @@ module.exports = {
         try {
             const newCoupon = new Coupondb(body);
             await newCoupon.save();
+            console.log(newCoupon);
         } catch (err) {
             throw err;
         }
@@ -303,19 +300,27 @@ module.exports = {
                 let query = {};
                 //query for finding and updating only produts with this name
                 if(newOffer.productName && !newOffer.category){
-                    query = {pName: newOffer.productName};
+                    query =  { pName: { $regex: newOffer.productName, $options: 'i' } }
                 }
 
                 //query for finding and updating only produts with this category name
                 if(!newOffer.productName && newOffer.category){
-                    query = {category: newOffer.category};
+                    query = {category: { $regex: newOffer.category, $options: 'i' }};
                 }
                 
                 //query for finding and updating only produts with both name and category
                 if(newOffer.productName && newOffer.category){
-                    query = {$or:[{pName: newOffer.productName}, {category: newOffer.category}]};
+                    query = {
+                        $or: [
+                            { pName: { $regex: newOffer.productName, $options: 'i' } }, 
+                            { category: { $regex: newOffer.category, $options: 'i' } } 
+                        ]
+                    };
+                    
                 }
 
+                const pro = await Productdb.find(query);
+            
                 await Productdb.updateMany(query, {$push: {offers: newOffer._id}});
                 return await newOffer.save();
             }
@@ -449,4 +454,73 @@ module.exports = {
             throw err;
         }
     },
+    getSingleOrder: async (orderId) => {
+        try {
+            const agg = [
+                {
+                    $lookup: {
+                        from: "userdbs",
+                        localField: "userId",
+                        foreignField: "_id",
+                        as: "userInfo",
+                    },
+                },
+                {
+                    $lookup: {
+                      from: "productdbs",
+                      localField: "products.productId",
+                      foreignField: "_id",
+                      as: "pDetails",
+                    },
+                  },
+                {
+                    $lookup: {
+                      from: "offerdbs",
+                      localField: "pDetails.offers",
+                      foreignField: "_id",
+                      as: "allOffers",
+                    },
+                  },
+                {
+                    $lookup: {
+                        from: "uservariationdbs",
+                        localField: "userId",
+                        foreignField: "userId",
+                        as: "userVariations",
+                    },
+                },
+                {
+                    $sort: {
+                        orderDate: -1,
+                    },
+                },
+            ];
+
+           
+            // Perform aggregation and await the result
+            const product = await Orderdb.aggregate(agg);
+
+    
+            // Find the specific order by orderId
+            const order = await Orderdb.findOne({ _id: orderId });
+    
+
+
+            product.forEach(each => {
+                each.allOffers = each.allOffers.reduce((total, offer) => {
+                  if(offer.expiry >= new Date() && offer.discount > total){
+                    return total = offer.discount;
+                  }
+      
+                  return total;
+                }, 0);
+              });
+    
+            return order, product;
+            
+        } catch (err) {
+            throw err;
+        }
+    }
+    
 }

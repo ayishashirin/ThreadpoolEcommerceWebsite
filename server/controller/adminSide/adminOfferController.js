@@ -31,8 +31,8 @@ module.exports = {
                 req.session.expiry = `This Field is required`;
             }
 
-            if(req.body.discount && req.body.discount > 95){
-                req.session.discount = `Discount cannot be greater than 95%`;
+            if(req.body.discount && req.body.discount > 60){
+                req.session.discount = `Discount cannot be greater than 60%`;
             }
 
             if(req.body.discount && req.body.discount < 0){
@@ -85,12 +85,12 @@ module.exports = {
                 req.session.expiry = `This Field is required`;
             }
 
-            if(req.body.discount && req.body.discount > 95){
-                req.session.discount = `Discount cannot be greater than 95%`;
+            if(req.body.discount && req.body.discount > 60){
+                req.session.discount = `Discount cannot be greater than 60%`;
             }
 
             if(req.body.discount && req.body.discount < 0){
-                req.session.discount = `Discount Should be in between 0 - 95%`;
+                req.session.discount = `Discount Should be in between 0 - 60%`;
             }
 
             if((!req.body.productName || req.body.productName ) && req.body.category){

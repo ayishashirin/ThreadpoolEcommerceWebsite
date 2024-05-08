@@ -23,32 +23,25 @@
 <section class="products-area pt-100 pb-70">
   <div class="container">
     <div class="row">
-  
-      
 
-<div class="col-lg-4 col-md-12">
-    <div class="woocommerce-widget-area">
-        <div class="woocommerce-widget collections-list-widget">
+
+
+      <div class="col-lg-4 col-md-12">
+        <div class="woocommerce-widget-area">
+          <div class="woocommerce-widget collections-list-widget">
             <h3 class="woocommerce-widget-title">Collections</h3>
             <ul class="collections-list-row">
-                <li><a href="/category?genderCat=Men" class="collection-filter" data-collection="men">Men's</a></li>
-                <li><a href="/category?genderCat=Women" class="collection-filter active" data-collection="women">Women’s</a></li>
+              <li><a href="/category?genderCat=Men" class="collection-filter" data-collection="men">Men's</a></li>
+              <li><a href="/category?genderCat=Women" class="collection-filter " data-collection="women">Women’s</a></li>
             </ul>
-        </div>
+          </div>
           <div class="woocommerce-widget price-list-widget">
             <h3 class="woocommerce-widget-title">Price</h3>
             <div class="collection-filter-by-price">
-              <input
-                class="js-range-of-price"
-                type="text"
-                data-min="1"
-                data-max="1055"
-                name="filter_by_price"
-                data-step="10"
-              />
+              <input class="js-range-of-price" type="text" data-min="1" data-max="1055" name="filter_by_price" data-step="10" />
             </div>
           </div>
-         
+
           <div class="woocommerce-widget size-list-widget">
             <h3 class="woocommerce-widget-title">Size</h3>
             <ul class="size-list-row">
@@ -94,17 +87,8 @@
           <div class="row align-items-center">
             <div class="col-lg-4 col-md-4">
               <div class="d-lg-flex d-md-flex align-items-center">
-                <span class="sub-title d-lg-none"
-                  ><a
-                    href="#"
-                    data-bs-toggle="modal"
-                    data-bs-target="#productsFilterModal"
-                    ><i class="bx bx-filter-alt"></i> Filter</a
-                  ></span
-                >
-                <span class="sub-title d-none d-lg-block d-md-block"
-                  >View:</span
-                >
+                <span class="sub-title d-lg-none"><a href="#" data-bs-toggle="modal" data-bs-target="#productsFilterModal"><i class="bx bx-filter-alt"></i> Filter</a></span>
+                <span class="sub-title d-none d-lg-block d-md-block">View:</span>
                 <div class="view-list-row d-none d-lg-block d-md-block">
                   <div class="view-column">
                     <a href="#" class="icon-view-one">
@@ -147,41 +131,29 @@
         <div id="products-collections-filter" class="row">
           <% for( let i = 0; i < products.length; i++ ) { %>
           <div class="col-lg-6 col-md-6 col-sm-6 products-col-item">
-            <div class="shopItems" onclick="location.href='/productDetail/<%= products[i]._id %>';" >
+            <div class="shopItems" onclick="location.href='/productDetail/<%= products[i]._id %>';">
 
               <div class="products-box">
                 <div class="products-image">
                   <a href="/productDetail/<%= products[i]._id %>">
-                    <img
-                      src="<%= products[i].variations[0].images[0] %>"
-                      class="main-image"
-                      alt="image"
-                    />
-                    <img
-                      src="<%= products[i].variations[0].images[0] %>"
-                      class="hover-image"
-                      alt="image"
-                    />
+                    <img src="<%= products[i].variations[0].images[0] %>" class="main-image" alt="image" />
+                    <img src="<%= products[i].variations[0].images[0] %>" class="hover-image" alt="image" />
                   </a>
                   <div class="products-button">
                     <ul>
                       <li>
                         <div class="wishlist-btn">
-                          <a href="#" class="addToWishlist" data-product-id="<%= products._id  %>">
+                          <a href="/cartNow/<%#= wishlistProducts._id %>" class="addToWishlist" data-product-id="<%#= wishlistProducts._id  %>">
                             <i class="bx bx-heart"></i>
                             <span class="tooltip-label">Add to Wishlist</span>
                           </a>
                         </div>
                       </li>
-                      
-                   
+
+
                       <li>
                         <div class="quick-view-btn">
-                          <a
-                            href="/productDetail/<%= products[i]._id %>"
-                            data-bs-toggle="modal"
-                            data-bs-target="#productsQuickView<%= products[i].pName  %>"
-                          >
+                          <a href="/productDetail/<%= products[i]._id %>" data-bs-toggle="modal" data-bs-target="#productsQuickView<%= products[i].pName  %>">
                             <i class="bx bx-search-alt"></i>
                             <span class="tooltip-label">Quick View</span>
                           </a>
@@ -201,25 +173,28 @@
                     <i class="bx bxs-star"></i>
                     <i class="bx bxs-star"></i>
                   </div>
+                  <!-- <div><span class="discount" style="color: #f53f85;">-<%#= Math.round((((products[i].fPrice) - (products[i].lPrice)) / products[i].fPrice) * 100)%> %</span></div> -->
                   <div class="price">
-                    <span class="old-price">$<%= parseInt(products[i].fPrice) %></span>
-                    <span class="new-price">$<%= parseInt(products[i].lPrice) %></span>
+                    <span class="new-price"> $<%= parseInt(products[i].lPrice)   %></span>
+                    <span class="old-price"> $<%= parseInt(products[i].fPrice)   %></span>
                   </div>
                   <% if (products[i].variations[0].quantity === 0) { %>
-                    <button class="buyBtn">Out Of Stock</button>
-                <% } else { %>
-                    <% if (isCartItem) { %>
-                        <a href="/addToCart" class="add-to-cart" style="cursor: pointer;">Go to Cart</a>
-                    <% } else { %>
-                        <a  data-productId="<%= products[i]._id %>" class="add-to-cart" style="cursor: pointer;" >Add to Cart</a>
-                    <% } %>
-                <% } %>
+                  <button class="buyBtn">Out Of Stock</button>
+                  <% } else { %>
+                  <% if (isCartItem) { %>
+                  <a href="/addToCart" class="add-to-cart" style="cursor: pointer;">Go to Cart</a>
+                  <% } else { %>
+                  <a data-productId="<%= products[i]._id %>" class="add-to-cart" style="cursor: pointer;">Add to Cart</a>
+                  <% } %>
+                  <% } %>
                 </div>
 
-
+                <% if (products[i].offers.length>0) { %>
                 <span class="products-discount">
-                  <span> <%= (parseInt(products[i].fPrice))- (parseInt(products[i].lPrice))%> %OFF  </span>
+                  <span>  <%=products[i].allOffers%> %OFF </span>
                 </span>
+
+                <% } %>
 
 
               </div>
@@ -227,41 +202,39 @@
           </div>
 
 
-          <% } %> 
-      </div>
+          <% } %>
         </div>
+      </div>
 
-        <% if (products.length === 0) { %>
-        <div class="errNoProduct">
-          <p
-            style="
+      <% if (products.length === 0) { %>
+      <div class="errNoProduct">
+        <p style="
               display: flex;
               max-height: max-content;
               justify-content: center;
               font-weight: bolder;
               size: 50px;
-            "
-          >
-            <span>\(^Д^)/ </span> No Products.
-          </p>
-        </div>
-        <% } %>
+            ">
+          <span>\(^Д^)/ </span> No Products.
+        </p>
       </div>
+      <% } %>
     </div>
+  </div>
   </div>
 </section>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
+  document.addEventListener("DOMContentLoaded", function() {
     const sizeFilters = document.querySelectorAll(".size-filter");
 
-    sizeFilters.forEach(function (sizeFilter) {
-      sizeFilter.addEventListener("click", function (event) {
+    sizeFilters.forEach(function(sizeFilter) {
+      sizeFilter.addEventListener("click", function(event) {
         event.preventDefault();
         const selectedSize = this.innerText;
         filterProductsBySize(selectedSize);
         // Remove active class from all sizes
-        sizeFilters.forEach(function (filter) {
+        sizeFilters.forEach(function(filter) {
           filter.classList.remove("active");
         });
         // Add active class to the clicked size
@@ -277,148 +250,147 @@
   });
 </script>
 <% for( let i = 0; i < products.length; i++ ) { %>
-  <div class="modal fade productsQuickView" id="productsQuickView<%= products[i].pName  %>" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true"><i class="bx bx-x"></i></span>
-            </button>
-            <div class="row align-items-center">
-                <div class="col-lg-6 col-md-6">
-                    <div class="products-image">
-                        <img src="<%= products[i].variations[0].images[0] %>" alt="image">
-                        </div>
-                </div>
-                <div class="col-lg-6 col-md-6">
-                    <div class="products-content">
-                        <h3><a href="#"><%= products[i].pName  %></a></h3>
-                        <div class="price">
-                            <span class="old-price">$<%= products[i].fPrice  %></span>
-                            <span class="new-price">$<%= products[i].lPrice  %></span>
-                        </div>
-                        <div class="products-review">
-                            <div class="rating">
-                                <i class="bx bxs-star"></i>
-                                <i class="bx bxs-star"></i>
-                                <i class="bx bxs-star"></i>
-                                <i class="bx bxs-star"></i>
-                                <i class="bx bxs-star"></i>
-                            </div>
-                            <a href="#" class="rating-count">3 reviews</a>
-                        </div>
-                        <ul class="products-info">
-                            
-                            <li><span>Availability:</span> <a href="#">In stock ($<%= products[i].quantity %> items)</a></li>
-                            
-                        </ul>
-                        <div class="products-color-switch">
-                            <h4>Color:</h4>
-                            <ul>
-                                <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="Black"
-                                    class="color-black"></a></li>
-                                <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="White"
-                                    class="color-white"></a></li>
-                                <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="Red"
-                                    class="color-red"></a></li>
-                                <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="Yellow"
-                                    class="color-yellow"></a></li>
-                                <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="Blue"
-                                    class="color-blue"></a></li>
-                            </ul>
-                        </div>
-                        <div class="products-size-wrapper">
-                            <h4>Size:</h4>
-                            <ul>
-                                <li><a href="#">XS</a></li>
-                                <li class="active"><a href="#">S</a></li>
-                                <li><a href="#">M</a></li>
-                                <li><a href="#">XL</a></li>
-                                <li><a href="#">L</a></li>
-                                <li><a href="#">XXL</a></li>
-                            </ul>
-                        </div>
-                        <div class="products-add-to-cart">
-                            <div class="input-counter">
-                                <span class="minus-btn"><i class="bx bx-minus"></i></span>
-                                <input type="text" value="1" min="1">
-                                    <span class="plus-btn"><i class="bx bx-plus"></i></span>
-                                </div>
-                            <button type="submit" class="default-btn">Add to Cart</button>
-                        </div>
-                        <!-- <a href="#" class="view-full-info">View Full Info</a> -->
-                    </div>
-                </div>
-            </div>
+<div class="modal fade productsQuickView" id="productsQuickView<%= products[i].pName  %>" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true"><i class="bx bx-x"></i></span>
+      </button>
+      <div class="row align-items-center">
+        <div class="col-lg-6 col-md-6">
+          <div class="products-image">
+            <img src="<%= products[i].variations[0].images[0] %>" alt="image">
+          </div>
         </div>
+        <div class="col-lg-6 col-md-6">
+          <div class="products-content">
+            <h3><a href="#"><%= products[i].pName  %></a></h3>
+            <div class="price">
+              <span class="old-price">$<%= products[i].fPrice  %></span>
+              <span class="new-price">$<%= products[i].lPrice  %></span>
+            </div>
+            <div class="products-review">
+              <div class="rating">
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+              </div>
+              <a href="#" class="rating-count">3 reviews</a>
+            </div>
+            <ul class="products-info">
+
+              <li><span>Availability:</span> <a href="#">In stock ($<%= products[i].quantity %> items)</a></li>
+
+            </ul>
+            <div class="products-color-switch">
+              <h4>Color:</h4>
+              <ul>
+                <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="Black" class="color-black"></a></li>
+                <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="White" class="color-white"></a></li>
+                <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="Red" class="color-red"></a></li>
+                <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="Yellow" class="color-yellow"></a></li>
+                <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="Blue" class="color-blue"></a></li>
+              </ul>
+            </div>
+            <div class="products-size-wrapper">
+              <h4>Size:</h4>
+              <ul>
+                <li><a href="#">XS</a></li>
+                <li class="active"><a href="#">S</a></li>
+                <li><a href="#">M</a></li>
+                <li><a href="#">XL</a></li>
+                <li><a href="#">L</a></li>
+                <li><a href="#">XXL</a></li>
+              </ul>
+            </div>
+            <div class="products-add-to-cart">
+              <div class="input-counter">
+                <span class="minus-btn"><i class="bx bx-minus"></i></span>
+                <input type="text" value="1" min="1">
+                <span class="plus-btn"><i class="bx bx-plus"></i></span>
+              </div>
+              <button type="submit" class="default-btn">Add to Cart</button>
+            </div>
+            <!-- <a href="#" class="view-full-info">View Full Info</a> -->
+          </div>
+        </div>
+      </div>
     </div>
   </div>
+</div>
 <% } %>
 
+<% if (totalProducts !== 0) { %>
+  <div class="pagination-area text-center">
+    <a href="/Category/<%= currentCategory %>?page=<%= (curentPage === 1 || !curentPage)?1:(curentPage - 1) %>" class="prev page-numbers"><i class="bx bx-chevron-left"></i></a>
+   
+     <% for( let i = 0; i < (Math.ceil(totalProducts / 10)); i++ ) { %>
+    <span class="page-numbers current" aria-current="page"><a class="page-link" href="/Category/<%= currentCategory %>?page=<%= (i + 1) %>" ><%= (i + 1) %></a></span>
+    <% } %>
+    <a href="/Category/<%= currentCategory %>?page=<%= (((Math.ceil(totalProducts / 10)) === curentPage) || (Math.ceil(totalProducts / 10)) && !curentPage)?(curentPage?curentPage:1):(curentPage === 1 || !curentPage)?2:(curentPage + 1) %>" class="next page-numbers"><i class="bx bx-chevron-right"></i></a>
+  </div>
+  <% } %>
 
-<div class="pagination-area text-center">
-  <a href="#" class="prev page-numbers"><i class="bx bx-chevron-left"></i></a>
-  <span class="page-numbers current" aria-current="page">1</span>
-  <a href="#" class="page-numbers">2</a>
-  <a href="#" class="next page-numbers"><i class="bx bx-chevron-right"></i></a>
-</div>
+
 <!-- Include SweetAlert JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const addToCartButtons = document.querySelectorAll(".add-to-cart");
 
-document.addEventListener("DOMContentLoaded", function() {
-  const addToCartButtons = document.querySelectorAll(".add-to-cart");
+    addToCartButtons.forEach(function(button) {
+      button.addEventListener("click", function(event) {
+        event.stopPropagation();
+        event.preventDefault();
+        console.log('jkhkhkjh');
 
-  addToCartButtons.forEach(function(button) {
-    button.addEventListener("click", function(event) {
-      event.stopPropagation();
-      event.preventDefault();
-      console.log('jkhkhkjh');
-      
-      const productId = button.getAttribute('data-productId');
-      console.log(productId,'kjhkjhjhj'); // Adjust this to get the product ID from your HTML
-      
-      axios.get(`/cartNow/${productId}`)
-      .then(res => {
-        console.log(res);
-        if (res.data.success) {
-          console.log("gfgfgdgf");
-          // Show success SweetAlert
-          Swal.fire({
-            icon: 'success',
-            title: 'Success',
-            text: res.data.message,
-            timer: 3000, // Adjust the time (in milliseconds) the alert is displayed
-            timerProgressBar: true
+        const productId = button.getAttribute('data-productId');
+        console.log(productId, 'kjhkjhjhj'); // Adjust this to get the product ID from your HTML
+
+        axios.get(`/cartNow/${productId}`)
+          .then(res => {
+            console.log(res);
+            if (res.data.success) {
+              console.log("gfgfgdgf");
+              // Show success SweetAlert
+              Swal.fire({
+                  icon: 'success',
+                  title: 'Success',
+                  text: res.data.message,
+                  timer: 3000, // Adjust the time (in milliseconds) the alert is displayed
+                  timerProgressBar: true
+                })
+                .then(isTrue => {
+                  console.log(isTrue);
+                  if ((isTrue.isDismissed || isTrue.isConfirmed) && res.data.url) {
+                    location.href = res.data.url;
+                  }
+                })
+            } else {
+              // Show error SweetAlert
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to add product to cart'
+              });
+            }
           })
-          .then(isTrue=>{
-            console.log(isTrue);
-              if((isTrue.isDismissed || isTrue.isConfirmed) && res.data.url){
-                location.href = res.data.url;
-              }
-          })
-        } else {
-          // Show error SweetAlert
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Failed to add product to cart'
+          .catch(error => {
+            console.error("Error adding product to cart:", error);
+            // Show error SweetAlert
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'Failed to add product to cart'
+            });
           });
-        }
-      })
-      .catch(error => {
-        console.error("Error adding product to cart:", error);
-        // Show error SweetAlert
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Failed to add product to cart'
-        });
       });
     });
   });
-});
 </script>
 
 
@@ -483,21 +455,19 @@ document.addEventListener("DOMContentLoaded", function() {
 <!-- Filter script -->
 
 <script type="text/javascript">
- function search() {
-    let filter = document.getElementById('find').value.toUpperCase(); 
+  function search() {
+    let filter = document.getElementById('find').value.toUpperCase();
     let items = document.querySelectorAll('.products-box h3');
-    
+
     for (var i = 0; i < items.length; i++) {
-        let value = items[i].textContent || items[i].innerText; // Using textContent as it's widely supported
-        if (value.toUpperCase().indexOf(filter) > -1) {
-            items[i].parentNode.style.display = "";   
-        } else {
-            items[i].parentNode.style.display = "none";
-        }
+      let value = items[i].textContent || items[i].innerText; // Using textContent as it's widely supported
+      if (value.toUpperCase().indexOf(filter) > -1) {
+        items[i].parentNode.style.display = "";
+      } else {
+        items[i].parentNode.style.display = "none";
+      }
     }
-}
-
-
+  }
 </script>
 
 

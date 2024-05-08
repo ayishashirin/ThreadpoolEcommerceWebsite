@@ -76,7 +76,7 @@
                         </div>
                         <!-- row // -->
                         <div class="row">
-                            <div class="col-lg-7">
+                            <div class="col-lg-12">
                                 <div class="table-responsive">
                                     <table class="table">
                                         <thead>
@@ -84,23 +84,53 @@
                                                 <th width="40%">Product</th>
                                                 <th width="20%">Unit Price</th>
                                                 <th width="20%">Quantity</th>
+                                                <th width="20%">Status</th>
                                                 <th width="20%" class="text-end">Total</th>
+                                                
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td>
-                                                    <a class="itemside" href="#">
-                                                        <div class="left">
-                                                            <img src="<%= product.variations[0].images[0]%>" width="40" height="40" class="img-xs" alt="Item" />
-                                                        </div>
-                                                        <div class="info"><%= product.pName %></div>
-                                                    </a>
-                                                </td>
-                                                <td><%= product.lPrice%></td>
-                                                <td><%= order.orderItems[0].quantity%></td>
-                                                <td class="text-end"><%= (product.lPrice *order.orderItems[0].quantity) %></td>
-                                            </tr>
+
+                                            <% order.orderItems.forEach(function(item) { %>
+                                                <tr>
+                                                    <td>
+                                                        <a class="itemside" href="#">
+                                                            <div class="left">
+                                                                <img src="<%= item.images %>" width="40" height="40" class="img-xs" alt="Item" />
+                                                            </div>
+                                                            <div class="info"><%= item.pName %></div>
+                                                        </a>
+                                                    </td>
+                                                    <td><%= item.fPrice %></td>
+                                                    <td><%= item.quantity %></td>
+                                                   
+                                                    <td>
+                                                        <form action="/adminChangeOrderStatus/<%= item._id %>/<%= item.productId%>" class="changeStatus" method="post">
+                                                            <div class="d-flex gap-3">
+                                                                
+                                                               
+                                                                <% if ((item.orderStatus === "Delivered") || (item.orderStatus === "Cancelled")  || (item.orderStatus === "Ordered") || (item.orderStatus === "Shipped")) { %>
+                                                                    <p class="badge rounded-pill <%= (item.orderStatus === 'Cancelled') ? 'alert-danger text-danger' : 'alert-success text-success' %>">
+                                                                        <%= item.orderStatus %>
+                                                                    </p>
+                                                                <% } else { %>
+                                                                    <select name="orderStatus" id="filler" class="bg-white border-1 border-black">
+                                                                        <option value="Ordered" <%= (item.orderStatus === "Ordered") ? "selected" : "" %>>Ordered</option>
+                                                                        <option value="Shipped" <%= (item.orderStatus === "Shipped") ? "selected" : "" %>>Shipped</option>
+                                                                        <option value="Delivered">Delivered</option>
+                                                                        <option value="Cancelled">Cancelled</option>
+                                                                    </select>
+                                                                    <button type="submit" class=""> <!-- Ensure the button is of type "submit" to submit the form -->
+                                                                        Change Status
+                                                                    </button>
+                                                                <% } %>
+                                                            </div>
+                                                        </form>
+                                                    </td>
+                                                    <td class="text-end"><%= (item.fPrice * item.quantity) %></td>
+                                                </tr>
+                                                <% }); %>
+                                                
                                            
                                            
                                             
@@ -109,15 +139,27 @@
                                                     <article class="float-end">
                                                         <dl class="dlist">
                                                             <dt>Subtotal:</dt>
-                                                            <dd>$973.35</dd>
+                                                            <dd>$<%= totalPrice %></dd>
                                                         </dl>
                                                         <dl class="dlist">
                                                             <dt>Shipping cost:</dt>
-                                                            <dd>$10.00</dd>
+                                                            <dd>Free</dd>
+                                                        </dl>
+                                                        <dl class="dlist">
+                                                            <dt>Discount:</dt>
+                                                            <dd>$<%= totalDiscountAmount%></b></dd>
+                                                        </dl>
+                                                        <dl class="dlist">
+                                                            <dt>Offer:</dt>
+                                                            <dd>-$0.00</b></dd>
+                                                        </dl>
+                                                        <dl class="dlist">
+                                                            <dt>Coupon discount:</dt>
+                                                            <dd>-$0.00</b></dd>
                                                         </dl>
                                                         <dl class="dlist">
                                                             <dt>Grand total:</dt>
-                                                            <dd><b class="h5">$983.00</b></dd>
+                                                            <dd><b class="h5">$<%= totalPrice-totalDiscountAmount %></b></dd>
                                                         </dl>
                                                         <dl class="dlist">
                                                             <dt class="text-muted">Status:</dt>

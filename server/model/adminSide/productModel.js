@@ -22,10 +22,13 @@ const productSchema = new mongodb.Schema({
         type: Number,
         required: true
     },
-   
-    newlyLauch: {
+   date:{
+    type: Date,
+    required: true
+   },
+    newlyLaunch: {
         type: Boolean,
-        default: false,
+        default: true,
         required: true
     },
     unlistedProduct: {

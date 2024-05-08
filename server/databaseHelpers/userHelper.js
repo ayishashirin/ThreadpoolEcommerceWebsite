@@ -1,63 +1,33 @@
-
-const Cartdb = require('../model/userSide/cartModel');
-const Productdb = require('../model/adminSide/productModel').Productdb;
-const Userdb = require('../model/userSide/userModel');
-const { ProductVariationdb }= require('../model/adminSide/productModel');
-const Categorydb = require('../model/adminSide/category').Categorydb;
-const userVariationdb = require('../model/userSide/userVariationModel');
-const Orderdb = require('../model/userSide/orderModel');
-const { default: mongoose, isObjectIdOrHexString } = require('mongoose');
-const referralOfferdb = require('../model/adminSide/referralOfferModel');
-const UserWalletdb = require('../model/userSide/walletModel');
-const Wishlistdb = require('../model/userSide/wishlist');
-
+const Cartdb = require("../model/userSide/cartModel");
+const Productdb = require("../model/adminSide/productModel").Productdb;
+const Userdb = require("../model/userSide/userModel");
+const { ProductVariationdb } = require("../model/adminSide/productModel");
+const Categorydb = require("../model/adminSide/category").Categorydb;
+const userVariationdb = require("../model/userSide/userVariationModel");
+const Orderdb = require("../model/userSide/orderModel");
+const { default: mongoose, isObjectIdOrHexString } = require("mongoose");
+const referralOfferdb = require("../model/adminSide/referralOfferModel");
+const UserWalletdb = require("../model/userSide/walletModel");
+const Wishlistdb = require("../model/userSide/wishlist");
+const coupondb = require("../model/adminSide/couponModel");
 
 module.exports = {
-
-     getSingleProducts: async (productId = null) => {
-         try {
-             const products = await Productdb.aggregate([
-                 {
-                     $match: {
-                     _id: new mongoose.Types.ObjectId(productId),
-                     },
-                 },
-         
-                 {
-                     $lookup: {
-                     from: "productvariationdbs",
-                     localField: "_id",
-                     foreignField: "productId",
-                     as: "variations",
-                     },
-                 },
-             ]);
-
-           
-  
-             return products;
-         } catch (err) {
-             throw err;
-         }
-     },
-
-     getRelatedProducts : async (productId = null) => {
-      try {
-          
-
-          const getProductDetails = await Productdb.findOne({_id:productId});
-
-          const category = getProductDetails.category;
-      
-          const relatedProducts = await Productdb.aggregate([
+  getSingleProducts: async (productId = null) => {
+    try {
+        const products = await Productdb.aggregate([
             {
                 $match: {
-                  unlistedProduct: false,
-                  category: category,
-                  _id: { $ne: productId }
+                _id: new mongoose.Types.ObjectId(productId),
                 },
             },
-    
+             {
+          $lookup: {
+            from: "offerdbs",
+            localField: "pDetails.offers",
+            foreignField: "_id",
+            as: "allOffers",
+          },
+        },
             {
                 $lookup: {
                 from: "productvariationdbs",
@@ -67,165 +37,7 @@ module.exports = {
                 },
             },
         ]);
-
-  
-  
-          return relatedProducts;
-      } catch (err) {
-          throw err;
-      }
-  },
-     userInfo: async (userId) => {  
-         try {
-             const agg = [
-                 {
-                   $match: {
-                     _id: new mongoose.Types.ObjectId(userId),
-                   },
-                 },
-                 {
-                   $lookup: {
-                     from: "uservariationdbs",
-                     localField: "_id",
-                     foreignField: "userId",
-                     as: "variations",
-                   },
-                 },
-               ];
-               const user = await Userdb.aggregate(agg);
-               return user[0];
-         } catch (err) {
-             throw err;
-         }
-     },
-     
-     userSingleProductCategory: async (search = null) => {
-         try {
-          let genderCat = search.genderCat;
-          let filter = [{$match:{unlistedProduct:false}}];
-          
-          if (genderCat) {
-              filter.push({ $match: { category: genderCat } });
-          }
-          
-
-          filter.push({
-              $lookup: {
-                  from: "productvariationdbs",
-                  localField: "_id",
-                  foreignField: "productId",
-                  as: "variations",
-              }
-          });
-          
-          
-          
-         
-           const skip = Number(search.page)?(Number(search.page) - 1):0;
-          //  const agg = [
-          //    {
-          //      $match:match
-          //    },
-          //    {
-          //      $skip: (10 * skip)
-          //    },
-          //    {
-          //      $limit: 10
-          //    },
-            
-          //    {
-          //      $lookup: {
-          //        from: "productvariationdbs",
-          //        localField: "_id",
-          //        foreignField: "productId",
-          //        as: "variations",
-          //      },
-          //    },
-          //  ];
-
-           // aggregatng to get all product details of selected category
-           const products = await Productdb.aggregate(filter);
-
-          
-         
-           return products;
-         } catch (err) {
-             throw err;
-         }
-     },
-     getProductDetails: async(productId, newlyLauched = false) => {
-      try {
-        //for geting newly launched product in home page
-        if(newlyLauched){
-            const products = await Productdb.aggregate([
-                {
-                  $match: {
-                    newlyLauch: true,
-                    unlistedProduct: false,
-                  },
-                },
-                {
-                  '$lookup': {
-                      'from': 'offerdbs', 
-                      'localField': 'offers', 
-                      'foreignField': '_id', 
-                      'as': 'allOffers'
-                  }
-                },
-                {
-                  $lookup: {
-                    from: "productvariationdbs",
-                    localField: "_id",
-                    foreignField: "productId",
-                    as: "variations",
-                  },
-                },
-              ]);
-
           products.forEach(each => {
-            each.allOffers = each.allOffers.reduce((total, offer) => {
-              if(offer.expiry >= new Date() && offer.discount > total){
-                return total = offer.discount;
-              }
-  
-              return total;
-            }, 0);
-          });
-
-          return products;
-        }
-
-        //check if the given id is object id in order to prevent err
-        if(!isObjectIdOrHexString(productId)){
-          return [null];
-        }
-
-        //aggregating to get the details of a single product
-        const products = await Productdb.aggregate([
-            {
-              $match: {
-                _id: new mongoose.Types.ObjectId(productId),
-              },
-            },
-            {
-              '$lookup': {
-                  'from': 'offerdbs', 
-                  'localField': 'offers', 
-                  'foreignField': '_id', 
-                  'as': 'allOffers'
-              }
-            },
-            {
-              $lookup: {
-                from: "productvariationdbs",
-                localField: "_id",
-                foreignField: "productId",
-                as: "variations",
-              },
-            },
-          ]);
-
-        products.forEach(each => {
           each.allOffers = each.allOffers.reduce((total, offer) => {
             if(offer.expiry >= new Date() && offer.discount > total){
               return total = offer.discount;
@@ -234,168 +46,271 @@ module.exports = {
             return total;
           }, 0);
         });
-
+      
+        console.log(products)
         return products;
-      } catch (err) {
+
+    } catch (err) {
         throw err;
-      }
+    }
+},
+  getRelatedProducts: async (productId = null) => {
+    try {
+      const getProductDetails = await Productdb.findOne({ _id: productId });
+
+      const category = await getProductDetails.category;
+
+      const relatedProducts = await Productdb.aggregate([
+        {
+          $match: {
+            unlistedProduct: false,
+            category: category,
+            _id: { $ne: productId },
+          },
+        },
+
+        {
+          $lookup: {
+            from: "productvariationdbs",
+            localField: "_id",
+            foreignField: "productId",
+            as: "variations",
+          },
+        },
+      ]);
+
+      return relatedProducts;
+    } catch (err) {
+      throw err;
+    }
   },
-    
-     getAllListedCategory: async () => {
-         try {
-             //return all listed category
-                return await Categorydb.find({status: true});
-         } catch (err) {
-             throw err;
-         }
-     },
-
-     
-      isProductCartItem: async (productId, userId) => {
-          try {
-              // If user is not logged in, return false
-              if (!userId) {
-                  return false;
-              }
-  
-              // Check if the product exists in user's cart
-              const isCartItem = await Cartdb.findOne({ userId: userId, "products.productId": productId });
-              return isCartItem ? true : false;
-          } catch (err) {
-              throw err;
-          }
-      },
-  
-      getCartItemsAll: async (userId) => {
-          try {
-              const agg = [
-                  {
-                      $match: {
-                          userId: new mongoose.Types.ObjectId(userId),
-                      },
-                  },
-                  {
-                      $unwind: {
-                          path: "$products",
-                      },
-                  },
-                  {
-                      $lookup: {
-                          from: "productdbs",
-                          localField: "products.productId",
-                          foreignField: "_id",
-                          as: "pDetails",
-                      },
-                  },
-                  {
-                      $match: {
-                          "pDetails.unlistedProduct": false,
-                      },
-                  },
-                  {
-                      $lookup: {
-                          from: "productvariationdbs",
-                          localField: "products.productId",
-                          foreignField: "productId",
-                          as: "variations",
-                      },
-                  },
-              ];
-  
-              //to get all product in cart with all details of product
-              const products = await Cartdb.aggregate(agg);
-              console.log("oooooooo");
-              return products;
-          } catch (err) {
-              throw err;
-          }
-      },
-
-
-      getWishListItemsAll: async (userId) => {
-        try {
-            const agg = [
-                {
-                    $match: {
-                        userId: new mongoose.Types.ObjectId(userId),
-                    },
-                },
-                {
-                    $unwind: {
-                        path: "$products",
-                    },
-                },
-                {
-                    $lookup: {
-                        from: "productdbs",
-                        localField: "products.productId",
-                        foreignField: "_id",
-                        as: "pDetails",
-                    },
-                },
-                {
-                    $match: {
-                        "pDetails.unlistedProduct": false,
-                    },
-                },
-                {
-                    $lookup: {
-                        from: "productvariationdbs",
-                        localField: "products.productId",
-                        foreignField: "productId",
-                        as: "variations",
-                    },
-                },
-            ];
-
-            //to get all product in wishlist with all details of product
-            const products = await wishlistdb.aggregate(agg);
-            console.log("oooooooo");
-            return products;
-        } catch (err) {
-            throw err;
-        }
-    },
-  
-      getTheCountOfWhislistCart: async (userId) => {
-        try {
-          // if user is not logged in don't need to show the count of the product in cart or whishlist
-          if(!userId){
-            return {
-              wishlistCount: false,
-              cartCount: false,
-            }
-          }
-    
-          // querying to find user whislist doc
-          const whislistCount = await Wishlistdb.aggregate([
+  userInfo: async (userId) => {
+    try {
+        const agg = [
             {
               $match: {
-                userId: new mongoose.Types.ObjectId(userId),
-              },
-            },
-            {
-              $unwind: {
-                path: "$products",
+                _id: new mongoose.Types.ObjectId(userId),
               },
             },
             {
               $lookup: {
-                from: "productdbs",
-                localField: "products",
-                foreignField: "_id",
-                as: "pDetails",
+                from: "uservariationdbs",
+                localField: "_id",
+                foreignField: "userId",
+                as: "variations",
               },
             },
-            {
-              $match: {
-                "pDetails.unlistedProduct": false,
-              },
+          ];
+          const user = await Userdb.aggregate(agg);
+          return user[0];
+    } catch (err) {
+        throw err;
+    }
+},
+
+  userSingleProductCategory: async (search = null) => {
+    try {
+      let genderCat = search.genderCat;
+      let filter = { $match: { unlistedProduct: false } };
+
+      if (genderCat) {
+        filter = { $match: { unlistedProduct: false, category: genderCat } };
+      }
+
+      const skip = Number(search.page) ? Number(search.page) - 1 : 0;
+      const agg = [
+        filter,
+
+        {
+          $skip: 10 * skip,
+        },
+        {
+          $limit: 10,
+        },
+
+        {
+          $lookup: {
+            from: "offerdbs",
+            localField: "offers",
+            foreignField: "_id",
+            as: "allOffers",
+          },
+        },
+        {
+          $lookup: {
+            from: "productvariationdbs",
+            localField: "_id",
+            foreignField: "productId",
+            as: "variations",
+          },
+        },
+      ];
+
+      // aggregatng to get all product details of selected category
+      const products = await Productdb.aggregate(agg);
+
+      products.forEach(each => {
+        each.allOffers = each.allOffers.reduce((total, offer) => {
+          if(offer.expiry >= new Date() && offer.discount > total){
+            return total = offer.discount;
+          }
+          console.log("total:",total);
+
+          return total;
+        }, 0);
+      });
+
+console.log("products:",products);
+      return products;
+    } catch (err) {
+      throw err;
+    }
+  },
+  getProductDetails: async (productId, newlyLauched = false) => {
+    try {
+      //for geting newly launched product in home page
+      if (newlyLauched) {
+        const products = await Productdb.aggregate([
+          {
+            $match: {
+              newlyLaunch: true,
+              unlistedProduct: false,
             },
-          ]);
-          
-          // querying to find user cart doc
-          const cartCount = await Cartdb.aggregate([
+          },
+          {
+            $lookup: {
+              from: "offerdbs",
+              localField: "offers",
+              foreignField: "_id",
+              as: "allOffers",
+            },
+          },
+          {
+            $lookup: {
+              from: "productvariationdbs",
+              localField: "_id",
+              foreignField: "productId",
+              as: "variations",
+            },
+          },
+        ]);
+
+        products.forEach((each) => {
+          each.allOffers = each.allOffers.reduce((total, offer) => {
+            if (offer.expiry >= new Date() && offer.discount > total) {
+              return (total = offer.discount);
+            }
+
+            return total;
+          }, 0);
+        });
+
+        return products;
+      }
+
+      //check if the given id is object id in order to prevent err
+      if (!isObjectIdOrHexString(productId)) {
+        return [null];
+      }
+
+      //aggregating to get the details of a single product
+      const products = await Productdb.aggregate([
+        {
+          $match: {
+            _id: new mongoose.Types.ObjectId(productId),
+          },
+        },
+        {
+          $lookup: {
+            from: "offerdbs",
+            localField: "offers",
+            foreignField: "_id",
+            as: "allOffers",
+          },
+        },
+        {
+          $lookup: {
+            from: "productvariationdbs",
+            localField: "_id",
+            foreignField: "productId",
+            as: "variations",
+          },
+        },
+      ]);
+
+      products.forEach((each) => {
+        each.allOffers = each.allOffers.reduce((total, offer) => {
+          if (offer.expiry >= new Date() && offer.discount > total) {
+            return (total = offer.discount);
+          }
+
+          return total;
+        }, 0);
+      });
+
+      return products;
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  getAllListedCategory: async () => {
+    try {
+      //return all listed category
+      return await Categorydb.find({ status: true });
+    } catch (err) {
+      throw err;
+    }
+  },
+  isOrdered: async (productId, userId, orderId = null) => {
+    try {
+        if(orderId){
+            const isOrder = await Orderdb.findOne({_id: orderId,userId: userId, "orderItems.productId": productId, "orderItems.orderStatus": "Delivered"});
+
+            if(!isOrder){
+                return null;
+            }
+
+            const dOrders = isOrder.orderItems.filter(value => (value.orderStatus) === 'Delivered' );
+
+            if(dOrders.length === 0){
+                return null;
+            }
+            
+            isOrder.orderItems = dOrders;
+
+            return isOrder;
+        }
+
+        const isOrder = await Orderdb.findOne({userId: userId, "orderItems.productId": productId, "orderItems.orderStatus": "Delivered"});
+
+        return isOrder;
+    } catch (err) {
+        throw err;
+    }
+},
+
+  isProductCartItem: async (productId, userId) => {
+    try {
+      // If user is not logged in, return false
+      if (!userId) {
+        return false;
+      }
+
+      // Check if the product exists in user's cart
+      const isCartItem = await Cartdb.findOne({
+        userId: userId,
+        "products.productId": productId,
+      });
+      return isCartItem ? true : false;
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  getCartItemsAll: async (userId) => {
+    try {
+        const agg = [
             {
               $match: {
                 userId: new mongoose.Types.ObjectId(userId),
@@ -419,52 +334,198 @@ module.exports = {
                 "pDetails.unlistedProduct": false,
               },
             },
-          ]);
-    
-          //return as objects with how many products are there
-          return {
-            whislistCount: whislistCount.length,
-            cartCount: cartCount.length,
-          }
-        } catch (err) {
-          throw err;
-        }
-      },
+            {
+              $lookup: {
+                  from: "offerdbs", 
+                  localField: "pDetails.offers", 
+                  foreignField: "_id", 
+                  as: "allOffers"
+              }
+            },
+            {
+              $lookup: {
+                from: "productvariationdbs",
+                localField: "products.productId",
+                foreignField: "productId",
+                as: "variations",
+              },
+            },
+          ];
+          
+          //to get all product in cart with all details of produt
+          const products = await Cartdb.aggregate(agg);
+
+          products.forEach(each => {
+            each.allOffers = each.allOffers.reduce((total, offer) => {
+              if(offer.expiry >= new Date() && offer.discount > total){
+                return total = offer.discount;
+              }
+  
+              return total;
+            }, 0);
+          });
+
+          return products;
+    } catch (err) {
+        throw err;
+    }
+},
+  getWishlistItemsAll: async (userId) => {
+    try {
+      const agg = [
+        {
+          $match: {
+            userId: new mongoose.Types.ObjectId(userId),
+          },
+        },
+        {
+          $unwind: {
+            path: "$products",
+          },
+        },
+        {
+          $lookup: {
+            from: "productdbs",
+            localField: "products.productId",
+            foreignField: "_id",
+            as: "pDetails",
+          },
+        },
+        {
+          $match: {
+            "pDetails.unlistedProduct": false,
+          },
+        },
+        {
+          $lookup: {
+            from: "productvariationdbs",
+            localField: "products.productId",
+            foreignField: "productId",
+            as: "variations",
+          },
+        },
+      ];
+
+      //to get all product in wishlist with all details of product
+      const wishlistproducts = await Wishlistdb.aggregate(agg);
+
+      return wishlistproducts;
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  getTheCountOfWhislistCart: async (userId) => {
+    try {
+      // if user is not logged in don't need to show the count of the product in cart or whishlist
+      if (!userId) {
+        return {
+          wishlistCount: false,
+          cartCount: false,
+        };
+      }
+
+      // querying to find user whislist doc
+      const whislistCount = await Wishlistdb.aggregate([
+        {
+          $match: {
+            userId: new mongoose.Types.ObjectId(userId),
+          },
+        },
+        {
+          $unwind: {
+            path: "$products",
+          },
+        },
+        {
+          $lookup: {
+            from: "productdbs",
+            localField: "products",
+            foreignField: "_id",
+            as: "pDetails",
+          },
+        },
+        {
+          $match: {
+            "pDetails.unlistedProduct": false,
+          },
+        },
+      ]);
+
+      // querying to find user cart doc
+      const cartCount = await Cartdb.aggregate([
+        {
+          $match: {
+            userId: new mongoose.Types.ObjectId(userId),
+          },
+        },
+        {
+          $unwind: {
+            path: "$products",
+          },
+        },
+        {
+          $lookup: {
+            from: "productdbs",
+            localField: "products.productId",
+            foreignField: "_id",
+            as: "pDetails",
+          },
+        },
+        {
+          $match: {
+            "pDetails.unlistedProduct": false,
+          },
+        },
+      ]);
+
+      //return as objects with how many products are there
+      return {
+        whislistCount: whislistCount.length,
+        cartCount: cartCount.length,
+      };
+    } catch (err) {
+      throw err;
+    }
+  },
 
   userTotalProductNumber: async (category) => {
     try {
-      return (await Productdb.find({category,unlistedProduct: false})).length;
+      return (await Productdb.find({ category, unlistedProduct: false }))
+        .length;
     } catch (err) {
       throw err;
     }
   },
   userRegisterWithOrWithoutRefferal: async (query) => {
     try {
-      if(!query?.referralCode){
+      if (!query?.referralCode) {
         return null;
       }
 
-      const referr = await Userdb.findOne({referralCode: query.referralCode});
+      const referr = await Userdb.findOne({ referralCode: query.referralCode });
 
-      if(!referr){
+      if (!referr) {
         return {
           referralCodeStatus: false,
-          message: "Invalid Referral Code"
-        }
+          message: "Invalid Referral Code",
+        };
       }
 
-      const referralOffer = await referralOfferdb.findOne({expiry: {$gte: Date.now()}});
+      const referralOffer = await referralOfferdb.findOne({
+        expiry: { $gte: Date.now() },
+      });
 
-      if(!referralOffer){
+      if (!referralOffer) {
         return {
           referralCodeStatus: false,
-          message: "Referral Offer Expired"
-        }
+          message: "Referral Offer Expired",
+        };
       }
 
       return {
         referralCodeStatus: true,
-        referralCode: query.referralCode
+        referralCode: query.referralCode,
       };
     } catch (err) {
       throw err;
@@ -473,21 +534,31 @@ module.exports = {
   giveOffer: async (referredByCode, newUserId) => {
     try {
       //get the details of the user who referred the new one
-      const referr = await Userdb.findOneAndUpdate({referralCode: referredByCode}, {$inc: {referralCount: 1}});
+      const referr = await Userdb.findOneAndUpdate(
+        { referralCode: referredByCode },
+        { $inc: { referralCount: 1 } }
+      );
       //get offer details of the referr and earn
-      const offerRewards = await referralOfferdb.findOne({},{_id: 0, discription: 0});
+      const offerRewards = await referralOfferdb.findOne(
+        {},
+        { _id: 0, discription: 0 }
+      );
 
       // updation the amount in wallet of the user who referred new one
-      await UserWalletdb.updateOne({userId: referr._id}, {
-        $inc: {
-          walletBalance: offerRewards.referralRewards
+      await UserWalletdb.updateOne(
+        { userId: referr._id },
+        {
+          $inc: {
+            walletBalance: offerRewards.referralRewards,
+          },
+          $push: {
+            transtions: {
+              amount: offerRewards.referralRewards,
+            },
+          },
         },
-        $push: {
-          transtions: {
-            amount: offerRewards.referralRewards
-          }
-        }
-      }, {upsert: true});
+        { upsert: true }
+      );
 
       //creating the wallet for new User
       const newUserWallet = new UserWalletdb({
@@ -496,8 +567,8 @@ module.exports = {
         transtions: [
           {
             amount: offerRewards.referredUserRewards,
-          }
-        ]
+          },
+        ],
       });
 
       await newUserWallet.save();
@@ -509,7 +580,7 @@ module.exports = {
   },
   getUserWallet: async (userId) => {
     try {
-      return await UserWalletdb.findOne({userId});
+      return await UserWalletdb.findOne({ userId });
     } catch (err) {
       throw err;
     }
@@ -517,10 +588,12 @@ module.exports = {
 
   getSingleAddress: async (userId, addressId) => {
     try {
-      const address = await userVariationdb.findOne({$and:[{userId: userId}, {"address._id": addressId}]});
+      const address = await userVariationdb.findOne({
+        $and: [{ userId: userId }, { "address._id": addressId }],
+      });
 
-      return address?.address?.find(value => {
-        return String(value._id) === String(addressId)
+      return address?.address?.find((value) => {
+        return String(value._id) === String(addressId);
       });
     } catch (err) {
       throw err;
@@ -529,7 +602,7 @@ module.exports = {
 
   userGetAllOrder: async (userId, pageNo = 1) => {
     try {
-      const skip = Number(pageNo)?(Number(pageNo) - 1):0;
+      const skip = Number(pageNo) ? Number(pageNo) - 1 : 0;
       const totalOrders = await Orderdb.aggregate([
         {
           $match: {
@@ -540,7 +613,7 @@ module.exports = {
           $unwind: {
             path: "$orderItems",
           },
-        }
+        },
       ]);
 
       const agg = [
@@ -551,8 +624,8 @@ module.exports = {
         },
         {
           $sort: {
-            orderDate: -1
-          }
+            orderDate: -1,
+          },
         },
         {
           $unwind: {
@@ -560,19 +633,19 @@ module.exports = {
           },
         },
         {
-          $skip: (10 * skip)
+          $skip: 10 * skip,
         },
         {
-          $limit: 10
-        }
+          $limit: 10,
+        },
       ];
 
       const orders = await Orderdb.aggregate(agg);
-      
+
       return {
         orders,
-        totalOrders: totalOrders.length
-      }
+        totalOrders: totalOrders.length,
+      };
     } catch (err) {
       throw err;
     }
@@ -580,133 +653,153 @@ module.exports = {
 
   getOrderItemsAll: async (userId) => {
     try {
-        const agg = [
-            {
-                $match: {
-                    userId: new mongoose.Types.ObjectId(userId),
-                },
-            },
-            {
-                $unwind: {
-                    path: "$products",
-                },
-            },
-            {
-                $lookup: {
-                    from: "productdbs",
-                    localField: "products.productId",
-                    foreignField: "_id",
-                    as: "pDetails",
-                },
-            },
-            {
-                $match: {
-                    "pDetails.unlistedProduct": false,
-                },
-            },
-            {
-                $lookup: {
-                    from: "productvariationdbs",
-                    localField: "products.productId",
-                    foreignField: "productId",
-                    as: "variations",
-                },
-            },
-        ];
+      const agg = [
+        {
+          $match: {
+            userId: new mongoose.Types.ObjectId(userId),
+          },
+        },
+        {
+          $unwind: {
+            path: "$products",
+          },
+        },
 
-        //to get all product in cart with all details of product
-        const products = await Cartdb.aggregate(agg);
-        console.log("oooooooo");
-        return products;
+        {
+          $lookup: {
+            from: "offerdbs",
+            localField: "pDetails.offers",
+            foreignField: "_id",
+            as: "allOffers",
+          },
+        },
+
+        {
+          $lookup: {
+            from: "productdbs",
+            localField: "products.productId",
+            foreignField: "_id",
+            as: "pDetails",
+          },
+        },
+        {
+          $match: {
+            "pDetails.unlistedProduct": false,
+          },
+        },
+        {
+          $lookup: {
+            from: "productvariationdbs",
+            localField: "products.productId",
+            foreignField: "productId",
+            as: "variations",
+          },
+        },
+      ];
+
+      //to get all product in cart with all details of product
+      const products = await Cartdb.aggregate(agg);
+      
+      return products;
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  getSingleOrderfDetails: async (params, userId) => {
+    try {
+      if (
+        !isObjectIdOrHexString(params.orderId) ||
+        !isObjectIdOrHexString(params.productId)
+      ) {
+        return null;
+      }
+
+      const [orders] = await Orderdb.aggregate([
+        {
+          $unwind: {
+            path: "$orderItems",
+          },
+        },
+        {
+          $match: {
+            $and: [
+              { _id: new mongoose.Types.ObjectId(params.orderId) },
+              {
+                "orderItems.productId": new mongoose.Types.ObjectId(
+                  params.productId
+                ),
+              },
+              { userId: new mongoose.Types.ObjectId(userId) },
+            ],
+          },
+        },
+      ]);
+
+      return orders;
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  getSingleOrderOfDetails: async (params, userId) => {
+    try {
+      if (
+        !isObjectIdOrHexString(params.orderId) ||
+        !isObjectIdOrHexString(params.productId)
+      ) {
+        return null;
+      }
+
+      const [orders] = await Orderdb.aggregate([
+        {
+          $unwind: {
+            path: "$orderItems",
+          },
+        },
+        {
+          $match: {
+            $and: [
+              { _id: new mongoose.Types.ObjectId(params.orderId) },
+              {
+                "orderItems.productId": new mongoose.Types.ObjectId(
+                  params.productId
+                ),
+              },
+              { userId: new mongoose.Types.ObjectId(userId) },
+            ],
+          },
+        },
+      ]);
+    
+      return orders;
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  getUserWallet: async (userId) => {
+    try {
+      return await UserWalletdb.findOne({ userId });
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  addProductToWishList: async (userId, productId) => {
+    try {
+        const product = await Productdb.findOne({_id: productId});
+
+        if(!product) {
+            return;
+        }
+
+        return await Wishlistdb.updateOne({userId: userId}, {$push: {
+            products: productId
+        }}, { upsert: true });
     } catch (err) {
         throw err;
     }
-},
-
-
-getSingleOrderfDetails: async (params, userId) => {
-  try {
-    if(!isObjectIdOrHexString(params.orderId) || !isObjectIdOrHexString(params.productId)){
-      return null;
-    }
-
-    const [orders] = await Orderdb.aggregate([
-      {
-        $unwind: {
-          path: "$orderItems",
-        },
-      },
-      {
-        $match: {
-          $and: [
-            { _id: new mongoose.Types.ObjectId(params.orderId) },
-            { "orderItems.productId": new mongoose.Types.ObjectId(params.productId) },
-            { userId: new mongoose.Types.ObjectId(userId) }
-          ]
-        }
-      }
-    ]);
-
-    return orders;
-  } catch (err) {
-    throw err;
-  }
-},
-
-getSingleOrderOfDetails: async (params, userId) => {
-  try {
-    if(!isObjectIdOrHexString(params.orderId) || !isObjectIdOrHexString(params.productId)){
-      return null;
-    }
-
-    const [orders] = await Orderdb.aggregate([
-
-    
-      {
-        $unwind: {
-          path: "$orderItems",
-        },
-      },
-      {
-        $match: {
-          $and: [
-            { _id: new mongoose.Types.ObjectId(params.orderId) },
-            { "orderItems.productId": new mongoose.Types.ObjectId(params.productId) },
-            { userId: new mongoose.Types.ObjectId(userId) }
-          ]
-        }
-      }
-    ]);
-console.log(orders);
-    return orders;
-  } catch (err) {
-    throw err;
-  }
-},
-
-getUserWallet: async (userId) => {
-  try {
-    return await UserWalletdb.findOne({userId});
-  } catch (err) {
-    throw err;
-  }
-},
-
-
-addProductToWishList: async (userId, productId) => {
-  try {
-      const product = await Productdb.findOne({_id: productId});
-
-      if(!product) {
-          return;
-      }
-
-      return await Wishlistdb.updateOne({userId: userId}, {$push: {
-          products: productId
-      }}, { upsert: true });
-  } catch (err) {
-      throw err;
-  }
 },
 getWishlistItems: async (userId) => {
   try {
@@ -730,78 +823,101 @@ removeWishlistItems: async (userId,productId) => {
   }
 },
 
-getCoupon: async (code, couponId = null) => {
-  try {
-    if(couponId && isObjectIdOrHexString(couponId)){
-      return await Coupondb.findOne({_id: couponId})
+  getCoupon: async (code, couponId = null) => {
+    try {
+      if (couponId && isObjectIdOrHexString(couponId)) {
+        return await coupondb.findOne({ _id: couponId });
+      }
+      return await coupondb.findOne({ code });
+    } catch (err) {
+      throw err;
     }
-    return await Coupondb.findOne({code});
-  } catch (err) {
-    throw err;
-  }
-},
-UpdateCouponCount: async (couponId) => {
-  try {
-    if(couponId && !isObjectIdOrHexString(couponId)){
-      return;
+  },
+  UpdateCouponCount: async (couponId) => {
+    try {
+      if (couponId && !isObjectIdOrHexString(couponId)) {
+        return;
+      }
+
+      return await coupondb.updateOne(
+        { _id: couponId },
+        { $inc: { count: -1 } }
+      );
+    } catch (err) {
+      throw err;
     }
+  },
 
-    return await Coupondb.updateOne({_id: couponId}, {$inc: {count: -1}});
-  } catch (err) {
-    throw err;
-  }
-},
-
-
-userOrderCancel: async (orderId, productId, userId = null) => {
-  try {
+  userOrderCancel: async (orderId, productId, userId = null) => {
+    try {
       //updating orderStatus to cancelled
-      const order = await Orderdb.findOneAndUpdate({
-          $and:[
-              {_id: orderId}, {"orderItems.productId": productId}
-          ]
-      },
-      {$set: {
-          "orderItems.$.orderStatus": "Cancelled"
-      }});
+      const order = await Orderdb.findOneAndUpdate(
+        {
+          $and: [{ _id: orderId }, { "orderItems.productId": productId }],
+        },
+        {
+          $set: {
+            "orderItems.$.orderStatus": "Cancelled",
+          },
+        }
+      );
 
       // find the product doc to get the qty ordered
-      const qty = order.orderItems.find(value => {
-          if(String(value.productId) === productId){
-              return value.quantity;
-          }
+      const qty = order.orderItems.find((value) => {
+        if (String(value.productId) === productId) {
+          return value.quantity;
+        }
       });
 
       //after cancelling a order if its cod and delivered or onlinepayment we have to refund the amount to user
-      if(((qty.orderStatus === 'Delivered') || (order.paymentMethode === 'onlinePayment')) && userId){
-        await UserWalletdb.updateOne({userId: userId}, {
-          $inc: {
-            walletBalance: Math.round((qty.quantity * qty.lPrice) - (qty.couponDiscountAmount + qty.offerDiscountAmount))
+      if (
+        (qty.orderStatus === "Delivered" ||
+          order.paymentMethode === "onlinePayment") &&
+        userId
+      ) {
+        await UserWalletdb.updateOne(
+          { userId: userId },
+          {
+            $inc: {
+              walletBalance: Math.round(
+                qty.quantity * qty.fPrice -
+                  (qty.couponDiscountAmount + qty.offerDiscountAmount)
+              ),
+            },
+            $push: {
+              transtions: {
+                amount: Math.round(
+                  qty.quantity * qty.fPrice -
+                    (qty.couponDiscountAmount + qty.offerDiscountAmount)
+                ),
+              },
+            },
           },
-          $push: {
-            transtions: {
-              amount: Math.round((qty.quantity * qty.lPrice) - (qty.couponDiscountAmount + qty.offerDiscountAmount))
-            }
-          }
-        }, {upsert: true});
+          { upsert: true }
+        );
       }
 
       // updating product quantity
-      await ProductVariationdb.updateOne({productId: productId},
-          {$inc:{
-              quantity: qty.quantity
-          }});
+      await ProductVariationdb.updateOne(
+        { productId: productId },
+        {
+          $inc: {
+            quantity: qty.quantity,
+          },
+        }
+      );
 
       return;
-  } catch (err) {
+    } catch (err) {
       throw err;
-  }
-},
-userTotalProductNumber: async (category) => {
-  try {
-    return (await Productdb.find({category,unlistedProduct: false})).length;
-  } catch (err) {
-    throw err;
-  }
- },
-}
+    }
+  },
+  userTotalProductNumber: async (category) => {
+    try {
+      return (await Productdb.find({ category, unlistedProduct: false }))
+        .length;
+    } catch (err) {
+      throw err;
+    }
+  },
+};

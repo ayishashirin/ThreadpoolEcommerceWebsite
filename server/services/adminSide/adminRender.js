@@ -3,6 +3,8 @@ const path = require('path');
 const Orderdb = require('../../model/userSide/orderModel');
 const { Productdb } = require('../../model/adminSide/productModel');
 const Userdb = require('../../model/userSide/userModel');
+const offerdb = require('../../model/adminSide/offerModel');
+
 
 
 module.exports = {
@@ -315,7 +317,7 @@ module.exports = {
     try {
       //adminHelper fn to get all Orders if filter then filtered product
       const orders = await adminHelper.getAllOrders(req.query.filter, req.query.page);
-
+      console.log("orders:",orders);
       //adminHelper fn to get total number of orders
       const orderLength = await adminHelper.adminPageNation('OM'); // OM for orders management
       
@@ -395,12 +397,20 @@ module.exports = {
 
   adminOrderDetails: async (req, res) => {
     try {
-      
+      const product = await adminHelper.getSingleOrder(req.query.id)
       const order = await Orderdb.findOne({_id:req.query.id})
       const userInfo = await Userdb.findOne({_id:order.userId})
-      const product = await adminHelper.adminGetSingleProduct(req.query.productId)
-      console.log(product.variations);
-      res.status(200).render('adminSide/adminOrderDetails',{product:product[0], order:order,userInfo})
+      const offerDetails = await offerdb.findOne({})
+      const totalPrice = order.orderItems.reduce((total, item) => total + (item.fPrice * item.quantity), 0);
+      const totalDiscountAmount = order.orderItems.reduce((total, item) => total + item.DiscountAmount, 0);
+      // const totalOffersAmount = ;
+     
+
+
+console.log("offerDetails:",offerDetails);
+      
+      console.log("product:",product);
+      res.status(200).render('adminSide/adminOrderDetails',{product:product[0], order:order,userInfo,totalPrice,totalDiscountAmount,offerDetails,})
       
     } catch (error) {
       console.error(error);
@@ -427,6 +437,7 @@ module.exports = {
       res.status(200).render('adminSide/adminAddCoupon', {
         category,
         errMesg: {
+          userId: req.session.userId,
           code: req.session.code,
           category: req.session.category,
           discount: req.session.discount,
@@ -440,7 +451,7 @@ module.exports = {
           console.error('Add Coupon render err', err);
           return res.status(500).send('Internal server err');
         }
-
+        delete req.session.userId,
         delete req.session.code;
         delete req.session.category;
         delete req.session.discount;
@@ -468,6 +479,7 @@ module.exports = {
       }
       res.status(200).render('adminSide/adminUpdateCoupon',{ savedDetails: req.session.savedDetails, 
         errMesg: {
+          userId: req.session.userId,
           code: req.session.code,
           category: req.session.category,
           discount: req.session.discount,
@@ -479,7 +491,7 @@ module.exports = {
             console.error('Add Coupon render err', err);
             return res.status(500).send('Internal server err');
           }
-  
+          delete req.session.userId,
           delete req.session.code;
           delete req.session.category;
           delete req.session.discount;
