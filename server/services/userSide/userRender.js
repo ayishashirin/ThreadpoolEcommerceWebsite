@@ -19,6 +19,10 @@ module.exports = {
         req.session.isUserAuth
       );
 
+      const wishlistItems = await userHelper.getWishlistItemsAll(
+        req.session.isUserAuth
+      );
+
       // User Helper function to get newly launched products on the homepage
       const products = await userHelper.getProductDetails(null, true);
 
@@ -32,6 +36,7 @@ module.exports = {
         user: req.session.isUserAuth,
         counts: counts,
         cartItems,
+        wishlistItems
       });
     } catch (err) {
       console.error("Home page err:", err);
@@ -48,6 +53,10 @@ module.exports = {
 
       //userHelper fn to get counts of product in cart
       const counts = await userHelper.getTheCountOfWhislistCart(
+        req.session.isUserAuth
+      );
+
+      const wishlistItems = await userHelper.getWishlistItemsAll(
         req.session.isUserAuth
       );
 
@@ -69,6 +78,7 @@ module.exports = {
           user: req.session.isUserAuth,
           counts,
           cartItems,
+          wishlistItems
         },
         (err, html) => {
           // Handle errors during rendering
@@ -358,6 +368,10 @@ module.exports = {
       );
       const referralOffer = await adminHelper.referralOffers();
 
+      const wishlistItems = await userHelper.getWishlistItemsAll(
+        req.session.isUserAuth
+      );
+
       res.status(200).render("userSide/userProfile", {
         category,
         counts,
@@ -365,6 +379,8 @@ module.exports = {
         cartItems,
         userInfo,
         referralOffer,
+        wishlistItems
+        
       });
     } catch (err) {
       console.log("Update query err:", err);
@@ -450,15 +466,20 @@ module.exports = {
         req.session.isUserAuth
       );
 
+      const wishlistItems = await userHelper.getWishlistItemsAll(
+        req.session.isUserAuth
+      );
+      
       res.status(200).render("userSide/userWallet", {
         category,
         counts,
         userWallet,
         user: req.session.isUserAuth,
         cartItems,
+        wishlistItems
       });
     } catch (err) {
-      console.log("user Wallet err err:", err);
+      console.log(err);
       res.status(500).render("errorPages/500ErrorPage");
     }
   },

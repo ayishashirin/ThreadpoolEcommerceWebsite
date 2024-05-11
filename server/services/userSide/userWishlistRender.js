@@ -11,30 +11,42 @@ const wishlistdb = require("../../model/userSide/wishlist");
 module.exports = {
 
     
-  usersAddToWishlist: async (req, res) => {
+  userAddToWishlist: async (req, res) => {
     try {
       //userHelper fn to get all listed category,counts of product in cart,all product in cart
       const category = await userHelper.getAllListedCategory();
       const counts = await userHelper.getTheCountOfWhislistCart(
         req.session.isUserAuth
       );
-      const WishlistItems = await userHelper.getWishlistItemsAll(
+      const wishlistItems = await userHelper.getWishlistItemsAll(
         req.session.isUserAuth
       );
+      const cartItems = await userHelper.getCartItemsAll(
+        req.session.isUserAuth
+      );
+      const product = await userHelper.getWishlistItems(req.session.isUserAuth);
 
-      res.render(
-        "userSide/userWishList",
+
+      res.status(200).render(
+        "userSide/userAddWishlist",
         {
           category,
-          WishlistItems,
+          wishlistItems,
+          wishlistErr: req.session.wishlistErr,
           counts,
           user: req.session.isUserAuth,
+          cartItems,
+          products:product
         },
         (err, html) => {
           if (err) {
-            return res.send(err);
             console.log(err);
+
+            return res.send(err);
           }
+
+          delete req.session.wishlistErr;
+
           res.send(html);
         }
       );

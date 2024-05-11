@@ -33,7 +33,7 @@ const productSchema = new mongodb.Schema({
     },
     unlistedProduct: {
         type: Boolean,
-        default: false,
+        default:true
     },
     offers: [
         {

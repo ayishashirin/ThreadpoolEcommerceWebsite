@@ -106,6 +106,21 @@ router.get('/productDetail/:productId', authMiddleware.isUserBlocked, userProduc
 // --------------------------------------------------------------------------------------------------------------------------------------
 
 
+
+router.get('/addToWishlist', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userWishlistRender.userAddToWishlist); // page to list all existing products in WishList
+
+router.get('/wishlistNow/:productId', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userWishlistController.userWishlistNow);// Option to add new product to WishList
+
+router.get('/wishlistDelete/:productId', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userWishlistController.userWishlistDelete);// Option to delete product from cart
+
+router.get('/wishlistDeleteAll', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userWishlistController.userWishlistDeleteAll);// Option to delete all product from cart
+
+router.get('/wishlistItemUpdate/:productId/:values', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userWishlistController.userWishlistItemUpdate);// Option to inc or dec qty of selected product in cart
+
+
+
+// --------------------------------------------------------------------------------------------------------------------
+
 // User Cart Routes (add product, remove products from cart and inc or dec qty of products in cart)
 
 router.get('/addToCart', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userCartRender.usersAddToCart); // page to list all existing products in cart
@@ -139,7 +154,7 @@ router.route('/cartCheckOut')
     router.get('/wallet', authMiddleware.isUserLoggedIn,authMiddleware.isUserBlocked, userRender.userWallet)
 
 
-// ---------------------------------------------------------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------------------------------
 
 
 
@@ -194,29 +209,7 @@ router.post('/UpdateAddress', authMiddleware.isUserLoggedIn, authMiddleware.isUs
 router.post('/AddAddress', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userAddressController.userAddAddress);// adds new address
 
 
-// ------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-// User wishlist Routes
-// router.patch('/addToWishlist/:productId', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, wishlistController.addToWishlist);// Option to add a product to user wishlist
-
-router.patch('/deleteWishlist/:productId', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userWishlistController.deleteFromWishlist);// Option to remove product form whislist
-
-// User WishList Routes (add product and remove products from WishList)
-
-router.get('/addToWishlist', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userWishlistRender.usersAddToWishlist); // page to list all existing products in WishList
-
-router.get('/wishlistNow/:productId', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userWishlistController.userWishlistNow);// Option to add new product to WishList
-
-// router.get('/cartDelete/:productId', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userCartController.userCartDelete);// Option to delete product from cart
-
-// router.get('/cartDeleteAll', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userCartController.userCartDeleteAll);// Option to delete all product from cart
-
-router.get('/wishlistItemUpdate/:productId/:values', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userWishlistController.userWishlistItemUpdate);// Option to inc or dec qty of selected product in cart
-
-
-
-// --------------------------------------------------------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------------------------------
 
 // logOut
 

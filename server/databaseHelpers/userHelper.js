@@ -398,6 +398,14 @@ console.log("products:",products);
         },
         {
           $lookup: {
+              from: "offerdbs", 
+              localField: "pDetails.offers", 
+              foreignField: "_id", 
+              as: "allOffers"
+          }
+        },
+        {
+          $lookup: {
             from: "productvariationdbs",
             localField: "products.productId",
             foreignField: "productId",
@@ -407,13 +415,40 @@ console.log("products:",products);
       ];
 
       //to get all product in wishlist with all details of product
-      const wishlistproducts = await Wishlistdb.aggregate(agg);
+      const products = await Wishlistdb.aggregate(agg);
 
-      return wishlistproducts;
+      products.forEach(each => {
+        each.allOffers = each.allOffers.reduce((total, offer) => {
+          if(offer.expiry >= new Date() && offer.discount > total){
+            return total = offer.discount;
+          }
+
+          return total;
+        }, 0);
+      });
+      return products;
     } catch (err) {
       throw err;
     }
   },
+  isProductWishlistItem: async (productId, userId) => {
+    try {
+      // If user is not logged in, return false
+      if (!userId) {
+        return false;
+      }
+
+      // Check if the product exists in user's cart
+      const isWishlistItem = await Wishlistdb.findOne({
+        userId: userId,
+        "products.productId": productId,
+      });
+      return isWishlistItem ? true : false;
+    } catch (err) {
+      throw err;
+    }
+  },
+
 
   getTheCountOfWhislistCart: async (userId) => {
     try {
@@ -811,18 +846,7 @@ getWishlistItems: async (userId) => {
       throw err;
   }
 },
-removeWishlistItems: async (userId,productId) => {
-  try {
-      if(!userId){
-          return null;
-      }
-
-      return await Wishlistdb.updateOne({userId: userId}, {$pull: {products: productId}});
-  } catch (err) {
-      throw err;
-  }
-},
-
+//
   getCoupon: async (code, couponId = null) => {
     try {
       if (couponId && isObjectIdOrHexString(couponId)) {

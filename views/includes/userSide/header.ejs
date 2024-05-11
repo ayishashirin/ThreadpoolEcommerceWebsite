@@ -267,7 +267,7 @@
                       </a>
                     <div class="collapse navbar-collapse mean-menu">
                         <ul class="navbar-nav">
-                            <li class="nav-item"><a href="/" class="nav-link active">Home <i class=""></i></a>
+                            <li class="nav-item"><a href="/" class="nav-link">Home <i class=""></i></a>
                             </li>
                             <li class="nav-item megamenu"><a href="category"class="nav-link">Shop</a>
                                 
@@ -329,42 +329,59 @@
 
     <!-- search bar -->
     
+    <!-- Search overlay -->
+   
     <div class="search-overlay">
-        <div class="d-table">
-            <div class="d-table-cell">
-                <div class="search-overlay-layer"></div>
-                <div class="search-overlay-layer"></div>
-                <div class="search-overlay-layer"></div>
-                <div class="search-overlay-close">
-                    <span class="search-overlay-close-line"></span>
-                    <span class="search-overlay-close-line"></span>
-                </div>
-                <div class="search-overlay-form">
-                    <form action="" method="get">
-                        <input type="text" class="input-search" placeholder="Search here..." id="find" onkeyup="search()">
-                        <button type="submit"><i class="bx bx-search-alt"></i></button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script type="text/javascript">
+      <div class="d-table">
+          <div class="d-table-cell">
+              <div class="search-overlay-layer"></div>
+              <div class="search-overlay-layer"></div>
+              <div class="search-overlay-layer"></div>
+              <div class="search-overlay-close">
+                  <span class="search-overlay-close-line"></span>
+                  <span class="search-overlay-close-line"></span>
+              </div>
+              <div class="search-overlay-form">
+                  <form onsubmit="search(); return false;">
+                      <input type="text" class="input-search" placeholder="Search here..." id="find">
+                      <button type="submit"><i class="bx bx-search-alt"></i></button>
+                  </form>
+              </div>
+          </div>
+      </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
       function search() {
-         let filter = document.getElementById('find').value.toUpperCase(); 
-         let items = document.querySelectorAll('.products-box h3');
-         
-         for (var i = 0; i < items.length; i++) {
-             let value = items[i].textContent || items[i].innerText; // Using textContent as it's widely supported
-             if (value.toUpperCase().indexOf(filter) > -1) {
-                 items[i].parentNode.style.display = "";   
-             } else {
-                 items[i].parentNode.style.display = "none";
-             }
-         }
-     }
-     
-     
-     </script>
+          let filter = document.getElementById('find').value;
+          axios.get(`/search?query=${filter}`)
+              .then(response => {
+                  // Assuming your server returns an array of product IDs matching the search query
+                  let productIds = response.data.productIds;
+  
+                  // Hide all products initially
+                  let products = document.querySelectorAll('.products-col-item');
+                  products.forEach(product => {
+                      product.style.display = 'none';
+                  });
+  
+                  // Show only the products that match the search results
+                  productIds.forEach(productId => {
+                      let product = document.querySelector(`[data-productId="${productId}"]`);
+                      if (product) {
+                          product.closest('.products-col-item').style.display = '';
+                      }
+                  });
+              })
+              .catch(error => {
+                  console.error('Error searching:', error);
+              });
+      }
+  </script>
+  
+
+
+    
      
     <script src="https://kit.fontawesome.com/62954eafbc.js" crossorigin="anonymous"></script>

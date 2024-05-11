@@ -27,6 +27,9 @@ module.exports = {
           const cartItems = await userHelper.getCartItemsAll(
             req.session.isUserAuth
           );
+          const wishlistItems = await userHelper.getWishlistItemsAll(
+            req.session.isUserAuth
+          );
     
           //userHelper fn to get total number of products
           const totalProducts = await userHelper.userTotalProductNumber(
@@ -38,11 +41,16 @@ module.exports = {
             req.params.id,
             req.session.isUserAuth
           );
+          //userHelper function to cheack if the product already exists in user cart
+          const iswishlistItem = await userHelper.isProductWishlistItem(
+            req.params.id,
+            req.session.isUserAuth
+          );
     
           //userHelper fn to get details of single product in buy now page
           const [singleProduct] = await userHelper.getProductDetails(req.params.productId);
             
-          const wishlistProducts = await userHelper.getWishlistItems(req.session.isUserAuth);
+          const products = await userHelper.getWishlistItems(req.session.isUserAuth);
 
     
           res.status(200).render("userSide/userSingleCategoryProducts", {
@@ -56,7 +64,9 @@ module.exports = {
             isCartItem,
             totalProducts,
             singleProduct,
-            wishlistProducts
+            product:products,
+            wishlistItems,
+            iswishlistItem
            
           });
         } catch (err) {

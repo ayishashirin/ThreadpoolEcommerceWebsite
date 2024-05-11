@@ -21,7 +21,7 @@ module.exports = {
             req.session.isUserAuth
           );
     
-          const wishListProducts = await userHelper.getWishlistItems(
+          const wishlistItems = await userHelper.getWishlistItemsAll(
             req.session.isUserAuth
           );
           //userHelper fn to get all listed category
@@ -50,7 +50,7 @@ module.exports = {
             counts,
             isCartItem,
             cartItems,
-            wishListProducts,
+            wishlistItems
           });
         } catch (err) {
           console.log("Update query err:", err);

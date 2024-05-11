@@ -315,7 +315,6 @@ module.exports = {
  
   adminOrderManagement: async (req, res) => {
     try {
-      //adminHelper fn to get all Orders if filter then filtered product
       const orders = await adminHelper.getAllOrders(req.query.filter, req.query.page);
       console.log("orders:",orders);
       //adminHelper fn to get total number of orders
@@ -409,7 +408,7 @@ module.exports = {
 
 console.log("offerDetails:",offerDetails);
       
-      console.log("product:",product);
+   
       res.status(200).render('adminSide/adminOrderDetails',{product:product[0], order:order,userInfo,totalPrice,totalDiscountAmount,offerDetails,})
       
     } catch (error) {

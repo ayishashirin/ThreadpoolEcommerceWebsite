@@ -56,6 +56,10 @@ module.exports = {
             req.session.isUserAuth
           );
     
+          const wishlistItems = await userHelper.getWishlistItemsAll(
+            req.session.isUserAuth
+          );
+          
           //userHelper fn to get all details of user
           const userInfo = await userHelper.userInfo(req.session.isUserAuth);
     
@@ -79,6 +83,7 @@ module.exports = {
             user: req.session.isUserAuth,
             userInfo,
             cartItems,
+            wishlistItems
           });
         } catch (err) {
           console.log("Update query err:", err);
@@ -100,6 +105,10 @@ module.exports = {
           const orderDetails = await userHelper.getSingleOrderOfDetails(req.params,req.session.isUserAuth);
           console.log("orderDetails:",orderDetails);
 
+          const wishlistItems = await userHelper.getWishlistItemsAll(
+            req.session.isUserAuth
+          );
+
           //userHelper fn to get the userDetails
           const userInfo = await userHelper.userInfo(req.session.isUserAuth);
           console.log("userInfo:",userInfo);
@@ -110,6 +119,7 @@ module.exports = {
           if (!orderDetails) {
             return res.status(401).redirect("/orders");
           }
+          
     
           res.status(200).render("userSide/userOrderSummaryPage", {
             category,
@@ -118,7 +128,8 @@ module.exports = {
             userInfo,
             user: req.session.isUserAuth,
             cartItems,
-            orderItems
+            orderItems,
+            wishlistItems
           });
         } catch (err) {
           console.log("user order summary err err:", err);

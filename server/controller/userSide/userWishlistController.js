@@ -1,37 +1,32 @@
 const userHelper = require('../../databaseHelpers/userHelper');
-
+const Userdb = require("../../model/userSide/userModel");
+const Otpdb = require("../../model/userSide/otpModel");
+const Productdb = require("../../model/adminSide/productModel").Productdb;
+const ProductVariationdb = require("../../model/adminSide/productModel").ProductVariationdb;
+const userVariationdb = require("../../model/userSide/userVariationModel");
+const bcrypt = require("bcryptjs");
+const nodemailer = require("nodemailer");
+const Mailgen = require("mailgen");
+const mongoose = require("mongoose");
+const path = require("path");
+const Cartdb = require("../../model/userSide/cartModel");
+const usersAddToCart = require("../../services/userSide/userRender");
+const saltRounds = 10; // Salt rounds for bcrypt
+const orderdb = require("../../model/userSide/orderModel");
+const shortid = require("shortid");
+const wishlistdb = require("../../model/userSide/wishlist");
+const Razorpay = require("razorpay");
+const instance = new Razorpay({
+                                  key_id: process.env.key_id,
+                                  key_secret: process.env.key_secret,
+                              });
 module.exports = {
-    addToWishlist: async (req, res) => {
-        try {
-            await userHelper.addProductToWishList(req.session.isUserAuth, req.params.productId);
-
-            return res.status(200).json({
-                status: true,
-                message: 'Item added to Wishlist'
-            });
-        } catch (err) {
-            console.log("addToWhishlistErr",err);
-            res.status(500).render("errorPages/500ErrorPage");
-        }
-    },
-    deleteFromWishlist: async (req, res) => {
-        try {
-            await userHelper.removeWishlistItems(req.session.isUserAuth, req.params.productId);
-
-            return res.status(200).json({
-                status: true,
-                message: 'Item removed from Wishlist'
-            });
-        } catch (err) {
-            console.log("addToWhishlistErr",err);
-            res.status(500).render("errorPages/500ErrorPage");
-        }
-    },
+    
+    
     userWishlistNow: async (req, res) => {
         try {
-        
-    
-          console.log(req.params.productId);
+        console.log(req.params.productId);
+
     
           const isWishList = await wishlistdb.findOne({
             userId: req.session.isUserAuth,
@@ -40,24 +35,17 @@ module.exports = {
     
           if (!isWishList) {
     
-            await wishlistdb.updateOne(
+            const p = await wishlistdb.updateOne(
               { userId: req.session.isUserAuth },
               { $push: { products: { productId: req.params.productId } } },
-              { upsert: true }
+              { upsert: true },{new:true}
             );
+
+            console.log(p);
     
-            return res.status(200).
-            // redirect("/addToWishlist")
-            json({
-              message: 'Product added to wishlist',
-              success: true,
-              url: '/addToWishList'
-            })
+            return res.status(200).json({success:true})
           } else {
-            return res.status(200).json({
-              message: 'Product already added',
-              success: true
-            })
+            return res.status(200).redirect("/addToWishlist")
           }
         } catch (err) {
           console.error(err);
@@ -66,10 +54,35 @@ module.exports = {
           })
         }
       },
-
+      userWishlistDelete: async (req, res) => {
+        try {
+          await wishlistdb.updateOne(
+            { userId: req.session.isUserAuth },
+            { $pull: { products: { productId: req.params.productId } } }
+          );
+    
+          res.redirect("/addToWishlist");
+        } catch (err) {
+          console.error("cart Update err", err);
+          res.status(500).render("errorPages/500ErrorPage");
+        }
+      },
+      userWishlistDeleteAll: async (req, res) => {
+        try {
+          await wishlistdb.updateOne(
+            { userId: req.session.isUserAuth },
+            { $set: { products: [] } } // Set the products array to an empty array to remove all items
+          );
+    
+          res.redirect("/addToWishlist");
+        } catch (err) {
+          console.error("Cart update error:", err);
+          res.status(500).render("errorPages/500ErrorPage");
+        }
+      },
       userWishlistItemUpdate: async (req, res) => {
         try {
-          const wishlistProduct = await wishlistdb.findOne(
+          const product = await wishlistdb.findOne(
             {
               userId: req.session.isUserAuth,
               "products.productId": req.params.productId,
@@ -86,7 +99,7 @@ module.exports = {
           if (values !== 0) {
             if (
               values > 0 &&
-              wishlistProduct.products[0].quantity + values > stock.quantity
+              product.products[0].quantity + values > stock.quantity
             ) {
               return res.json({
                 message: `Only ${stock.quantity} stocks available `,
@@ -95,13 +108,7 @@ module.exports = {
               });
             }
       
-            if (values < 0 && wishlistProduct.products[0].quantity + values < 1) {
-              return res.json({
-                message: "Quantity cannot be less than 1",
-                result: false,
-                stock: stock.quantity,
-              });
-            }
+           
       
             const wishlistItem = await wishlistdb.updateOne(
               {
@@ -111,7 +118,7 @@ module.exports = {
               { $inc: { "products.$.quantity": values } }
             );
       
-            // User Helper function to get all products in the cart
+            // User Helper function to get all products in the wishlist
             const wishlistItems = await userHelper.getWishlistItemsAll(
               req.session.isUserAuth
             );

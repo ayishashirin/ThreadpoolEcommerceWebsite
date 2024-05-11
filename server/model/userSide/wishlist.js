@@ -7,9 +7,12 @@ const wishlistchema = new mongodb.Schema({
   },
   products: [
     {
+      productId: {
         type: mongodb.SchemaTypes.ObjectId,
         required: true,
-    }
+      }
+  
+    },
   ],
 });
 

@@ -17,7 +17,9 @@ const shortid = require("shortid");
 const wishlistdb = require("../../model/userSide/wishlist");
 const Razorpay = require("razorpay");
 const puppeteer = require("puppeteer-core");
-const sharp = require("sharp")
+const sharp = require("sharp");
+
+
 const instance = new Razorpay({
                                   key_id: process.env.key_id,
                                   key_secret: process.env.key_secret,
@@ -185,7 +187,6 @@ adminAddProduct: async (req, res) => {
       // Validate form inputs
       const errors = {};
 
-    console.log("hhhhhhh");
   
       // Check for required fields
       if (!req.body.pName) errors.pName = "This Field is required";
@@ -200,7 +201,7 @@ adminAddProduct: async (req, res) => {
       if (!req.body.date) errors.date = "This Field is required";
       if (req.files.length === 0) errors.files = "This Field is required";
   
-      console.log("uuuuuuu");
+      
       // Check for existing product with the same name
       const existingUpdateProduct = await Productdb.findOne({
         pName: req.body.pName,
@@ -228,23 +229,23 @@ adminAddProduct: async (req, res) => {
         return res.redirect(`/adminUpdateProduct/${req.query.id}`);
       }
   
-      // Update product information in the database
-      const updateProduct = {
-        pName: req.body.pName,
-        category: req.body.category,
-        pDescription: req.body.pDescription,
-        fPrice: req.body.fPrice,
-        lPrice: req.body.lPrice,
-        size: req.body.size,
-        newlyLaunch: req.body.newlyLaunch ? true : false, // corrected spelling
-        date:req.body.date
-      };
-  
-      await Productdb.findOne({_id: req.query.id});
-      await Productdb.updateOne({ _id: req.query.id }, { $set: updateProduct });
-  
+    // Update product information in the database
+const updateProduct = {
+  pName: req.body.pName,
+          pDescription: req.body.pDescription,
+          fPrice: req.body.fPrice,
+          lPrice: req.body.lPrice,
+          discount: req.body.discount,
+          color: req.body.color,
+          size: req.body.size,
+          quantity: req.body.quantity,
+          date:req.body.date,
+};
+
+// Correctly update the product document
+await Productdb.updateOne({ _id: req.query.id }, { $set: updateProduct });
+
       const files = req.files;
-      console.log(files);
       const uploadImg = files.map((value) => `/uploadedImages/${value.filename}`);
   
       // Update product variation information in the database

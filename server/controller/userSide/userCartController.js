@@ -30,9 +30,8 @@ module.exports = {
 
   userCartNow: async (req, res) => {
     try {
-      console.log("kjhjhghgfgfd");
+    
 
-      console.log(req.params.productId);
 
       const isCart = await Cartdb.findOne({
         userId: req.session.isUserAuth,
@@ -40,7 +39,6 @@ module.exports = {
       });
 
       if (!isCart) {
-        console.log("jjjjjjjjeeeee");
 
         await Cartdb.updateOne(
           { userId: req.session.isUserAuth },
@@ -48,9 +46,9 @@ module.exports = {
           { upsert: true }
         );
 
-        return res.status(200).redirect("/addToCart")
+        return res.status(200).json({success:true})
       } else {
-        return res.status(200).redirect("/category")
+        return res.status(200).redirect("/addToCart")
       }
     } catch (err) {
       console.error(err);
@@ -61,7 +59,7 @@ module.exports = {
   },
 
 
-// ------------------------------------------------------------------------------------------------------------------------------
+// --------------------------------------------------------------
  
 
 userCartDelete: async (req, res) => {
@@ -79,7 +77,7 @@ userCartDelete: async (req, res) => {
   },
 
 
-// --------------------------------------------------------------------------------------------------
+// --------------------------------------------------------------
 
   userCartDeleteAll: async (req, res) => {
     try {

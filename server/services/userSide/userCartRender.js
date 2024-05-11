@@ -21,6 +21,10 @@ module.exports = {
           const cartItems = await userHelper.getCartItemsAll(
             req.session.isUserAuth
           );
+
+          const wishlistItems = await userHelper.getWishlistItemsAll(
+            req.session.isUserAuth
+          );
           console.log("cartitems:",cartItems);
 
           res.render(
@@ -31,11 +35,13 @@ module.exports = {
               cartErr: req.session.cartErr,
               counts,
               user: req.session.isUserAuth,
+              wishlistItems
             },
             (err, html) => {
               if (err) {
+                 console.log(err);
                 return res.send(err);
-                console.log(err);
+               
               }
               delete req.session.cartErr;
               res.send(html);

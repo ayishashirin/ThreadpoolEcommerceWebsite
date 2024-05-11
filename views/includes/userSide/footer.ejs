@@ -276,7 +276,7 @@
                                             </div>
                                             <div class="products-cart-btn">
                                                 <% if (cartItems.length===0) { %>
-                                                <a href="/category" class="default-btn">Proceed to Checkout</a>
+                                                <a href="/login" class="default-btn">Proceed to Checkout</a>
                                                 <% } else { %>
                                                 <a href="/cartCheckOut" class="default-btn">Proceed to Checkout</a>
                                                 <% } %>
@@ -296,56 +296,34 @@
                                             <span aria-hidden="true"><i class="bx bx-x"></i></span>
                                         </button>
                                         <div class="modal-body">
-                                            <h3>My Wish List (3)</h3>
+                                            <h3>My Wish List (<%= cartItems.length %>)</h3>
                                             <div class="products-cart-content">
+                                                <% wishlistItems.forEach((item, index) => { %>
+
                                                 <div class="products-cart">
                                                     <div class="products-image">
-                                                        <a href="#"><img src="/userSide/img/products/img1.jpg" alt="image"></></a>
+                                                        <a href="#"><img src="<%= item.variations[0].images[0] %>" alt="image"></a>
                                                     </div>
                                                     <div class="products-content">
-                                                        <h3><a href="#">Long Sleeve Leopard T-Shirt</a></h3>
-                                                        <span>Blue / XS</span>
+                                                        <h3><a href="#"><%= item.pDetails[0].pName %></a></h3>
+                                                        <span><%= item.variations[0].color %>/ <%= item.variations[0].size %></span>
                                                         <div class="products-price">
-                                                            <span>1</span>
+                                                            <span><%= item.products.quantity %></span>
                                                             <span>x</span>
-                                                            <span class="price">$250.00</span>
+                                                            <span class="price">$<%= item.pDetails[0].fPrice %></span>
                                                         </div>
-                                                        <a href="#" class="remove-btn"><i class="bx bx-trash"></i></a>
+                                                        <a href="/wishlistDelete/<%= item.products.productId %>"  class="remove-btn"><i class="bx bx-trash"></i></a>
                                                     </div>
                                                 </div>
-                                                <div class="products-cart">
-                                                    <div class="products-image">
-                                                        <a href="#"><img src="/userSide/img/products/img2.jpg" alt="image"></></a>
-                                                    </div>
-                                                    <div class="products-content">
-                                                        <h3><a href="#">Causal V-Neck Soft Raglan</a></h3>
-                                                        <span>Blue / XS</span>
-                                                        <div class="products-price">
-                                                            <span>1</span>
-                                                            <span>x</span>
-                                                            <span class="price">$200.00</span>
-                                                        </div>
-                                                        <a href="#" class="remove-btn"><i class="bx bx-trash"></i></a>
-                                                    </div>
-                                                </div>
-                                                <div class="products-cart">
-                                                    <div class="products-image">
-                                                        <a href="#"><img src="/userSide/img/products/img3.jpg" alt="image"></></a>
-                                                    </div>
-                                                    <div class="products-content">
-                                                        <h3><a href="#">Hanes Men's Pullover</a></h3>
-                                                        <span>Blue / XS</span>
-                                                        <div class="products-price">
-                                                            <span>1</span>
-                                                            <span>x</span>
-                                                            <span class="price">$200.00</span>
-                                                        </div>
-                                                        <a href="#" class="remove-btn"><i class="bx bx-trash"></i></a>
-                                                    </div>
-                                                </div>
+                                                <% }); %>
                                             </div>
                                             <div class="products-cart-btn">
-                                                <a href="#" class="optional-btn">View Shopping Cart</a>
+                                                <a href="/addToWishlist" class="optional-btn">View Wishlist</a>
+                                            </div>
+                                            <div class="products-cart-btn">
+                                                
+                                                <a href="/addToCart" class="optional-btn">View Shopping Cart</a>
+                                                
                                             </div>
                                         </div>
                                     </div>
