@@ -1,207 +1,212 @@
   <!-- header -->
   <%- include('../includes/adminSide/header') %>
   <!-- end of header -->
-       <!-- Template CSS -->
-        <link href="assets/css/main.css?v=1.1" rel="stylesheet" type="text/css" />
-  
-            <section class="content-main" style="padding-left: 400px;">
-                <div class="content-header">
-                    <div>
-                        <h2 class="content-title card-title">Order detail</h2>
-                        <p>Details for Order ID:  <%= order._id %></p>
-                    </div>
-                </div>
-                <div class="card">
-                    <header class="card-header">
-                        <div class="row align-items-center">
-                            <div class="col-lg-6 col-md-6 mb-lg-0 mb-15">
-                                <span> <i class="material-icons md-calendar_today"></i> <b><%= order.orderDate %></b> </span> <br />
-                                <small class="text-muted">Order ID:  <%=  order._id %></small>
-                            </div>
-                          
-                        </div>
-                    </header>
-                    <!-- card-header end// -->
-                    <div class="card-body">
-                        <div class="row mb-50 mt-20 order-info-wrap">
-                            <div class="col-md-4">
-                                <article class="icontext align-items-start">
-                                    <span class="icon icon-sm rounded-circle bg-primary-light">
-                                        <i class="text-primary material-icons md-person"></i>
-                                    </span>
-                                    <div class="text">
-                                        <h6 class="mb-1">Customer</h6>
-                                        <p class="mb-1">
-                                            <%=userInfo.fullName %> <br />
-                                            <%=userInfo.email %> <br />
-                                            <%=userInfo.phoneNumber %>
-                                            
-                                        </p>
-                                     
-                                    </div>
-                                </article>
-                            </div>
-                            <!-- col// -->
-                            <div class="col-md-4">
-                                <article class="icontext align-items-start">
-                                    <span class="icon icon-sm rounded-circle bg-primary-light">
-                                        <i class="text-primary material-icons md-local_shipping"></i>
-                                    </span>
-                                    <div class="text">
-                                        <h6 class="mb-1">Order info</h6>
-                                        <p class="mb-1">
-                                            Shipping: Fargo express <br />
-                                            Pay method:<%= order.paymentMethode %> <br />
-                                            Status: new
-                                        </p>
-                                    </div>
-                                </article>
-                            </div>
-                            <!-- col// -->
-                            <div class="col-md-4">
-                                <article class="icontext align-items-start">
-                                    <span class="icon icon-sm rounded-circle bg-primary-light">
-                                        <i class="text-primary material-icons md-place"></i>
-                                    </span>
-                                    <div class="text">
-                                        <h6 class="mb-1">Deliver to</h6>
-                                        <p class="mb-1">
-                                            <%=  order.address %>
-                                        </p>
-                                       
-                                    </div>
-                                </article>
-                            </div>
-                            <!-- col// -->
-                        </div>
-                        <!-- row // -->
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="table-responsive">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th width="40%">Product</th>
-                                                <th width="20%">Unit Price</th>
-                                                <th width="20%">Quantity</th>
-                                                <th width="20%">Status</th>
-                                                <th width="20%" class="text-end">Total</th>
-                                                
-                                            </tr>
-                                        </thead>
-                                        <tbody>
+  <!-- Template CSS -->
+  <link href="assets/css/main.css?v=1.1" rel="stylesheet" type="text/css" />
 
-                                            <% order.orderItems.forEach(function(item) { %>
-                                                <tr>
-                                                    <td>
-                                                        <a class="itemside" href="#">
-                                                            <div class="left">
-                                                                <img src="<%= item.images %>" width="40" height="40" class="img-xs" alt="Item" />
-                                                            </div>
-                                                            <div class="info"><%= item.pName %></div>
-                                                        </a>
-                                                    </td>
-                                                    <td><%= item.fPrice %></td>
-                                                    <td><%= item.quantity %></td>
-                                                   
-                                                    <td>
-                                                        <form action="/adminChangeOrderStatus/<%= item._id %>/<%= item.productId%>" class="changeStatus" method="post">
-                                                            <div class="d-flex gap-3">
-                                                                
-                                                               
-                                                                <% if ((item.orderStatus === "Delivered") || (item.orderStatus === "Cancelled")  || (item.orderStatus === "Ordered") || (item.orderStatus === "Shipped")) { %>
-                                                                    <p class="badge rounded-pill <%= (item.orderStatus === 'Cancelled') ? 'alert-danger text-danger' : 'alert-success text-success' %>">
-                                                                        <%= item.orderStatus %>
-                                                                    </p>
-                                                                <% } else { %>
-                                                                    <select name="orderStatus" id="filler" class="bg-white border-1 border-black">
-                                                                        <option value="Ordered" <%= (item.orderStatus === "Ordered") ? "selected" : "" %>>Ordered</option>
-                                                                        <option value="Shipped" <%= (item.orderStatus === "Shipped") ? "selected" : "" %>>Shipped</option>
-                                                                        <option value="Delivered">Delivered</option>
-                                                                        <option value="Cancelled">Cancelled</option>
-                                                                    </select>
-                                                                    <button type="submit" class=""> <!-- Ensure the button is of type "submit" to submit the form -->
-                                                                        Change Status
-                                                                    </button>
-                                                                <% } %>
-                                                            </div>
-                                                        </form>
-                                                    </td>
-                                                    <td class="text-end"><%= (item.fPrice * item.quantity) %></td>
-                                                </tr>
-                                                <% }); %>
-                                                
-                                           
-                                           
-                                            
-                                            <tr>
-                                                <td colspan="4">
-                                                    <article class="float-end">
-                                                        <dl class="dlist">
-                                                            <dt>Subtotal:</dt>
-                                                            <dd>$<%= totalPrice %></dd>
-                                                        </dl>
-                                                        <dl class="dlist">
-                                                            <dt>Shipping cost:</dt>
-                                                            <dd>Free</dd>
-                                                        </dl>
-                                                        <dl class="dlist">
-                                                            <dt>Discount:</dt>
-                                                            <dd>$<%= totalDiscountAmount%></b></dd>
-                                                        </dl>
-                                                        <dl class="dlist">
-                                                            <dt>Offer:</dt>
-                                                            <dd>-$0.00</b></dd>
-                                                        </dl>
-                                                        <dl class="dlist">
-                                                            <dt>Coupon discount:</dt>
-                                                            <dd>-$0.00</b></dd>
-                                                        </dl>
-                                                        <dl class="dlist">
-                                                            <dt>Grand total:</dt>
-                                                            <dd><b class="h5">$<%= totalPrice-totalDiscountAmount %></b></dd>
-                                                        </dl>
-                                                        <dl class="dlist">
-                                                            <dt class="text-muted">Status:</dt>
-                                                            <dd>
-                                                                <!-- <span class="badge rounded-pill alert-success text-success">Payment done</span> -->
-                                                            </dd>
-                                                        </dl>
-                                                    </article>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <!-- table-responsive// -->
-                            </div>
-                    
+  <section class="content-main" style="padding-left: 400px;">
+    <div class="content-header">
+      <div>
+        <h2 class="content-title card-title">Order detail</h2>
+        <p>Details for Order ID: <%= order._id %></p>
+      </div>
+    </div>
+    <div class="card">
+      <header class="card-header">
+        <div class="row align-items-center">
+          <div class="col-lg-6 col-md-6 mb-lg-0 mb-15">
+            <span> <i class="material-icons md-calendar_today"></i> <b><%=order.orderDate.toISOString().split('T')[0].split('-').reverse().join('-')%></b> </span> <br />
+            <small class="text-muted">Order ID: <%=  order._id %></small>
+          </div>
+
+        </div>
+      </header>
+      <!-- card-header end// -->
+      <div class="card-body">
+        <div class="row mb-50 mt-20 order-info-wrap">
+          <div class="col-md-4">
+            <article class="icontext align-items-start">
+              <span class="icon icon-sm rounded-circle bg-primary-light">
+                <i class="text-primary material-icons md-person"></i>
+              </span>
+              <div class="text">
+                <h6 class="mb-1">Customer</h6>
+                <p class="mb-1">
+                  <%=userInfo.fullName %> <br />
+                  <%=userInfo.email %> <br />
+                  <%=userInfo.phoneNumber %>
+
+                </p>
+
+              </div>
+            </article>
+          </div>
+          <!-- col// -->
+          <div class="col-md-4">
+            <article class="icontext align-items-start">
+              <span class="icon icon-sm rounded-circle bg-primary-light">
+                <i class="text-primary material-icons md-local_shipping"></i>
+              </span>
+              <div class="text">
+                <h6 class="mb-1">Order info</h6>
+                <p class="mb-1">
+                  Shipping: Fargo express <br />
+                  Pay method:<%= order.paymentMethode %> <br />
+                  Status: new
+                </p>
+              </div>
+            </article>
+          </div>
+          <!-- col// -->
+          <div class="col-md-4">
+            <article class="icontext align-items-start">
+              <span class="icon icon-sm rounded-circle bg-primary-light">
+                <i class="text-primary material-icons md-place"></i>
+              </span>
+              <div class="text">
+                <h6 class="mb-1">Deliver to</h6>
+                <p class="mb-1">
+                  <%=  order.address %>
+                </p>
+
+              </div>
+            </article>
+          </div>
+          <!-- col// -->
+        </div>
+        <!-- row // -->
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th width="40%">Product</th>
+                    <th width="20%">Unit Price</th>
+                    <th width="20%">Quantity</th>
+                    <th width="20%">Total</th>
+                    <th width="20%">Status</th>
+                    <th width="20%" class="text-end">Change Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+
+                  <% order.orderItems.forEach(function(item) { %>
+                  <tr>
+                    <td>
+                      <a class="itemside" href="#">
+                        <div class="left">
+                          <img src="<%= item.images %>" width="40" height="40" class="img-xs" alt="Item" />
                         </div>
-                    <!-- card-body end// -->
-                </div>
-                <!-- card end// -->
-            </section>
-            <!-- content-main end// -->
-            <footer class="main-footer font-xs">
-                <div class="row pb-30 pt-15">
-                    <div class="col-sm-6">
-                        <script>
-                            document.write(new Date().getFullYear());
-                        </script>
-                        &copy; Nest - HTML Ecommerce Template .
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="text-sm-end">All rights reserved</div>
-                    </div>
-                </div>
-            </footer>
-        </main>
-        <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
-        <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
-        <script src="assets/js/vendors/select2.min.js"></script>
-        <script src="assets/js/vendors/perfect-scrollbar.js"></script>
-        <script src="assets/js/vendors/jquery.fullscreen.min.js"></script>
-        <!-- Main Script -->
-        <script src="assets/js/main.js?v=1.1" type="text/javascript"></script>
-    </body>
-</html>
+                        <div class="info"><%= item.pName %></div>
+                      </a>
+                    </td>
+                    <td><%= item.fPrice %></td>
+                    <td><%= item.quantity %></td>
+                    <td><%= (item.fPrice * item.quantity) %></td>
+
+                    <td>
+                      <form action="/adminChangeOrderStatus/<%= item._id %>/<%= item.productId%>" class="changeStatus" method="post">
+                        <div class="d-flex gap-3">
+
+
+                          <% if ((item.orderStatus === "Delivered") || (item.orderStatus === "Cancelled")  || (item.orderStatus === "Ordered") || (item.orderStatus === "Shipped")) { %>
+                          <p class="badge rounded-pill <%= (item.orderStatus === 'Cancelled') ? 'alert-danger text-danger' : 'alert-success text-success' %>">
+                            <%= item.orderStatus %>
+                          </p>
+                          <% } else { %>
+                          <select name="orderStatus" id="filler" class="bg-white border-1 border-black">
+                            <option value="Ordered" <%= (item.orderStatus === "Ordered") ? "selected" : "" %>>Ordered</option>
+                            <option value="Shipped" <%= (item.orderStatus === "Shipped") ? "selected" : "" %>>Shipped</option>
+                            <option value="Delivered">Delivered</option>
+                            <option value="Cancelled">Cancelled</option>
+                          </select>
+                    </td>
+
+                    <% } %>
+                    <td> <button type="submit" class="" style="background-color: black; font: text-white">
+                        Change
+                      </button>
+                    </td>
+
+            </div>
+            </form>
+
+            </tr>
+            <% }); %>
+
+
+
+
+            <tr>
+              <td colspan="4">
+                <article class="float-end">
+                  <dl class="dlist">
+                    <dt>Subtotal:</dt>
+                    <dd>$<%= totalPrice %></dd>
+                  </dl>
+                  <dl class="dlist">
+                    <dt>Shipping cost:</dt>
+                    <dd>Free</dd>
+                  </dl>
+                  <dl class="dlist">
+                    <dt>Discount:</dt>
+                    <dd>$<%= totalDiscountAmount%></b></dd>
+                  </dl>
+                  <dl class="dlist">
+                    <dt>Offer:</dt>
+                    <dd>-$0.00</b></dd>
+                  </dl>
+                  <dl class="dlist">
+                    <dt>Coupon discount:</dt>
+                    <dd>-$0.00</b></dd>
+                  </dl>
+                  <dl class="dlist">
+                    <dt>Grand total:</dt>
+                    <dd><b class="h5">$<%= totalPrice-totalDiscountAmount %></b></dd>
+                  </dl>
+                  <dl class="dlist">
+                    <dt class="text-muted">Status:</dt>
+                    <dd>
+                      <!-- <span class="badge rounded-pill alert-success text-success">Payment done</span> -->
+                    </dd>
+                  </dl>
+                </article>
+              </td>
+            </tr>
+            </tbody>
+            </table>
+          </div>
+          <!-- table-responsive// -->
+        </div>
+
+      </div>
+      <!-- card-body end// -->
+    </div>
+    <!-- card end// -->
+  </section>
+  <!-- content-main end// -->
+  <footer class="main-footer font-xs">
+    <div class="row pb-30 pt-15">
+      <div class="col-sm-6">
+        <script>
+          document.write(new Date().getFullYear());
+        </script>
+        &copy; Nest - HTML Ecommerce Template .
+      </div>
+      <div class="col-sm-6">
+        <div class="text-sm-end">All rights reserved</div>
+      </div>
+    </div>
+  </footer>
+  </main>
+  <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
+  <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/vendors/select2.min.js"></script>
+  <script src="assets/js/vendors/perfect-scrollbar.js"></script>
+  <script src="assets/js/vendors/jquery.fullscreen.min.js"></script>
+  <!-- Main Script -->
+  <script src="assets/js/main.js?v=1.1" type="text/javascript"></script>
+  </body>
+
+  </html>

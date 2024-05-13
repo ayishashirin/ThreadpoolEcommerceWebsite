@@ -16,7 +16,7 @@ const orderdb = require("../../model/userSide/orderModel");
 const shortid = require("shortid");
 const wishlistdb = require("../../model/userSide/wishlist");
 const Razorpay = require("razorpay");
-const puppeteer = require("puppeteer-core");
+
 const instance = new Razorpay({
                                   key_id: process.env.key_id,
                                   key_secret: process.env.key_secret,

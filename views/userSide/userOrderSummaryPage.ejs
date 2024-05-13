@@ -1,34 +1,31 @@
-
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Orders Details</title>
+    <!-- <link rel="shortcut icon" href="#" type="image/x-icon" /> -->
+    <!-- Bootstrap css cdn link -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <!-- end of Bootstrap css cdn link -->
     <!-- Style css -->
     <link rel="stylesheet" href="/userSide/css/userOrderSummaryPage.css" />
+    <link rel="shortcut icon" href="/userSide/images/header/logo.svg" type="image/x-icon">
     <!-- end of Style css -->
   </head>
   <body>
     <!-- header -->
     <%- include('../includes/userSide/header') %>
     <!-- end of header -->
-    <div class="page-title-area">
-      <div class="container">
-      <div class="page-title-content">
-      <h2>Order Summary</h2>
-      <ul>
-      <li><a href="/">Home</a></li>
-      <li>Order Summary </li>
-      </ul>
-      </div>
-      </div>
-      </div>
-
-      
-<section class="checkout-area ptb-100">
-  <div class="container">
-  <div class="user-actions">
-  </div>
-
 
     <!-- main -->
     <main>
-      <div class="container-fluid main" style=" margin-left: 100px;" >
+      <div class="container-fluid main">
         <div class="row mainContainer">
           <div class="col-12">
             <div class="cartHead">
@@ -42,237 +39,95 @@
                 </svg>
               </div>
             </div>
-            
             <div class="cartBody">
               <div class="ODhead">
-                <section class="product-details-area pt-100 pb-70">
-                  <div class="container">
-                  <div class="row">
-                  <div class="col-lg-5 col-md-12">
-                  <div class="products-details-image">
-                  
-                      
-                          
-                        
-                                  <a href="#" class="imageZoom">
-                                      <img src="/<%= orderDetails.orderItems.images%>" alt="image">
-                                  </a>
-                      
-                          
-                    
-          
-                  
-                  </div>
-                  
-                  </div>
-                  <div class="col-lg-7 col-md-12">
-                  <div class="products-details-desc">
-                  <h3><%= orderDetails.orderItems.pName%></h3>
-                  <div class="price">
-                  <span class="new-price">$<%= orderDetails.orderItems.lPrice%>.00</span>
-                  <span class="old-price">$<%= orderDetails.orderItems.fPrice%>.00</span>
-                  <p>-%OFF</p>
-                  </div>
-                  <div class="products-review">
-                  <div class="rating">
-                  <i class="bx bx-star"></i>
-                  <i class="bx bx-star"></i>
-                  <i class="bx bx-star"></i>
-                  <i class="bx bx-star"></i>
-                  <i class="bx bx-star"></i>
-                  </div>
-                  <a href="#" class="rating-count">3 reviews</a>
-                  </div>
-                  <div class="products-size-wrapper">
-                  <span>Quantity: <%= orderDetails.orderItems.quantity%></span>
-                  
-                  <span>Category:<%= orderDetails.orderItems.category%> <a href="#"></a></span>
-                 
-                  
-                      <span>Color: <%= orderDetails.orderItems.color%></span>
-                     
-                 
-                      <span>Size: <%= orderDetails.orderItems.size%></span>
-                     
-                  </div>
-                
-                  
-                    <ul class="products-info">
-                    <li><span>Payment Method: <%= orderDetails.paymentMethode%></span></li>
-            
-                  <li><span>Order Placed: <%= orderDetails.orderDate.toString().split(' ').slice(0, 4).join(' ') %></span></li>
-                <li><span>Order Id: <%= orderDetails._id %></span></li>
-              </ul>
+                <p>Order ID - <%= orderDetails._id %></p>
               </div>
+              <div class="d-flex ODhead gap-3 justify-content-between align-items-center">
+                <div>
+                  <h2 class="m-0 p-0 text-capitalize"><%= orderDetails.orderItems.pName %></h2>
+                  <p class="m-0 p-0 text-capitalize fw-medium"><span class="text-dark fw-medium">Qty:</span> <%= orderDetails.orderItems.quantity %></p>
+                  <p class="m-0 p-0 text-capitalize"><%= orderDetails.orderItems.color %></p>
+                  <div class="d-flex align-items-baseline price gap-2 mt-2">
+                    <p>₹<%= Math.round(((orderDetails.orderItems.lPrice * orderDetails.orderItems.quantity) - (orderDetails.orderItems.offerDiscountAmount + orderDetails.orderItems.couponDiscountAmount)) / orderDetails.orderItems.quantity) %></p>
+                    <p><%= ((orderDetails.orderItems.lPrice / orderDetails.orderItems.fPrice) * 100).toFixed(2) %>% OFF</p>
                   </div>
-                  </div>
-                  </div>
-                  </div>
-                  <div class="tab products-details-tab">
-                  <ul class="tabs">
-                  <li><a href="#">
-                  <div class="dot"></div> Description
-                  </a></li>
-                  <li><a href="#">
-                    <div class="dot"></div> Shipping
-                  </a></li>
-                  <li><a href="#">
-                  <div class="dot"></div>Price Details
-                  </a></li>
-                  
-                  <li><a href="#">
-                  <div class="dot"></div> Why Buy From Us
-                  </a></li>
-                  <!-- <li><a href="#">
-                  <div class="dot"></div> Reviews
-                  </a></li> -->
-                  </ul>
-                  <div class="tab-content">
-                  <div class="tabs-item">
-                  <div class="products-details-tab-content">
-                  <p><%= orderDetails.orderItems.pDescription%></p>
-                  <div class="row">
-                  <div class="col-lg-6 col-md-6">
-                  <ul>
-                  <li>Fabric 1: 100% Polyester</li>
-                  <li>Fabric 2: 100% Polyester, Lining: 100% Polyester</li>
-                  <li>Fabric 3: 75% Polyester, 20% Viscose, 5% Elastane</li>
-                  </ul>
-                  </div>
-                  <div class="col-lg-6 col-md-6">
-                  <ol>
-                  <li>Fabric 3: 75% Polyester, 20% Viscose, 5% Elastane</li>
-                  <li>Fabric 2: 100% Polyester, Lining: 100% Polyester</li>
-                  <li>Fabric 1: 100% Polyester</li>
-                  </ol>
-                  </div>
-                  </div>
-                  </div>
-                  
-                  </div>
-                  <div class="tabs-item">
-                    <div class="products-details-tab-content">
-                    <div class="table-responsive">
-                    <table class="table table-bordered">
-                    <tbody>
-                    <tr>
-                    <td>Shipping Details</td>
-                    <td>
-                     <%= orderDetails.address %>
-                     <br>
-                     Phone: <%=userInfo.phoneNumber %>
-                    </td>
-                    </tr>
-                    <tr>
-                    <td>Delivery</td>
-                    <td>
-                    Estimated between  <%= orderDetails.orderDate?.toString().split(' ').splice(0, 4).join(', ') %>  and <% 
-                    const orderDate = orderDetails.orderDate ? new Date(orderDetails.orderDate) : new Date();
-                    orderDate.setDate(orderDate.getDate() + 7); 
-                  %>
-                  <%= (orderDate.toString().split(' ').splice(0, 4).join(', ')) %> <br>
-                    Will usually ship within 1 bussiness day.
+                </div>
+                <div class="imgOrder">
+                  <img src="<%= orderDetails.orderItems.images %>" alt="">
+                </div>
+              </div>
+              <div class="ODhead pt-4 pb-4">
+                <div class="d-flex gap-3 align-items-center">
+                  <p class="dot done"></p>
+                  <p id="oText">Ordered Confirmed, <%= orderDetails.orderDate.toString().split(' ').splice(0, 4).join(', ') %></p>
+                </div>
+                <div class="lineParent position-relative">
+                    <div class="line position-relative <%= (orderDetails.orderItems.orderStatus === 'Cancelled')?'notDoneLine':((orderDetails.orderItems.orderStatus === 'Shipped') || (orderDetails.orderItems.orderStatus === 'Delivered'))?'doneLine':'' %>" >
 
-
-                    <div class="ODhead pt-4 pb-4">
-                      <div class="d-flex gap-3 align-items-center">
-                        <p class="dot done"></p>
-                        <p id="oText">Ordered Confirmed, <%= orderDetails.orderDate?.toString().split(' ').splice(0, 4).join(', ') %></p>
-                      </div>
-                      <div class="lineParent position-relative">
-                          <div class="line position-relative <%= (orderDetails.orderItems.orderStatus === 'Cancelled')?'notDoneLine':((orderDetails.orderItems.orderStatus === 'Shipped') || (orderDetails.orderItems.orderStatus === 'Delivered'))?'doneLine':'' %>" >
-      
-                          </div>
-                      </div>
-                      <% if (orderDetails.orderItems.orderStatus !== 'Cancelled') { %>
-                        <div class="d-flex gap-3 align-items-center">
-                          <p class="dot <%= ((orderDetails.orderItems.orderStatus === 'Shipped') || (orderDetails.orderItems.orderStatus === 'Delivered'))?'done':'' %>"></p>
-                          <p id="oText">Shipped</p>
-                        </div>
-                        <div class="lineParent position-relative">
-                          <div class="line position-relative <%= (orderDetails.orderItems.orderStatus === 'Delivered')?'doneLine':'' %>">
-      
-                          </div>
-                        </div>
-                        <div class="d-flex gap-3 align-items-center">
-                          <p class="dot <%= (orderDetails.orderItems.orderStatus === 'Delivered')?'done':'' %>"></p>
-                          <p id="oText">Delivered</p>
-                        </div>
-                      <% } else { %>
-                        <div class="d-flex gap-3 align-items-center">
-                          <p class="dot notDone"></p>
-                          <p id="oText">Cancelled</p>
-                        </div>
-                      <% } %>
                     </div>
-                    </td>
+                </div>
+                <% if (orderDetails.orderItems.orderStatus !== 'Cancelled') { %>
+                  <div class="d-flex gap-3 align-items-center">
+                    <p class="dot <%= ((orderDetails.orderItems.orderStatus === 'Shipped') || (orderDetails.orderItems.orderStatus === 'Delivered'))?'done':'' %>"></p>
+                    <p id="oText">Shipped</p>
+                  </div>
+                  <div class="lineParent position-relative">
+                    <div class="line position-relative <%= (orderDetails.orderItems.orderStatus === 'Delivered')?'doneLine':'' %>">
 
-                    </tr>
-                    </tbody>
-                    </table>
                     </div>
-                    </div>
-                    </div>
-                  <div class="tabs-item">
-                  <div class="products-details-tab-content">
-                  <div class="table-responsive">
-                  <table class="table table-striped">
-                  <tbody>
-                  <tr>
-                  <td>Subtotal:</td>
-                  <td id="sTotal">$<%= orderDetails.orderItems.fPrice * orderDetails.orderItems.quantity %></td>
-                  </tr>
-                  <tr>
-                  <td>Discount:</td>
-                  <td id="dPrice">-$<%= (orderDetails.orderItems.fPrice-orderDetails.orderItems.lPrice) %></td>
-                  </tr>
+                  </div>
+                  <div class="d-flex gap-3 align-items-center">
+                    <p class="dot <%= (orderDetails.orderItems.orderStatus === 'Delivered')?'done':'' %>"></p>
+                    <p id="oText">Delivered</p>
+                  </div>
+                <% } else { %>
+                  <div class="d-flex gap-3 align-items-center">
+                    <p class="dot notDone"></p>
+                    <p id="oText">Cancelled</p>
+                  </div>
+                <% } %>
+              </div>
+              <div class="ODhead sDetails">
+                <p>Shipping Details</p>
+              </div>
+              <div class="ODhead pt-3 pb-3 SDetails">
+                <h2 class="text-capitalize"><%= user.fullName %></h2>
+                <p class="text-capitalize"><%= orderDetails.address %></p>
+                <p>Phone: <%= user.phoneNumber %></p>
+              </div>
+              <div class="ODhead sDetails">
+                <p>Price Details</p>
+              </div>
+              <div class="orderContent">
+                <div class="sTotal d-flex justify-content-between align-items-center">
+                  <p class="commonText m-0 p-0">Subtotal</p>
+                  <p class="commonSub m-0 p-0" id="sTotal">₹<%= orderDetails.orderItems.fPrice * orderDetails.orderItems.quantity %></p>
+                </div>
 
-                  <tr>
-                    <td>Offer:</td>
-                    <td id="offerPrice">-$<%= (orderDetails.orderItems.fPrice-orderDetails.orderItems.lPrice) %></td>
-                    </tr>
-                  <tr>
-                  <td>Coupon Discount:</td>
-                  <td id="cDPrice">0</td>
-                  </tr>
-                 
-                  
-                  <tr>
-                    <td>Shipping:</td>
-                    <td id="free">Free</td>
-                    </tr>
-                  <tr>
-                  <td>Total:</td>
-                  <td id="tPrice">$<%= Math.round((orderDetails.orderItems.lPrice * orderDetails.orderItems.quantity)) %></td>
-                  </tr>
-                 
-                  </tbody>
-                  </table>
-                  </div>
-                  </div>
-                  </div>
-                  
-                  <div class="tabs-item">
-                  <div class="products-details-tab-content">
-                  <p>Here are 5 more great reasons to buy from us:</p>
-                  <ol>
-                  <li>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.</li>
-                  <li> Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.</li>
-                  <li>When an unknown printer took a galley of type and scrambled it to make a type specimen book.</li>
-                  <li>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</li>
-                  <li>When an unknown printer took a galley of type and scrambled it to make a type specimen book.</li>
-                  </ol>
-                  </div>
-                  </div>
-                  
-                  
-                  </div>
+                <div class="ship d-flex justify-content-between align-items-center">
+                  <p class="commonText m-0 p-0">Shipping</p>
+                  <p class="commonSub m-0 p-0" id="free">FREE</p>
+                </div>
 
-                 
+                <div class="ship d-flex justify-content-between align-items-center">
+                  <p class="commonText m-0 p-0">Discount</p>
+                  <p class="commonSub m-0 p-0" id="dPrice">-<%= (((orderDetails.orderItems.fPrice - orderDetails.orderItems.lPrice) * orderDetails.orderItems.quantity) + (orderDetails.orderItems.offerDiscountAmount + orderDetails.orderItems.couponDiscountAmount)) %></p>
+                </div>
 
-                 
+                <div class="ship d-flex justify-content-between align-items-center">
+                  <p class="commonText m-0 p-0">Coupon Discount</p>
+                  <p class="commonSub m-0 p-0" id="cDPrice">0</p>
+                </div>
+              </div>
+              <div>
+                <div class="commonText tPrice d-flex justify-content-between align-items-center">
+                  <p class="m-0 p-0">Total</p>
+                  <p class="m-0 p-0" id="tPrice">₹<%= Math.round((orderDetails.orderItems.lPrice * orderDetails.orderItems.quantity) - (orderDetails.orderItems.offerDiscountAmount + orderDetails.orderItems.couponDiscountAmount)) %></p>
+                </div>
+              </div>
               <% if (orderDetails.orderItems.orderStatus === 'Delivered') { %>
-                  <a href="/orderDownloadInvoice/<%= orderDetails.orderItems.productId %>/<%= _id %>" class="text-dark fw-bolder">
+                  <a href="/orderDownloadInvoice/<%= orderDetails.orderItems.productId %>/<%= orderDetails._id %>" class="text-dark fw-bolder">
                     <div class="ODhead sDetails d-flex justify-content-between">
                       <div class="d-flex gap-2 align-items-center">
                         <div>
@@ -302,16 +157,6 @@
                     </div>
                   </a>
               <% } %>
-                  
-                  </div>
-                  </div>
-                  </section>
-                  
-              </div>
-           
-             
-              
-              
               
             </div>
           </div>

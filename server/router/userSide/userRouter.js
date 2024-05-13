@@ -208,7 +208,7 @@ router.post('/UpdateAddress', authMiddleware.isUserLoggedIn, authMiddleware.isUs
 
 router.post('/AddAddress', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userAddressController.userAddAddress);// adds new address
 
-
+router.post('/api/changeAddressPayment', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userAddressController.changeAddressPayment); // Option to change address from check out page
 // --------------------------------------------------------------------------------------------------------------------
 
 // logOut

@@ -402,10 +402,11 @@ module.exports = {
       const offerDetails = await offerdb.findOne({})
       const totalPrice = order.orderItems.reduce((total, item) => total + (item.fPrice * item.quantity), 0);
       const totalDiscountAmount = order.orderItems.reduce((total, item) => total + item.DiscountAmount, 0);
-      // const totalOffersAmount = ;
+      
      
-
-
+      console.log("userId :",order.userId);
+      console.log("order:",order);
+      console.log("orderItems:",order.orderItems);
 console.log("offerDetails:",offerDetails);
       
    

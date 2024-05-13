@@ -96,9 +96,10 @@
     
     // Get the offer price
     var offerPrice = parseFloat(document.getElementById("offerPrice").innerText.replace("-$", ""));
+    console.log((document.getElementById("offerPrice").innerText).replace("-$", ""));
     
     // Calculate the order total
-    var orderTotal = totalAmount - discountPrice - cDPrice - offerPrice;
+    var orderTotal = totalAmount - (discountPrice+cDPrice+offerPrice);51
 
     // Update the order total in the DOM
     document.getElementById("orderTotal").innerText = "$" + orderTotal.toFixed(2);

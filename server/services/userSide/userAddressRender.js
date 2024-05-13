@@ -27,12 +27,17 @@ module.exports = {
         req.session.isUserAuth
       );
 
+      const wishlistItems = await userHelper.getWishlistItemsAll(
+        req.session.isUserAuth
+      );
+
       res.status(200).render("userSide/editAddress", {
         category,
         userInfo,
         counts,
         user: req.session.isUserAuth,
         cartItems,
+        wishlistItems
       });
     } catch (err) {
       console.log("Update query err:", err);
@@ -45,6 +50,10 @@ module.exports = {
       const category = await userHelper.getAllListedCategory();
 
       const counts = await userHelper.getTheCountOfWhislistCart(
+        req.session.isUserAuth
+      );
+
+      const wishlistItems = await userHelper.getWishlistItemsAll(
         req.session.isUserAuth
       );
 
@@ -67,15 +76,17 @@ module.exports = {
             houseName: req.session.houseName,
             pin: req.session.pin,
             exist: req.session.exist,
+        
           },
           counts,
           user: req.session.isUserAuth,
           cartItems,
+          wishlistItems
         },
         (err, html) => {
           if (err) {
-            console.log("Render err update ac");
-            return res.send("Internal server err");
+            console.log(err);
+            return res.send(err);
           }
 
           delete req.session.name;

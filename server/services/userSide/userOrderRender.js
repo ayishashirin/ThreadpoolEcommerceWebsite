@@ -19,6 +19,9 @@ module.exports = {
             req.session.isUserAuth
           );
     
+          const wishlistItems = await userHelper.getWishlistItemsAll(
+            req.session.isUserAuth
+          );
           const cartItems = await userHelper.getCartItemsAll(
             req.session.isUserAuth
           );
@@ -27,7 +30,9 @@ module.exports = {
             .status(200)
             .render(
               "userSide/orderPlacedSuccessfull",
-              { category, counts, user: req.session.isUserAuth, cartItems },
+              { category, counts, user: req.session.isUserAuth, cartItems,
+                wishlistItems
+               },
               (err, html) => {
                 if (err) {
                   console.log(err);

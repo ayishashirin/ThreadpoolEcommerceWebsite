@@ -82,6 +82,8 @@ module.exports = {
 
       //check for filter
       if (!req.body.filter) {
+        
+        console.log();
         return res.status(200).redirect("/adminOrderDetails");
       }
 

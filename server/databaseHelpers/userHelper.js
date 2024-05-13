@@ -101,8 +101,8 @@ module.exports = {
               },
             },
           ];
-          const user = await Userdb.aggregate(agg);
-          return user[0];
+          const userInfo = await Userdb.aggregate(agg);
+          return userInfo[0];
     } catch (err) {
         throw err;
     }

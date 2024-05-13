@@ -142,7 +142,7 @@
     <% if (isCartItem) { %>
     <a href="/addToCart" class="add-to-cart" style="cursor: pointer;">Go to Cart</a>
     <% } else { %>
-          
+      <a data-productId="<%= products[i]._id %>" class="add-to-cart" style="cursor: pointer;">Add to Cart</a>      
     <% } %>
     <% } %>
 </div>

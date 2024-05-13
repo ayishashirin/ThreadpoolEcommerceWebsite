@@ -144,6 +144,7 @@ module.exports = {
             }
             return await Orderdb.updateOne({$and:[{_id: new mongoose.Types.ObjectId(orderId)}, {"orderItems.productId": productId}]}, {$set:{"orderItems.$.orderStatus": orderStatus}});
         } catch (err) {
+            console.log(err)
             throw err;
         }
     },

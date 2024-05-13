@@ -30,12 +30,13 @@ module.exports = {
 
 userAddAddress: async (req, res) => {
     try {
-      req.body.name = req.body.name.trim();
-      req.body.country = req.body.country.trim();
-      req.body.district = req.body.district.trim();
-      req.body.state = req.body.state.trim();
-      req.body.city = req.body.city.trim();
-      req.body.houseName = req.body.houseName.trim();
+      console.log(req.body);
+      req.body.name = req.body.name?.trim();
+      req.body.country = req.body.country?.trim();
+      req.body.district = req.body.district?.trim();
+      req.body.state = req.body.state?.trim();
+      req.body.city = req.body.city?.trim();
+      req.body.houseName = req.body.houseName?.trim();
 
       if (!req.body.name) {
         req.session.name = `This Field is required`;
@@ -80,7 +81,9 @@ userAddAddress: async (req, res) => {
         req.session.sAddress = req.body;
         return res.status(401).redirect("/addAddress");
       }
-
+      function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
       req.body.name = capitalizeFirstLetter(req.body.name);
       req.body.country = capitalizeFirstLetter(req.body.country);
       req.body.district = capitalizeFirstLetter(req.body.district);
@@ -106,7 +109,7 @@ userAddAddress: async (req, res) => {
         return res.status(401).redirect("/addAddress");
       }
 
-      const structuredAddress = `\n${req.body.name},\n${req.body.houseName}-${req.body.houseNo},\n${req.body.city},\n${req.body.district},\n${req.body.state} - ${req.body.pin}`;
+      const structuredAddress = `${req.body.name},${req.body.houseName}-${req.body.houseNo},${req.body.city},${req.body.district},${req.body.state} - ${req.body.pin}`;
 
       await userVariationdb.updateOne(
         { userId: req.session.isUserAuth },
@@ -316,5 +319,7 @@ userAddAddress: async (req, res) => {
       res.status(500).render("errorPages/500ErrorPage");
     }
   },
+
+
 
 }

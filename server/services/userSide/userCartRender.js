@@ -63,10 +63,16 @@ module.exports = {
           const counts = await userHelper.getTheCountOfWhislistCart(
             req.session.isUserAuth
           );
+
+          const wishlistItems = await userHelper.getWishlistItemsAll(
+            req.session.isUserAuth
+          );
           //userHelper fn to get all details of user
           const userInfo = await userHelper.userInfo(req.session.isUserAuth);
+          console.log(userInfo);
           const cartItems = await userHelper.getCartItemsAll(req.session.isUserAuth);
           const coupons =  await adminHelper.getAllCoupon();
+          console.log(coupons);
           res.status(200).render(
             "userSide/UserCheckout",
             {
@@ -78,7 +84,8 @@ module.exports = {
               user: req.session.isUserAuth,
               cartItems,
               cartErr: req.session.cartErr,
-              coupons
+              coupons,
+              wishlistItems
             },
             (err, html) => {
               if (err) {
