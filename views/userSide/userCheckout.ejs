@@ -54,9 +54,9 @@ aria-hidden="true"
           <div class="d-flex uAcc">
             <div class="sides">
               <div>
-                <label for="locality">Locality</label>
+                <label for="name">Name</label>
                 <input
-                  name="locality"
+                  name="name"
                   class="d-block text-capitalize"
                   type="text"
                   value=""
@@ -74,16 +74,6 @@ aria-hidden="true"
                 <p class="err d-none">
                   <!-- err here -->
                 </p>
-                <label for="district">District</label>
-                <input
-                  name="district"
-                  class="d-block"
-                  type="text"
-                  value=""
-                />
-                <p class="err d-none">
-                  <!-- err here -->
-                </p>
                 <label for="state">State</label>
                 <input
                   name="state"
@@ -94,9 +84,20 @@ aria-hidden="true"
                 <p class="err d-none">
                   <!-- err here -->
                 </p>
+                <label for="district">District</label>
+                <input
+                  name="district"
+                  class="d-block"
+                  type="text"
+                  value=""
+                />
+                <p class="err d-none">
+                  <!-- err here -->
+                </p>
+                
               </div>
               <button type="submit" class="saveBtn oneBtn">
-                Add Address
+                Add 
               </button>
             </div>
             <div class="sides">
@@ -111,9 +112,9 @@ aria-hidden="true"
                 <p class="err d-none">
                   <!-- err here -->
                 </p>
-                <label for="hName">House Name</label>
+                <label for="houseName">House Name</label>
                 <input
-                  name="hName"
+                  name="houseName"
                   class="d-block"
                   type="text"
                   value=""
@@ -121,9 +122,9 @@ aria-hidden="true"
                 <p class="err d-none">
                   <!-- err here -->
                 </p>
-                <label for="hNo">House NO</label>
+                <label for="houseNo">House No</label>
                 <input
-                  name="hNo"
+                  name="houseName"
                   class="d-block"
                   type="number"
                   value=""
@@ -141,12 +142,10 @@ aria-hidden="true"
                 <p class="err d-none">
                   <!-- err here -->
                 </p>
-                <p class="err d-none">
-                  <!-- err here -->
-                </p>
+              
               </div>
               <button type="submit" class="saveBtn twoBtn">
-                Add Address
+                Add
               </button>
             </div>
           </div>
@@ -199,7 +198,7 @@ aria-hidden="true"
       <form action="/api/changeAddressPayment" method="post" class="formDiv">
       <% for( let i = 0; i < userInfo.variations[0]?.address.length; i++ ) { %>
             <div class="chooseAdd existingAddress p-3 w-100 mb-3 position-relative">
-              <p class="name text-capitalize"><%= userInfo.fullName %></p>
+              <p class="name text-capitalize" id="fullName"><%= userInfo.fullName %></p>
               <p><%= userInfo.variations[0].address[i].structuredAddress %></p>
               <p class="phone">Phone: <%= userInfo.phoneNumber %></p>
                 <input name="adId" class="position-absolute radio" type="radio" value="<%= userInfo.variations[0].address[i]._id %>" <%= (String(userInfo.variations[0].address[i]._id) === String(userInfo.variations[0].defaultAddress))?'checked':'' %>>
@@ -211,7 +210,7 @@ aria-hidden="true"
               <p class="mb-3 fs-6 text-dark">Add New Address</p>
             </div>
       <% } %>
-      <p class="m-0"><a href="/" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="button">Add Address</a></p>
+      <p class="m-0"><a href="/" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="button">Add </a></p>
     </div>
     <div class="modal-footer">
       <button
@@ -251,7 +250,7 @@ aria-hidden="true"
                 <p><%= userInfo.variations[0]?.address.find((value) => String(value._id) === String(userInfo.variations[0]?.defaultAddress))?.structuredAddress %></p>
                 <p class="phone">Phone: <%= userInfo.phoneNumber %></p>
                 <input type="text" name="adId" value="<%= userInfo.variations[0]?.defaultAddress %>" hidden>
-                <input type="text" name="couponId" value="<%= coupons?._id?coupons.id:'' %>" hidden>
+                <input type="text" name="couponId" id="couponId" value="<%= coupons?._id?coupons.id:'' %>" hidden>
               </div>
         <% } %>
         <% if (userInfo.variations[0]?.address.length === 0 || !userInfo.variations[0]) { %>
@@ -459,16 +458,16 @@ aria-hidden="true"
 <div class="payment-box">
   <div class="payment-method">
     <p>
-      <input type="radio" id="razorpay" name="payMethode" value="razorpay" onclick="handlePaymentSelection('razorpay')">
+      <input type="radio" id="razorpay" name="paymentMethode" value="razorpay" onclick="handlePaymentSelection('razorpay')">
       <label for="razorpay">razorpay</label>
     </p>
     <p>
-      <input type="radio" id="COD" name="payMethode" value="COD" onclick="handlePaymentSelection('cod')">
+      <input type="radio" id="COD" name="paymentMethode" value="COD" onclick="handlePaymentSelection('cod')">
       <label for="COD">Cash on Delivery</label>
     </p>
 
     <p>
-      <input type="radio" id="wallet" name="payMethode" value="wallet" onclick="handlePaymentSelection('wallet')">
+      <input type="radio" id="wallet" name="paymentMethode" value="wallet" onclick="handlePaymentSelection('wallet')">
       <label for="wallet">Wallet</label>
     </p>
   </div>

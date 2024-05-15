@@ -36,8 +36,7 @@ userAddAddress: async (req, res) => {
       req.body.district = req.body.district?.trim();
       req.body.state = req.body.state?.trim();
       req.body.city = req.body.city?.trim();
-      req.body.houseName = req.body.houseName?.trim();
-
+      req.body.houseName = req.body.houseName
       if (!req.body.name) {
         req.session.name = `This Field is required`;
       }
@@ -76,7 +75,9 @@ userAddAddress: async (req, res) => {
         req.session.state ||
         req.session.district ||
         req.session.country ||
+        req.session.name ||
         req.session.name
+
       ) {
         req.session.sAddress = req.body;
         return res.status(401).redirect("/addAddress");

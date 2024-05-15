@@ -116,17 +116,28 @@
                 </div>
                 <div class="<%= errMesg?.size?'errDiv':'' %>">
                   <label for="size" class="d-block">size</label>
-                  <input type="string" name="size" value="<%= savedDetails?.size?savedDetails?.size:'' %>">
+                  <input type="string" name="size" value="<%= product.variations[0].size?product.variations[0].size:'' %>">
                   <p class="err">
                     <%= errMesg?.size %>
                   </p>
                 </div>
+
+
+                
               </div>
+              <div class="d-flex align-items-center formRow priceInput">
+                <div class="<%= errMesg?.date?'errDiv':'' %>">
+                  <label for="date" class="d-block">Date</label>
+                  <input type="date" name="date" value="<%= (product.date || product.date === 0)?product.date:'' %>">
+                  <p class="err"><%= errMesg?.date %></p>
+              </div>
+            </div>
 
               <div class="d-flex align-items-center formRow">
                 <div class="<%= errMesg?.file?'errDiv':'' %>">
                   <label for="image" class=" d-block">Image</label>
-                  <input class="p-1 imgFile" type="file" name="image" multiple>
+                  <input class="p-1 imgFile" type="file" value="<%= product.variations[0].images?product.variations[0].images :'' %>" name="image" accept="image/jpeg, image/jpg, image/png, image/svg+xml, image/webp" id="imageFile"  multiple>
+
                   <p class="err errImgOne">
                     <%= errMesg?.file %>
                   </p>

@@ -4,6 +4,7 @@ const Productdb = require("../../model/adminSide/productModel").Productdb;
 const ProductVariationdb = require("../../model/adminSide/productModel").ProductVariationdb;
 const Cartdb = require("../../model/userSide/cartModel");
 const orderdb = require("../../model/userSide/orderModel");
+const offerdb = require("../../model/adminSide/offerModel");
 
 
 
@@ -108,12 +109,15 @@ module.exports = {
     
           //userHelper fn to get the order Details of singleProduct
           const orderDetails = await userHelper.getSingleOrderOfDetails(req.params,req.session.isUserAuth);
-          console.log("orderDetails:",orderDetails);
+    
 
+           const offerDetails = await offerdb.find()
+
+           console.log("offerDetails:",offerDetails);
           const wishlistItems = await userHelper.getWishlistItemsAll(
             req.session.isUserAuth
           );
-
+          const orders = await userHelper.getOrderItemsAll(req.session.isUserAuth);
           //userHelper fn to get the userDetails
           const userInfo = await userHelper.userInfo(req.session.isUserAuth);
           console.log("userInfo:",userInfo);
@@ -121,6 +125,7 @@ module.exports = {
           const cartItems = await userHelper.getCartItemsAll(req.session.isUserAuth);
            //userHelper fn to get all order history
            const orderItems = await userHelper.userGetAllOrder(req.session.isUserAuth,req.query.page);
+
           if (!orderDetails) {
             return res.status(401).redirect("/orders");
           }
@@ -134,7 +139,9 @@ module.exports = {
             user: req.session.isUserAuth,
             cartItems,
             orderItems,
-            wishlistItems
+            wishlistItems,
+            orders,
+            offerDetails
           });
         } catch (err) {
           console.log("user order summary err err:", err);

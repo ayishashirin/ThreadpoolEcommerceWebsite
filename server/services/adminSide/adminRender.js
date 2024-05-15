@@ -397,24 +397,28 @@ module.exports = {
   adminOrderDetails: async (req, res) => {
     try {
       const product = await adminHelper.getSingleOrder(req.query.id)
-      const order = await Orderdb.findOne({_id:req.query.id})
-      const userInfo = await Userdb.findOne({_id:order.userId})
+      const order = await Orderdb.findOne()
+      const orders = await adminHelper.getSingleOrder({_id:req.query.id})
+      const userInfo = await Userdb.findOne()
       const offerDetails = await offerdb.findOne({})
       const totalPrice = order.orderItems.reduce((total, item) => total + (item.fPrice * item.quantity), 0);
       const totalDiscountAmount = order.orderItems.reduce((total, item) => total + item.DiscountAmount, 0);
-      
      
-      console.log("userId :",order.userId);
-      console.log("order:",order);
-      console.log("orderItems:",order.orderItems);
+console.log("product:",product);
+console.log("order:",order);
 console.log("offerDetails:",offerDetails);
+console.log("totalPrice:",totalPrice);
+console.log("totalDiscountAmount:",totalDiscountAmount);
+
+
+
       
    
-      res.status(200).render('adminSide/adminOrderDetails',{product:product[0], order:order,userInfo,totalPrice,totalDiscountAmount,offerDetails,})
+      res.status(200).render('adminSide/adminOrderDetails',{product:product[0], order:order,userInfo,totalPrice,orders,totalDiscountAmount,offerDetails,})
       
     } catch (error) {
       console.error(error);
-      res.status(500).send('Internal server err');
+      res.status(500).send(error);
     }
   },
 

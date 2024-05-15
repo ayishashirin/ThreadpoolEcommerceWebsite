@@ -16,7 +16,6 @@ const orderdb = require("../../model/userSide/orderModel");
 const shortid = require("shortid");
 const wishlistdb = require("../../model/userSide/wishlist");
 const Razorpay = require("razorpay");
-const puppeteer = require("puppeteer-core");
 const coupondb = require("../../model/adminSide/couponModel");
 const instance = new Razorpay({
     key_id: process.env.key_id,
@@ -182,13 +181,17 @@ userCartDelete: async (req, res) => {
 
 
 userCartCheckOut: async (req, res) => {
-  try {
-    if (!req.body.adId) {
-      req.session.adErr = `Choose an Address`;
+  try{
+    const { paymentMethode, adId, coupon, offerPrice  } = req.body;
+
+    console.log(req.body, 'dhjhsadkjhsajhdakjhasdkjh');
+
+    if(!paymentMethode){
+      req.session.payErr = `Choose a payment Methode`;
     }
 
-    if (!req.body.payMethode) {
-      req.session.payErr = `Choose a payment Methode`;
+    if(!adId){
+      req.session.adErr = `Choose an Address`;
     }
 
     const address = req.body.adId
@@ -198,219 +201,148 @@ userCartCheckOut: async (req, res) => {
         )
       : null;
 
-    if (!address && req.body.adId) {
+    if (!address) {
       req.session.adErr = `Invalid address Choose an Address`;
     }
 
     if (req.session.payErr || req.session.adErr) {
-      if(req.session.isCartItem){
-        return res.json({
-          url: "/cartCheckOut",
-          payMethode: "COD",
-          err: true,
-        });
-      }
       return res.json({
         url: "/cartCheckOut",
-        payMethode: "COD",
+        paymentMethode: "COD",
         err: true,
       });
     }
 
-    if (req.session.isCartItem) {
-      //user Helper fn to get product all product in cart
-      const cartItems = await userHelper.getCartItemsAll(req.session.isUserAuth);
+    const cartItems = await userHelper.getCartItemsAll(req.session.isUserAuth);
 
-      let flag = 0;
-      cartItems.forEach((element) => {
-        if (element.products.quantity > element.variations[0].quantity) {
-          flag = 1;
-        }
-      });
-
-      if (flag === 1) {
-        return res.json({
-          url: "/addToCart",
-          payMethode: "COD",
-          err: true,
-        });
+    let flag = 0;
+    cartItems.forEach((element) => {
+      if (element.products.quantity > element.variations[0].quantity) {
+        flag = 1;
       }
-
-      //user Helper fn to get coupon
-      const coupon  = await userHelper.getCoupon(null, req.session.cartCouponId);
-
-      if(coupon){
-        await userHelper.UpdateCouponCount(req.session.cartCouponId);
-      }
-
-      const orderItems = cartItems.map((element) => {
-        const orderItem = {
-          productId: element.products.productId,
-          pName: element.pDetails[0].pName,
-          category: element.pDetails[0].category,
-          pDescription: element.pDetails[0].pDescription,
-          quantity: element.products.quantity,
-          offerDiscountAmount: Math.round(element.pDetails[0].lPrice * element.products.quandity *  element.allOffers / 100),
-          fPrice: element.pDetails[0].fPrice,
-          lPrice: element.pDetails[0].lPrice,
-          color: element.variations[0].color,
-          size: element.variations[0].size,
-          images: element.variations[0].images[0],
-        };
-        if(coupon && ((coupon?.category === 'All') || (coupon?.category === orderItem.category))){
-          orderItem.couponDiscountAmount = Math.round(orderItem.fPrice * orderItem.quantity * coupon.discount / 100);
-        }else{
-          orderItem.couponDiscountAmount = 0;
-        }
-        return orderItem;
-      });
-
-      let tPrice = 0;
-
-      orderItems.forEach(async (element) => {
-        await ProductVariationdb.updateOne(
-          { productId: element.productId },
-          { $inc: { quantity: element.quantity * -1 } }
-        );
-      });
-
-      orderItems.forEach(async (element) => {
-        tPrice += (element.quantity * element.lPrice) - (element.couponDiscountAmount + element.offerDiscountAmount);
-      });
-
-      console.log(tPrice,'total amount')
-
-      const newOrder = new orderdb({
-        userId: req.session.isUserAuth,
-        orderItems: orderItems,
-        paymentMethode: req.body.payMethode === "COD" ? "COD" : "razorpay",
-        address: address.address[0].structuredAddress,
-      });
-
-      if (req.body.paymentMethode === "COD") {
-        await newOrder.save();
-        await Cartdb.updateOne(
-          { userId: req.session.isUserAuth },
-          { $set: { products: [] } }
-        ); // empty cart items
-        req.session.orderSucessPage = true;
-        return res.json({
-          url: "/userOrderSuccessfull",
-          payMethode: "COD",
-        });
-      }
-
-      if (req.body.paymentMethode === "razorpay") {
-        try {
-          const options = {
-            amount: tPrice * 100,
-            currency: "USD",
-            receipt: "" + newOrder._id,
-          };
-
-          const order = await instance.orders.create(options);
-
-          req.session.newOrder = newOrder;
-
-          return res.json({
-            order,
-            payMethode: "razorpay",
-            keyId: process.env.key_id,
-          });
-        } catch (err) {
-          console.error("rasorpay cart err", err);
-          return res.status(500).render("errorPages/500ErrorPage");
-        }
-      }
-    }
-
-    const [ produtDetails ] = await userHelper.getProductDetails(req.session.productId); ///
-    const product = await ProductVariationdb.findOne({
-      productId: req.session.productId,
     });
 
-    if (product.quantity < orderItem.quantity) {
-      req.session.savedQty = orderItem.quantity;
-      req.session.avalQty = `Only ${product.quantity} stocks available`;
+    if (flag === 1) {
       return res.json({
-        url: `/cartCheckOut}`,
-        payMethode: "COD",
+        url: "/addToCart",
+        paymentMethode: "COD",
         err: true,
       });
     }
-console.log("fgfhhjhj:",req.body);
-    await ProductVariationdb.updateOne(
-      { productId: req.session.productId },
-      { $inc: { quantity: Number( orderItem.quantity) * -1 } }
-    );
+
+    const couponDetails  = await userHelper.getCoupon(coupon);
+
+    if(couponDetails){
+      await userHelper.UpdateCouponCount(couponDetails._id);
+    }
+
+    const orderItems = cartItems.map((element) => {
+      const orderItem = {
+        productId: element.products.productId,
+        pName: element.pDetails[0].pName,
+        category: element.pDetails[0].category,
+        pDescription: element.pDetails[0].pDescription,
+        quantity: element.products.quantity,
+        offerDiscountAmount: Math.round(element.pDetails[0].fPrice * element.products.quandity *  element.allOffers / 100),
+        fPrice: element.pDetails[0].fPrice,
+        lPrice: element.pDetails[0].lPrice,
+        color: element.variations[0].color,
+        size: element.variations[0].size,
+        images: element.variations[0].images[0],
+      };
+      if(couponDetails && ((couponDetails?.category === 'All') || (couponDetails?.category === orderItem.category))){
+        orderItem.couponDiscountAmount = Math.round(orderItem.fPrice * orderItem.quantity * couponDetails.discount / 100);
+      }else{
+        orderItem.couponDiscountAmount = 0;
+      }
+      return orderItem;
+    });
+
+
+    let tPrice = 0;
+
+    orderItems.forEach(async (element) => {
+      await ProductVariationdb.updateOne(
+        { productId: element.productId },
+        { $inc: { quantity: element.quantity * -1 } }
+      );
+    });
+
+    orderItems.forEach(async (element) => {
+      tPrice += (element.quantity * element.lPrice) - element.couponDiscountAmount;
+    });
+
+    if(Number(offerPrice)){
+      tPrice -= Number(offerPrice);
+    }
+
+    console.log(tPrice,'total amount');
 
     const newOrder = new orderdb({
       userId: req.session.isUserAuth,
-      orderItems: [
-        {
-          productId: req.session.buyNowPro.pId,
-          quantity:  orderItem.quantity,
-          pName: produtDetails.pName,
-          category: produtDetails.category,
-          sTittle: produtDetails.sTittle,
-          hDescription: produtDetails.hDescription,
-          pDescription: produtDetails.pDescription,
-          fPrice: produtDetails.fPrice,
-          lPrice: produtDetails.lPrice,
-          color: product.color,
-          size: product.size,
-          offerDiscountAmount: Math.round(produtDetails.lPrice *  orderItem.quantity *  produtDetails.allOffers / 100),
-          images: product.images[0],
-          fPrice: produtDetails.fPrice,
-          lPrice: produtDetails.lPrice,
-        },
-      ],
-      paymentMethode: req.body.paymentMethode === "COD" ? "COD" : "razorpay",
+      orderItems: orderItems,
+      paymentMethode: paymentMethode,
       address: address.address[0].structuredAddress,
     });
-    
-    if(orderItem.couponId){
-      const coupon = await userHelper.getCoupon(null,orderItem.couponId);
-      if(coupon && ((coupon.category === 'All') || (coupon.category === newOrder.orderItems[0].category))){
-        await userHelper.UpdateCouponCount(orderItem.couponId);
-        newOrder.orderItems[0].couponDiscountAmount = (newOrder.orderItems[0].lPrice * newOrder.orderItems[0].quantity * (coupon.discount / 100));
-      }
-    }
 
-    if (req.body.paymentMethode === "COD") {
+    if (paymentMethode === "COD") {
+      console.log('COD');
       await newOrder.save();
-      req.session.orderSuccessPage = true;
+      await Cartdb.updateOne(
+        { userId: req.session.isUserAuth },
+        { $set: { products: [] } }
+      ); // empty cart items
+      // req.session.orderSucessPage = true;
       return res.json({
         url: "/userOrderSuccessfull",
         paymentMethode: "COD",
       });
-    }
-
-    if (req.body.paymentMethode === "razorpay") {
-      try {
+    }else if (req.body.paymentMethode === "razorpay"){
+      try{
         const options = {
-          amount:
-            (Math.round((newOrder.orderItems[0].lPrice *
-            newOrder.orderItems[0].quantity) - (newOrder.orderItems[0].couponDiscountAmount + newOrder.orderItems[0].DiscountAmount)) * 100),
+          amount: tPrice * 100,
           currency: "USD",
           receipt: "" + newOrder._id,
         };
+
         const order = await instance.orders.create(options);
 
         req.session.newOrder = newOrder;
 
         return res.json({
           order,
-          payMethode: "razorpay",
+          paymentMethode: "razorpay",
           keyId: process.env.key_id,
         });
-      } catch (err) {
-        console.error("rasorpay single product err", err);
-        res.status(500).render("errorPages/500ErrorPage");
+      }catch(err){
+        console.error('Razorpay err', err);
+        return res.status(500).render("errorPages/500ErrorPage");
       }
-    }
-  } catch (err) {
-    console.error("payment whole errr", err);
+
+
+    }else if (req.body.paymentMethode === "wallet"){
+      try {
+        await newOrder.save();
+        await Cartdb.updateOne(
+          { userId: req.session.isUserAuth },
+          { $set: { products: [] } }
+        ); // empty cart items
+        // req.session.orderSucessPage = true;
+        return res.json({
+          url: "/orderSuccessfull",
+          paymentMethode: "wallet",
+        });
+      } catch (error) {
+        console.error('wallet err', error);
+        return res.status(500).render("errorPages/500ErrorPage");
+      }
+      }
+    
+
+
+
+  }catch(err){
+    console.error('Main err in user cart checkout', err);
     res.status(500).render("errorPages/500ErrorPage");
   }
 },

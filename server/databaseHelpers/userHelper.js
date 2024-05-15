@@ -734,6 +734,16 @@ console.log("products:",products);
 
       //to get all product in cart with all details of product
       const products = await Cartdb.aggregate(agg);
+
+      products.forEach(each => {
+        each.allOffers = each.allOffers.reduce((total, offer) => {
+          if(offer.expiry >= new Date() && offer.discount > total){
+            return total = offer.discount;
+          }
+
+          return total;
+        }, 0);
+      });
       
       return products;
     } catch (err) {

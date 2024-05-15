@@ -503,7 +503,7 @@ module.exports = {
 
     
             // Find the specific order by orderId
-            const order = await Orderdb.findOne({ _id: orderId });
+            // const order = await Orderdb.findOne({ _id: orderId });
     
 
 
@@ -517,7 +517,7 @@ module.exports = {
                 }, 0);
               });
     
-            return order, product;
+            return  product;
             
         } catch (err) {
             throw err;

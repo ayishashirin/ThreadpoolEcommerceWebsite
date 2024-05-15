@@ -67,7 +67,7 @@ userOrderCancel: async (req, res) => {
           price: value.lPrice,
           discounts: (value.fPrice - value.lPrice) * -1,
           couponDiscountAmount: Math.round(value.couponDiscountAmount) * -1,
-          offerDiscountAmount: (value.offerDiscountAmount) * -1,
+          offerDiscountAmount: (value.DiscountAmount) * -1,
         };
 
         products.push(singleProduct);

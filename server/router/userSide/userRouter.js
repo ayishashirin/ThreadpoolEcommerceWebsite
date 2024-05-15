@@ -166,7 +166,6 @@ router.get('/orders', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocke
 
 router.get('/orderCancel/:orderId/:productId', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userOrderController.userOrderCancel);// Option to cancel order of user
 
-router.get('/orderDownloadInvoice/:productId/:orderId', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userOrderController.userOrderDownloadInvoice); // Download invoice of delivered orders
 
 router.get('/orderDetails/:orderId/:productId',  authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userOrderRender.orderDetails)
 

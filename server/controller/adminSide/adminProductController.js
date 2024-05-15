@@ -132,7 +132,7 @@ adminAddProduct: async (req, res) => {
       });
       await newProductVariation.save();
 
-      // Redirect to product management page after successful addition
+   
       res.redirect("/adminProductManagement");
     } catch (err) {
       console.error(err);
@@ -173,7 +173,7 @@ adminAddProduct: async (req, res) => {
   adminUpdateProduct: async (req, res) => {
     try {
       console.log(req.query, "ayshaaaaa")
-      // Trim whitespace from form fields
+     
       req.body.pName = req.body.pName?.trim();
       req.body.pDescription = req.body.pDescription?.trim();
       req.body.fPrice = req.body.fPrice?.trim();
