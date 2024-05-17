@@ -12,6 +12,7 @@ module.exports = {
 
     showProductsCategory: async (req, res) => {
         try {
+          // console.log(req.query,'dfldfjdlfjd')
           //userHelper fn to get all listed category
     
           const category = await userHelper.getAllListedCategory();

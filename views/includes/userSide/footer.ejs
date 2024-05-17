@@ -538,17 +538,40 @@
                                                 <div class="woocommerce-widget price-list-widget">
                                                     <h3 class="woocommerce-widget-title">Price</h3>
                                                     <div class="collection-filter-by-price">
-                                                        <input class="js-range-of-price" type="text" data-min="0" data-max="1055"
-                                                            name="filter_by_price" data-step="10">
-                                                        </div>
+                                                        <input class="js-range-of-price" type="range" min="0" max="1055" name="filter_by_price" step="10" onchange="sendValuesToBackend()">
+                                                    </div>
                                                 </div>
+                                                <script>
+                                                    function sendValuesToBackend() {
+                                                        // Retrieve starting and ending values
+                                                        var startValue = parseInt(document.querySelector('.js-range-of-price').value);
+                                                        console.log(startValue,'dfd')
+                                                    
+                                                        // Send values to the backend via fetch
+                                                        fetch('backend_endpoint_url_here', {
+                                                            method: 'POST',
+                                                            headers: {
+                                                                'Content-Type': 'application/json'
+                                                            },
+                                                            body: JSON.stringify({ startValue: startValue })
+                                                        })
+                                                        .then(response => {
+                                                            if (response.ok) {
+                                                                console.log('Value sent to backend successfully.');
+                                                            } else {
+                                                                console.error('Failed to send value to backend.');
+                                                            }
+                                                        })
+                                                        .catch(error => {
+                                                            console.error('Error sending value to backend:', error);
+                                                        });
+                                                    }
+                                                    </script>
+                                                
                                                 <div class="woocommerce-widget size-list-widget">
                                                     <h3 class="woocommerce-widget-title">Size</h3>
                                                     <ul class="size-list-row">
-                                                        <li><a href="#">20</a></li>
-                                                        <li><a href="#">24</a></li>
-                                                        <li class="active"><a href="#">36</a></li>
-                                                        <li><a href="#">30</a></li>
+                                                       
                                                         <li><a href="#">XS</a></li>
                                                         <li><a href="#">S</a></li>
                                                         <li><a href="#">M</a></li>
@@ -704,7 +727,7 @@
                             </footer>
 
                             <div class="go-top"><i class="bx bx-up-arrow-alt"></i></div>
-
+                            
                             <script data-cfasync="false" src="../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
                             <script src="/userSide/js/jquery.min.js"></script>
                             <script src="/userSide/js/popper.min.html"></script>

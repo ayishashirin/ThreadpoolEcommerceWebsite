@@ -25,7 +25,6 @@ module.exports = {
     
     userWishlistNow: async (req, res) => {
         try {
-        console.log(req.params.productId);
 
     
           const isWishList = await wishlistdb.findOne({
@@ -35,13 +34,12 @@ module.exports = {
     
           if (!isWishList) {
     
-            const p = await wishlistdb.updateOne(
+            await wishlistdb.updateOne(
               { userId: req.session.isUserAuth },
               { $push: { products: { productId: req.params.productId } } },
               { upsert: true },{new:true}
             );
 
-            console.log(p);
     
             return res.status(200).json({success:true})
           } else {

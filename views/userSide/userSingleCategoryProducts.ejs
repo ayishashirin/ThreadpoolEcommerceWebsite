@@ -157,15 +157,23 @@
 </div>
 <% } %>
 </div>
-<div class="pagination-area text-center">
-<a href="#" class="prev page-numbers"><i class="bx bx-chevron-left"></i></a>
-<span class="page-numbers current" aria-current="page">1</span>
-<a href="#" class="page-numbers">2</a>
-<a href="#" class="page-numbers">3</a>
-<a href="#" class="page-numbers">4</a>
-<a href="#" class="page-numbers">5</a>
-<a href="#" class="next page-numbers"><i class="bx bx-chevron-right"></i></a>
-</div>
+
+
+<ul class="pagination justify-content-center">
+  <li class="page-item">
+    <a class="page-link" href="/Category?page=<%= (curentPage === 1 || !curentPage)?1:(curentPage - 1) %>" aria-label="Previous" >
+      <span aria-hidden="true">&laquo;</span>
+    </a>
+  </li>
+  <% for( let i = 0; i < (Math.ceil(totalProducts / 10)); i++ ) { %>
+    <li class="page-item"><a class="page-link" href="/Category?page=<%= (i + 1) %>" ><%= (i + 1) %></a></li>
+  <% } %>
+  <li class="page-item">
+    <a class="page-link" href="/Category?page=<%= ((Math.ceil(totalProducts / 10)) === curentPage)?curentPage:(curentPage === 1 || !curentPage)?2:(curentPage + 1) %>"aria-label="Next">
+      <span aria-hidden="true">&raquo;</span>
+    </a>
+  </li>
+</ul>
 </div>
 </section>
 
@@ -202,47 +210,64 @@
 </ul>
 </div>
 <div class="woocommerce-widget price-list-widget">
-<h3 class="woocommerce-widget-title">Price</h3>
-<div class="collection-filter-by-price">
-<input class="js-range-of-price" type="text" data-min="1" data-max="1055" name="filter_by_price" data-step="10">
+  <h3 class="woocommerce-widget-title">Price</h3>
+  <div class="collection-filter-by-price">
+    <input class="js-range-of-price" type="text" data-min="0" data-max="1055" name="filter_by_price" data-step="10">
+  </div>
 </div>
-</div>
-<div class="woocommerce-widget size-list-widget">
-<h3 class="woocommerce-widget-title">Size</h3>
-<ul class="size-list-row">
-<li><a href="#">XS</a></li>
-<li><a href="#">S</a></li>
-<li><a href="#">M</a></li>
-<li><a href="#">L</a></li>
-<li><a href="#">XL</a></li>
-<li><a href="#">XXL</a></li>
-</ul>
-</div>
-<div class="woocommerce-widget color-list-widget">
-<h3 class="woocommerce-widget-title">Color</h3>
-<ul class="color-list-row">
-<li class="active"><a href="#" title="Black" class="color-black"></a></li>
-<li><a href="#" title="Red" class="color-red"></a></li>
-<li><a href="#" title="Yellow" class="color-yellow"></a></li>
-<li><a href="#" title="White" class="color-white"></a></li>
-<li><a href="#" title="Blue" class="color-blue"></a></li>
-<li><a href="#" title="Green" class="color-green"></a></li>
-<li><a href="#" title="Pink" class="color-pink"></a></li>
-<li><a href="#" title="Blue Violet" class="color-blueviolet"></a></li>
 
-</ul>
+
+
+
+
+<div class="woocommerce-widget size-list-widget">
+  <h3 class="woocommerce-widget-title">Size</h3>
+  <ul class="size-list-row">
+      <li><a href="/category?size=XS" class="size-option">XS</a></li>
+      <li><a href="/category?size=S" class="size-option">S</a></li>
+      <li><a href="/category?size=M" class="size-option">M</a></li>
+      <li><a href="/category?size=L" class="size-option">L</a></li>
+      <li><a href="/category?size=XL" class="size-option">XL</a></li>
+      <li><a href="/category?size=XXL" class="size-option">XXL</a></li>
+  </ul>
 </div>
-<!-- <div class="woocommerce-widget brands-list-widget">
-<h3 class="woocommerce-widget-title">Brands</h3>
-<ul class="brands-list-row">
-<li><a href="#">Gucci</a></li>
-<li><a href="#">Virgil Abloh</a></li>
-<li><a href="#">Balenciaga</a></li>
-<li class="active"><a href="#">Moncler</a></li>
-<li><a href="#">Fendi</a></li>
-<li><a href="#">Versace</a></li>
-</ul>
-</div> -->
+
+<div class="woocommerce-widget color-list-widget">
+  <h3 class="woocommerce-widget-title">Color</h3>
+  <ul class="color-list-row">
+    <li><a href="/category?color=Black" title="Black" class="color-black"></a></li>
+    <li><a href="/category?color=Red" title="Red" class="color-red"></a></li>
+    <li><a href="/category?color=Yellow" title="Yellow" class="color-yellow"></a></li>
+    <li><a href="/category?color=White" title="White" class="color-white"></a></li>
+    <li><a href="/category?color=Blue" title="Blue" class="color-blue"></a></li>
+    <li><a href="/category?color=Green" title="Green" class="color-green"></a></li>
+    <li><a href="/category?color=Pink" title="Pink" class="color-pink"></a></li>
+    <li><a href="/category?color=BlueViolet" title="Blue Violet" class="color-blueviolet"></a></li>
+  </ul>
+</div>
+
+<script>function updateQueryParams(param, value) {
+  const urlParams = new URLSearchParams(window.location.search);
+  urlParams.set(param, value);
+  window.location.search = urlParams.toString();
+}
+
+// Attach event listeners to color and size options
+document.querySelectorAll('.color-list-row a').forEach(anchor => {
+  anchor.addEventListener('click', event => {
+    event.preventDefault();
+    updateQueryParams('color', event.target.getAttribute('title'));
+  });
+});
+
+document.querySelectorAll('.size-list-row a').forEach(anchor => {
+  anchor.addEventListener('click', event => {
+    event.preventDefault();
+    updateQueryParams('size', event.target.textContent);
+  });
+});
+</script>
+
 <div class="woocommerce-widget aside-trending-widget">
 <div class="aside-trending-products">
 <img src="/userSide/img/offer-bg.jpg" alt="image" alt="image">

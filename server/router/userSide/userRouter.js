@@ -169,7 +169,6 @@ router.get('/orderCancel/:orderId/:productId', authMiddleware.isUserLoggedIn, au
 
 router.get('/orderDetails/:orderId/:productId',  authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userOrderRender.orderDetails)
 
-router.get('/orders', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userOrderRender.userOrders);// User order history listing page
 
 // --------------------------------------------------------------------------------------------------------------------------------
 
@@ -209,6 +208,18 @@ router.post('/AddAddress', authMiddleware.isUserLoggedIn, authMiddleware.isUserB
 
 router.post('/api/changeAddressPayment', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userAddressController.changeAddressPayment); // Option to change address from check out page
 // --------------------------------------------------------------------------------------------------------------------
+
+
+//Filter
+
+
+// router.get('/sort',userController.Filter)
+
+
+
+
+
+
 
 // logOut
 

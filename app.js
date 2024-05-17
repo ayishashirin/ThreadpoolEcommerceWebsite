@@ -16,7 +16,7 @@ connectDB();
 
 app.set("view engine", "ejs");
 
-app.use(morgan('dev'));
+// app.use(morgan('dev'));
 app.use(flash());
 app.use((req, res, next) => {
   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");

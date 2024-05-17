@@ -205,6 +205,10 @@ module.exports = {
         req.session.isUserAuth
       );
 
+      const wishlistItems = await userHelper.getWishlistItemsAll(
+        req.session.isUserAuth
+      );
+
       const cartItems = await userHelper.getCartItemsAll(
         req.session.isUserAuth
       );
@@ -234,6 +238,7 @@ module.exports = {
           counts,
           cartItems,
           isReffered,
+          wishlistItems
         },
         (err, html) => {
           if (err) {

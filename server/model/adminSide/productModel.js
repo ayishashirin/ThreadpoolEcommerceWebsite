@@ -28,12 +28,12 @@ const productSchema = new mongodb.Schema({
    },
     newlyLaunch: {
         type: Boolean,
-        default: true,
+        default: false,
         required: true
     },
     unlistedProduct: {
         type: Boolean,
-        default:true
+        default:false
     },
     offers: [
         {
@@ -45,7 +45,8 @@ const productSchema = new mongodb.Schema({
 const productVariationSchema = new mongodb.Schema({
     productId: {
         type: mongodb.SchemaTypes.ObjectId,
-        required: true
+        required: true,
+        ref:"Productdbs"
     },
     color: {
         type: String,

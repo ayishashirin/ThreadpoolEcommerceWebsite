@@ -292,7 +292,6 @@ module.exports = {
         userStatus: true,
         referralCode: shortid.generate()
       });
-      console.log(newUser);
 
       await newUser.save();
 
@@ -388,11 +387,9 @@ module.exports = {
 
   userRegisterOtpVerify: async (req, res) => {
     try {
-      console.log("hgfasdfgsdfghj");
-      if (!req.body.otp) {
+     if (!req.body.otp) {
         req.session.otpError = `This Field is required`;
       }
-      console.log("asdfghjertyui");
       if (String(req.body.otp).length != 4) {
         req.session.otpError = `Enter valid number`;
       }
@@ -681,5 +678,98 @@ module.exports = {
     }
   },
 
+
+  //  Filter:async(req,res)=>{
+  //   try {
+
+  //     console.log(req.query,'hhhh')
+  //     let products = []; // Define products variable with default value
+
+  //     if (req.query.size) {
+  //         const size = req.query.size; // Extract size from query params
+
+  //         if (size === "M") {
+  //             console.log("Size M");
+  //             const Find = await ProductVariationdb.find({ size: "M" });
+  //             console.log(Find, "dfidjf");
+  //             // Handle Find result if needed
+  //         } else if (size === 'XL') {
+  //             console.log("Size XL");
+  //             const Find = await ProductVariationdb.find({ size: "XL" });
+  //             console.log(Find, 'hh');
+
+  //             const productPromises = Find.map(async (variation) => {
+  //                 const productId = variation.productId;
+  //                 return await userHelper.userSingleProductCategory(productId);
+  //             });
+
+  //             products = await Promise.all(productPromises);
+  //             console.log(products, 'aysihsa');
+  //         }
+  //       }
+
+  //   //userHelper fn to get all listed category
+    
+  //   const category = await userHelper.getAllListedCategory();
+    
+  //   //userHelper fn to get counts of product in cart
+  //   const counts = await userHelper.getTheCountOfWhislistCart(
+  //     req.session.isUserAuth
+  //   );
+
+  //   //userHelper fn to get product details of specific category
+  
+
+  //   const cartItems = await userHelper.getCartItemsAll(
+  //     req.session.isUserAuth
+  //   );
+  //   const wishlistItems = await userHelper.getWishlistItemsAll(
+  //     req.session.isUserAuth
+  //   );
+
+  //   //userHelper fn to get total number of products
+  //   const totalProducts = await userHelper.userTotalProductNumber(
+  //     req.params.category
+  //   );
+
+  //   //userHelper function to cheack if the product already exists in user cart
+  //   const isCartItem = await userHelper.isProductCartItem(
+  //     req.params.id,
+  //     req.session.isUserAuth
+  //   );
+  //   //userHelper function to cheack if the product already exists in user cart
+  //   const iswishlistItem = await userHelper.isProductWishlistItem(
+  //     req.params.id,
+  //     req.session.isUserAuth
+  //   );
+
+  //   //userHelper fn to get details of single product in buy now page
+  //   const [singleProduct] = await userHelper.getProductDetails(req.params.productId);
+      
+  //   // const products = await userHelper.getWishlistItems(req.session.isUserAuth);
+   
+  //      res.render('userSide/userSingleCategoryProducts',{
+  //       products: products,
+  //       category,
+  //       curentPage: Number(req.query.page),
+  //       currentCategory: req.params.category,
+  //       user: req.session.isUserAuth,
+  //       counts,
+  //       cartItems,
+  //       isCartItem,
+  //       totalProducts,
+  //       singleProduct,
+  //       product:products,
+  //       wishlistItems,
+  //       iswishlistItem})
+
+  //   } catch (error) {
+      
+  //   }
+  //  }
+
   // ------------------------------------------------------------------------------------------------------
 };
+
+
+

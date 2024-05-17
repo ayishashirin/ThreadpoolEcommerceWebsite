@@ -11,7 +11,6 @@ module.exports = {
 
     usersAddToCart: async (req, res) => {
         try {
-          console.log("jiiiiiii");
     
           //userHelper fn to get all listed category,counts of product in cart,all product in cart
           const category = await userHelper.getAllListedCategory();
@@ -25,7 +24,6 @@ module.exports = {
           const wishlistItems = await userHelper.getWishlistItemsAll(
             req.session.isUserAuth
           );
-          console.log("cartitems:",cartItems);
 
           res.render(
             "userSide/userAddCart",
@@ -69,10 +67,8 @@ module.exports = {
           );
           //userHelper fn to get all details of user
           const userInfo = await userHelper.userInfo(req.session.isUserAuth);
-          console.log(userInfo);
           const cartItems = await userHelper.getCartItemsAll(req.session.isUserAuth);
           const coupons =  await adminHelper.getAllCoupon();
-          console.log(coupons);
           res.status(200).render(
             "userSide/UserCheckout",
             {

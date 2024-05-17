@@ -79,10 +79,14 @@ module.exports = {
             req.query.page
           );
 
-          console.log("orderItems:",orderItems);
+          const allOrderItems = await userHelper.getAllOrdersOfUser(req.session.isUserAuth)
+
+          console.log(allOrderItems,'sgdhgdgshf');
+
           res.status(200).render("userSide/userOrderPage", {
             category,
-            orders: orderItems.orders,
+            // orders: orderItems.orders,
+            orders: allOrderItems,
             counts,
             curentPage: Number(req.query.page),
             totalOrders: orderItems.totalOrders,
@@ -113,18 +117,17 @@ module.exports = {
 
            const offerDetails = await offerdb.find()
 
-           console.log("offerDetails:",offerDetails);
           const wishlistItems = await userHelper.getWishlistItemsAll(
             req.session.isUserAuth
           );
           const orders = await userHelper.getOrderItemsAll(req.session.isUserAuth);
           //userHelper fn to get the userDetails
           const userInfo = await userHelper.userInfo(req.session.isUserAuth);
-          console.log("userInfo:",userInfo);
 
           const cartItems = await userHelper.getCartItemsAll(req.session.isUserAuth);
            //userHelper fn to get all order history
            const orderItems = await userHelper.userGetAllOrder(req.session.isUserAuth,req.query.page);
+
 
           if (!orderDetails) {
             return res.status(401).redirect("/orders");

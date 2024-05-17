@@ -30,7 +30,6 @@ module.exports = {
 
 userAddAddress: async (req, res) => {
     try {
-      console.log(req.body);
       req.body.name = req.body.name?.trim();
       req.body.country = req.body.country?.trim();
       req.body.district = req.body.district?.trim();

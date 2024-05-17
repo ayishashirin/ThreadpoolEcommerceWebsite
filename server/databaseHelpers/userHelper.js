@@ -5,7 +5,7 @@ const { ProductVariationdb } = require("../model/adminSide/productModel");
 const Categorydb = require("../model/adminSide/category").Categorydb;
 const userVariationdb = require("../model/userSide/userVariationModel");
 const Orderdb = require("../model/userSide/orderModel");
-const { default: mongoose, isObjectIdOrHexString } = require("mongoose");
+const { mongoose, isObjectIdOrHexString } = require("mongoose");
 const referralOfferdb = require("../model/adminSide/referralOfferModel");
 const UserWalletdb = require("../model/userSide/walletModel");
 const Wishlistdb = require("../model/userSide/wishlist");
@@ -47,7 +47,6 @@ module.exports = {
           }, 0);
         });
       
-        console.log(products)
         return products;
 
     } catch (err) {
@@ -108,64 +107,93 @@ module.exports = {
     }
 },
 
-  userSingleProductCategory: async (search = null) => {
-    try {
-      let genderCat = search.genderCat;
-      let filter = { $match: { unlistedProduct: false } };
+userSingleProductCategory : async (search = {}) => {
+  try {
+    let filterConditions = { unlistedProduct: false };
 
-      if (genderCat) {
-        filter = { $match: { unlistedProduct: false, category: genderCat } };
-      }
-
-      const skip = Number(search.page) ? Number(search.page) - 1 : 0;
-      const agg = [
-        filter,
-
-        {
-          $skip: 10 * skip,
-        },
-        {
-          $limit: 10,
-        },
-
-        {
-          $lookup: {
-            from: "offerdbs",
-            localField: "offers",
-            foreignField: "_id",
-            as: "allOffers",
-          },
-        },
-        {
-          $lookup: {
-            from: "productvariationdbs",
-            localField: "_id",
-            foreignField: "productId",
-            as: "variations",
-          },
-        },
-      ];
-
-      // aggregatng to get all product details of selected category
-      const products = await Productdb.aggregate(agg);
-
-      products.forEach(each => {
-        each.allOffers = each.allOffers.reduce((total, offer) => {
-          if(offer.expiry >= new Date() && offer.discount > total){
-            return total = offer.discount;
-          }
-          console.log("total:",total);
-
-          return total;
-        }, 0);
-      });
-
-console.log("products:",products);
-      return products;
-    } catch (err) {
-      throw err;
+    // Adding category filter if genderCat is provided
+    if (search.genderCat) {
+      filterConditions.category = search.genderCat;
     }
-  },
+
+    // Valid sizes and colors arrays
+    const validSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+    const validColors = ['Black', 'Red', 'Yellow', 'White', 'Blue', 'Green', 'Pink', 'BlueViolet'];
+
+    // Creating the filter match stage for aggregation
+    let filter = { $match: filterConditions };
+
+    // Calculating the skip value for pagination
+    const page = Number(search.page);
+    const skip = page && page > 0 ? (page - 1) * 10 : 0;
+
+    // Building the aggregation pipeline
+    const agg = [
+      filter,
+      {
+        $lookup: {
+          from: "productvariationdbs",
+          localField: "_id",
+          foreignField: "productId",
+          as: "variations",
+        },
+      },
+      {
+        $unwind: "$variations",
+      },
+      // Adding size filter if a valid size is provided
+      ...(validSizes.includes(search.size) ? [{ $match: { "variations.size": search.size } }] : []),
+      // Adding color filter if a valid color is provided
+      ...(validColors.includes(search.color) ? [{ $match: { "variations.color": search.color } }] : []),
+      { $skip: skip },
+      { $limit: 10 },
+      {
+        $lookup: {
+          from: "offerdbs",
+          localField: "offers",
+          foreignField: "_id",
+          as: "allOffers",
+        },
+      },
+      {
+        $group: {
+          _id: "$_id",
+          pName: { $first: "$pName" },
+          category: { $first: "$category" },
+          pDescription: { $first: "$pDescription" },
+          fPrice: { $first: "$fPrice" },
+          lPrice: { $first: "$lPrice" },
+          date: { $first: "$date" },
+          newlyLaunch: { $first: "$newlyLaunch" },
+          unlistedProduct: { $first: "$unlistedProduct" },
+          offers: { $first: "$offers" },
+          allOffers: { $first: "$allOffers" },
+          variations: { $push: "$variations" },
+        }
+      },
+    ];
+
+    // Aggregating to get all product details of the selected category
+    const products = await Productdb.aggregate(agg);
+
+    // Processing offers to find the maximum valid discount
+    products.forEach(each => {
+      each.allOffers = each.allOffers.reduce((maxDiscount, offer) => {
+        if (offer.expiry >= new Date() && offer.discount > maxDiscount) {
+          return offer.discount;
+        }
+        return maxDiscount;
+      }, 0);
+    });
+
+    return products;
+  } catch (err) {
+    throw err;
+  }
+},
+
+
+
   getProductDetails: async (productId, newlyLauched = false) => {
     try {
       //for geting newly launched product in home page
@@ -587,7 +615,7 @@ console.log("products:",products);
             walletBalance: offerRewards.referralRewards,
           },
           $push: {
-            transtions: {
+            transactions: {
               amount: offerRewards.referralRewards,
             },
           },
@@ -633,6 +661,11 @@ console.log("products:",products);
     } catch (err) {
       throw err;
     }
+  },
+
+  getAllOrdersOfUser: async (userId) => {
+    const totalOrders = await Orderdb.find({userId});
+    return totalOrders;
   },
 
   userGetAllOrder: async (userId, pageNo = 1) => {

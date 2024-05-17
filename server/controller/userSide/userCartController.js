@@ -22,6 +22,7 @@ const instance = new Razorpay({
     key_secret: process.env.key_secret,
 });
 
+const { v4: uuidv4 } = require('uuid');
 
   // -----------------------------------------------------------------------------------------------------
 module.exports = {
@@ -179,18 +180,15 @@ userCartDelete: async (req, res) => {
 // ----------------------------------------------------------------------------------------------------------
 
 
-
 userCartCheckOut: async (req, res) => {
-  try{
-    const { paymentMethode, adId, coupon, offerPrice  } = req.body;
+  try {
+    const { paymentMethode, adId, coupon, offerPrice } = req.body;
 
-    console.log(req.body, 'dhjhsadkjhsajhdakjhasdkjh');
-
-    if(!paymentMethode){
+    if (!paymentMethode) {
       req.session.payErr = `Choose a payment Methode`;
     }
 
-    if(!adId){
+    if (!adId) {
       req.session.adErr = `Choose an Address`;
     }
 
@@ -230,9 +228,9 @@ userCartCheckOut: async (req, res) => {
       });
     }
 
-    const couponDetails  = await userHelper.getCoupon(coupon);
+    const couponDetails = await userHelper.getCoupon(coupon);
 
-    if(couponDetails){
+    if (couponDetails) {
       await userHelper.UpdateCouponCount(couponDetails._id);
     }
 
@@ -243,64 +241,75 @@ userCartCheckOut: async (req, res) => {
         category: element.pDetails[0].category,
         pDescription: element.pDetails[0].pDescription,
         quantity: element.products.quantity,
-        offerDiscountAmount: Math.round(element.pDetails[0].fPrice * element.products.quandity *  element.allOffers / 100),
+        offerDiscountAmount: Math.round(
+          element.pDetails[0].fPrice *
+            element.products.quantity *
+            element.allOffers /
+            100
+        ),
         fPrice: element.pDetails[0].fPrice,
         lPrice: element.pDetails[0].lPrice,
         color: element.variations[0].color,
         size: element.variations[0].size,
         images: element.variations[0].images[0],
       };
-      if(couponDetails && ((couponDetails?.category === 'All') || (couponDetails?.category === orderItem.category))){
-        orderItem.couponDiscountAmount = Math.round(orderItem.fPrice * orderItem.quantity * couponDetails.discount / 100);
-      }else{
+      if (
+        couponDetails &&
+        (couponDetails.category === 'All' ||
+          couponDetails.category === orderItem.category)
+      ) {
+        orderItem.couponDiscountAmount = Math.round(
+          orderItem.fPrice * orderItem.quantity * couponDetails.discount / 100
+        );
+      } else {
         orderItem.couponDiscountAmount = 0;
       }
       return orderItem;
     });
 
-
     let tPrice = 0;
 
-    orderItems.forEach(async (element) => {
+    for (const element of orderItems) {
       await ProductVariationdb.updateOne(
         { productId: element.productId },
         { $inc: { quantity: element.quantity * -1 } }
       );
-    });
+    }
 
-    orderItems.forEach(async (element) => {
-      tPrice += (element.quantity * element.lPrice) - element.couponDiscountAmount;
-    });
+    for (const element of orderItems) {
+      tPrice += element.quantity * element.lPrice - element.couponDiscountAmount;
+    }
 
-    if(Number(offerPrice)){
+    if (Number(offerPrice)) {
       tPrice -= Number(offerPrice);
     }
 
-    console.log(tPrice,'total amount');
+    // Generate a unique order ID
+    const orderId = uuidv4();
 
     const newOrder = new orderdb({
       userId: req.session.isUserAuth,
+      orderId: orderId, // Store the generated order ID
       orderItems: orderItems,
       paymentMethode: paymentMethode,
       address: address.address[0].structuredAddress,
+      totalPrice: tPrice,
     });
 
-    if (paymentMethode === "COD") {
-      console.log('COD');
+    if (paymentMethode === 'COD') {
       await newOrder.save();
       await Cartdb.updateOne(
         { userId: req.session.isUserAuth },
         { $set: { products: [] } }
       ); // empty cart items
-      // req.session.orderSucessPage = true;
       return res.json({
         url: "/userOrderSuccessfull",
         paymentMethode: "COD",
       });
-    }else if (req.body.paymentMethode === "razorpay"){
-      try{
+    } else if (paymentMethode === 'razorpay') {
+      try {
         const options = {
-          amount: tPrice * 100,
+          amount: tPrice * 100, // Amount in smallest currency unit
           currency: "USD",
           receipt: "" + newOrder._id,
         };
@@ -314,20 +323,17 @@ userCartCheckOut: async (req, res) => {
           paymentMethode: "razorpay",
           keyId: process.env.key_id,
         });
-      }catch(err){
+      } catch (err) {
         console.error('Razorpay err', err);
         return res.status(500).render("errorPages/500ErrorPage");
       }
-
-
-    }else if (req.body.paymentMethode === "wallet"){
+    } else if (paymentMethode === 'wallet') {
       try {
         await newOrder.save();
         await Cartdb.updateOne(
           { userId: req.session.isUserAuth },
           { $set: { products: [] } }
         ); // empty cart items
-        // req.session.orderSucessPage = true;
         return res.json({
           url: "/orderSuccessfull",
           paymentMethode: "wallet",
@@ -336,16 +342,13 @@ userCartCheckOut: async (req, res) => {
         console.error('wallet err', error);
         return res.status(500).render("errorPages/500ErrorPage");
       }
-      }
-    
-
-
-
-  }catch(err){
+    }
+  } catch (err) {
     console.error('Main err in user cart checkout', err);
     res.status(500).render("errorPages/500ErrorPage");
   }
 },
+
 
 //   ----------------------------------------------------------------------------------------------------------
 
@@ -412,9 +415,6 @@ isCouponValidCart: async (req, res) => {
       //   });
       // }
 
-   console.log(totalDiscount);
-   console.log(coupon);
-   console.log(total);
 
       res.status(200).json({
         status: true,

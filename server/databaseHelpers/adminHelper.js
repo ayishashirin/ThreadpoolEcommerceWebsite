@@ -242,7 +242,6 @@ module.exports = {
         try {
             const newCoupon = new Coupondb(body);
             await newCoupon.save();
-            console.log(newCoupon);
         } catch (err) {
             throw err;
         }
