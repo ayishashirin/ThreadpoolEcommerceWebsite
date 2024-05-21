@@ -5,6 +5,7 @@ const ProductVariationdb = require("../../model/adminSide/productModel").Product
 const Cartdb = require("../../model/userSide/cartModel");
 const orderdb = require("../../model/userSide/orderModel");
 const offerdb = require("../../model/adminSide/offerModel");
+const userVariationdb = require("../../model/userSide/userVariationModel");
 
 
 
@@ -93,7 +94,8 @@ module.exports = {
             user: req.session.isUserAuth,
             userInfo,
             cartItems,
-            wishlistItems
+            wishlistItems,
+            totalOrders: orderItems.totalOrders,
           });
         } catch (err) {
           console.log("Update query err:", err);
@@ -112,21 +114,19 @@ module.exports = {
           );
     
           //userHelper fn to get the order Details of singleProduct
-          const orderDetails = await userHelper.getSingleOrderOfDetails(req.params,req.session.isUserAuth);
-    
+          const orderDetails = await userHelper.getSingleOrderOfDetails(req.params,req.session.isUserAuth)
+
 
            const offerDetails = await offerdb.find()
-
           const wishlistItems = await userHelper.getWishlistItemsAll(
             req.session.isUserAuth
           );
-          const orders = await userHelper.getOrderItemsAll(req.session.isUserAuth);
           //userHelper fn to get the userDetails
           const userInfo = await userHelper.userInfo(req.session.isUserAuth);
 
           const cartItems = await userHelper.getCartItemsAll(req.session.isUserAuth);
            //userHelper fn to get all order history
-           const orderItems = await userHelper.userGetAllOrder(req.session.isUserAuth,req.query.page);
+        
 
 
           if (!orderDetails) {
@@ -141,10 +141,9 @@ module.exports = {
             userInfo,
             user: req.session.isUserAuth,
             cartItems,
-            orderItems,
             wishlistItems,
-            orders,
             offerDetails
+        
           });
         } catch (err) {
           console.log("user order summary err err:", err);

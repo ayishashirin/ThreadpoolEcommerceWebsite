@@ -180,31 +180,25 @@
           // Convert SVG data to a data URL
          const svgDataUrl = `data:image/svg+xml;base64,${btoa(svg)}`;
         const options = {
-          "key": response.data.keyId, // Enter the Key ID generated from the Dashboard
+          "key": response.data.keyId, // Replace with your Razorpay Key ID
           "amount": response.data.order.amount, 
           "currency": response.data.order.currency,
-          "name": "Threadpool", //your business name
+          "name": "Threadpool", // Your business name
           "description": "Threadpool.online offers you flexible and responsive shopping experience.",
           "image":svgDataUrl,
-          "order_id": response.data.order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-          "callback_url": "http://localhost:3999",
-          "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
-              "name": response.data.order.fullName, //your customer's name
-              "email": response.data.order.email,
-              "contact": response.data.order.phoneNumber //Provide the customer's phone number for better conversion rates 
+          "order_id": response.data.order.id, // Replace with your order ID
+          "callback_url": "http://localhost:3999/onlinePaymentSuccessfull", // Replace with your callback URL
+          "prefill": {
+            "name": response.data.order.fullName, // Customer name
+            "email": response.data.order.email,
+            "contact": response.data.order.phoneNumber // Customer phone number
           },
           "notes": {
-              "address": "Razorpay Corporate Office"
+            "address": "Razorpay Corporate Office"
           },
           "theme": {
-              "color": "#f53f85"
+            "color": "#f53f85"
           },
-          "method": {
-            "netbanking": true,
-            "card": true,
-            "upi": true,
-            "wallet": true
-        }
         }
 
       const rzp1 = new Razorpay(options);
@@ -225,6 +219,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 
-{/* <button id="rzp-button1">Pay</button> */}
+
 
 

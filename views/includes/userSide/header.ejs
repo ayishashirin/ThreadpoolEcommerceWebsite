@@ -281,12 +281,12 @@
                                                 <div class="col">
                                                     <h6 class="submenu-title">Pages</h6>
                                                     <ul class="megamenu-submenu">
-                                                        <li><a href="userAboutUs">About Us</a></li>
-                                                        <li><a href="userSingleCategoryProducts">Categories</a></li>
+                                                        <li><a href="aboutUs">About Us</a></li>
+                                                        <li><a href="category">Categories</a></li>
                                                         <li><a href="userCustomerService">Customer Service</a></li>
-                                                        <li><a href="/userProfile">My Account</a></li>
-                                                        <!-- <li><a href="cart.html">Cart</a></li>
-                                                        <li><a href="checkout.html">Cehckout</a></li> -->
+                                                        <li><a href="account">My Account</a></li>
+                                                        <li><a href="addToCart">Cart</a></li>
+                                                        <li><a href="cartCheckOut">Cehckout</a></li>
                                                         <li><a href="login">Login</a></li>
                                                         <li><a href="register">Signup</a></li>
                                                         <!-- <li><a href="comingSoon">Coming Soon</a></li> -->
@@ -342,8 +342,8 @@
                   <span class="search-overlay-close-line"></span>
               </div>
               <div class="search-overlay-form">
-                  <form onsubmit="search(); return false;">
-                      <input type="text" class="input-search" placeholder="Search here..." id="find">
+                  <form>
+                      <input type="text" class="input-search" placeholder="Search here..." id="search">
                       <button type="submit"><i class="bx bx-search-alt"></i></button>
                   </form>
               </div>
@@ -352,36 +352,4 @@
   </div>
   
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  <script>
-      function search() {
-          let filter = document.getElementById('find').value;
-          axios.get(`/search?query=${filter}`)
-              .then(response => {
-                  // Assuming your server returns an array of product IDs matching the search query
-                  let productIds = response.data.productIds;
-  
-                  // Hide all products initially
-                  let products = document.querySelectorAll('.products-col-item');
-                  products.forEach(product => {
-                      product.style.display = 'none';
-                  });
-  
-                  // Show only the products that match the search results
-                  productIds.forEach(productId => {
-                      let product = document.querySelector(`[data-productId="${productId}"]`);
-                      if (product) {
-                          product.closest('.products-col-item').style.display = '';
-                      }
-                  });
-              })
-              .catch(error => {
-                  console.error('Error searching:', error);
-              });
-      }
-  </script>
-  
-
-
-    
-     
     <script src="https://kit.fontawesome.com/62954eafbc.js" crossorigin="anonymous"></script>

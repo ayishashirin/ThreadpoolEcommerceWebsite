@@ -54,7 +54,7 @@ module.exports = {
           });
         } catch (err) {
           console.log("Update query err:", err);
-          res.status(500).render("errorPages/500ErrorPage");
+          res.status(500).render("errorPages/500ErrorPage",{user: req.session.isUserAuth});
         }
       },
 

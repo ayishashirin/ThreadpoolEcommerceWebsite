@@ -1,42 +1,19 @@
-const hamburgerBtn = document.querySelector(".hamburger");
-const mobilenavigationList = document.querySelector(".mobilenavigationList");
-const mobilenavigation = document.querySelector(".mobilenavigation");
-const logo = document.querySelector(".logo");
+// function showPopUp(orderId, productId) {
+//   console.log('showPopUp called with orderId:', orderId, 'productId:', productId);
+//   document.getElementById('dCat').setAttribute('href', `/orderCancel/${orderId}/${productId}`);
+//   document.getElementById('confirmation-popup').classList.add('show');
+// } 
 
-hamburgerBtn.addEventListener("click", () => {
-  hamburgerBtn.classList.toggle("active");
-  mobilenavigationList.classList.toggle("active");
-  mobilenavigation.classList.toggle("active");
-  logo.classList.toggle("active");
-});
+// document.getElementById('confirm-btn').addEventListener('click', function() {
+//   console.log('Confirm button clicked');
+//   document.getElementById('confirmation-popup').classList.remove('show');
+// });
 
-try {
-  document.querySelector('.shopByCat').addEventListener('click', ()=>{
-    document.querySelector('#shopByCat').classList.toggle('display');
-  });
-} catch (err) {
-  console.error(err);
-}
+// document.getElementById('cancel-btn').addEventListener('click', function() {
+//   console.log('Cancel button clicked');
+//   document.getElementById('confirmation-popup').classList.remove('show');
+// });
 
-const dCat = document.querySelector('.dCat');
+ 
 
-function showPopUp(orderId, productId) {
-	dCat.setAttribute('href', href=`/orderCancel/${orderId}/${productId}`);
-	document.getElementById('confirmation-popup').style.display = 'block';
-};
 
-document.getElementById('confirm-btn').addEventListener('click', function() {
-	document.getElementById('confirmation-popup').style.display = 'none';
-});
-
-document.getElementById('cancel-btn').addEventListener('click', function() {
-	document.getElementById('confirmation-popup').style.display = 'none';
-});
-
-const aTag = document.querySelectorAll('.aTag');
-
-aTag.forEach(element => {
-  element.addEventListener('click', (e) => {
-    e.stopPropagation();
-  })
-})

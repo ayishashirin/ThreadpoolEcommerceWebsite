@@ -26,7 +26,7 @@ const productSchema = new mongodb.Schema({
     type: Date,
     required: true
    },
-    newlyLaunch: {
+   newlyLaunched: {
         type: Boolean,
         default: false,
         required: true

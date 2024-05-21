@@ -18,12 +18,12 @@ module.exports = {
             }
             const skip  = Number(page)?(Number(page) - 1):0;
             if(search){
-                return await Categorydb.find({$and: [{name: { $regex: search, $options: "i" }},{status}]}).skip((skip * 10)).limit(10);
+                return await Categorydb.find({$and: [{name: { $regex: search, $options: "i" }},{status}]}).skip((skip * 12)).limit(12);
             }
             if(forSelectBox){
                 return await Categorydb.find({status});
             }
-            return await Categorydb.find({status}).skip((skip * 10)).limit(10);
+            return await Categorydb.find({status}).skip((skip * 12)).limit(12);
         } catch (err) {
             throw err;
         }
@@ -35,10 +35,10 @@ module.exports = {
             const skip = Number(page)?(Number(page) - 1):0;
             const agg = [
                 {
-                    $skip: (10 * skip)
+                    $skip: (12 * skip)
                 },
                 {
-                    $limit: 10
+                    $limit: 12
                 }
             ];
 
@@ -70,10 +70,10 @@ module.exports = {
                   },
                 },
                 {
-                    $skip: (10 * skip)
+                    $skip: (12 * skip)
                 },
                 {
-                    $limit: 10
+                    $limit: 12
                 },
                 {
                   $lookup: {
@@ -187,10 +187,10 @@ module.exports = {
 
             if(!sales){
                 agg.push({
-                        $skip: (10 * skip)
+                        $skip: (12 * skip)
                     },
                     {
-                        $limit: 10
+                        $limit: 12
                     }
                 );
             }
@@ -256,7 +256,7 @@ module.exports = {
                 }
                 return await Coupondb.findOne({_id: couponId});
             }
-            return await Coupondb.find().skip((10 * skip)).limit(10);
+            return await Coupondb.find().skip((12 * skip)).limit(12);
         } catch (err) {
             throw err;
         }
@@ -345,7 +345,7 @@ module.exports = {
         try {
             if(!offerId){
                 const skip = Number(page)?(Number(page) - 1):0;
-                return await Offerdb.find().skip((skip * 10)).limit(10);
+                return await Offerdb.find().skip((skip * 12)).limit(12);
             }
 
             if(!isObjectIdOrHexString(offerId)){

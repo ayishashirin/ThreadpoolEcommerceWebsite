@@ -9,6 +9,7 @@
             <div class="row">
                 <% for( let i = 0; i < newProducts.length; i++ ) { %>
                 <div class="col-lg-4 col-md-6 col-sm-6">
+                <div class="shopItems" onclick="location.href='/productDetail/<%= newProducts[i]._id %>';">
                     <div class="single-products-box">
                         <div class="products-image">
                          <a href="/productDetail/<%= newProducts[i]._id %>">
@@ -20,8 +21,9 @@
                                 <ul>
                                     <li>
                                         <div class="wishlist-btn">
-                                            <a href="#">
-                                                <i class="bx bx-heart"></i>
+                                          
+                                            <a data-productId="<%= newProducts[i]._id %>">
+                                                <i  data-productId="<%= newProducts[i]._id %>" class="bx bx-heart add-to-wishlist" ></i>
                                                 <span class="tooltip-label">Add to Wishlist</span>
                                             </a>
                                         </div>
@@ -62,6 +64,7 @@
                             </div>
                             <a href="#" class="add-to-cart">Add to Cart</a>
                         </div>
+                    </div>
                     </div>
                 </div>
                 <% } %>

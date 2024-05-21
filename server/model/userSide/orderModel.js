@@ -79,8 +79,9 @@ const orderSchema = new mongodb.Schema({
     },
  
     address: {
-        type: String,
+        type:  mongodb.SchemaTypes.ObjectId,
         required: true,
+      
     }
 });
 

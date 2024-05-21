@@ -146,11 +146,11 @@
                         <span aria-hidden="true">&laquo;</span>
                       </a>
                     </li>
-                    <% for( let i = 0; i < (Math.ceil(totalCoupons / 10)); i++ ) { %>
+                    <% for( let i = 0; i < (Math.ceil(totalCoupons / 12)); i++ ) { %>
                       <li class="page-item"><a class="page-link" href="/adminCouponManagement?page=<%= (i + 1) %>" ><%= (i + 1) %></a></li>
                     <% } %>
                     <li class="page-item">
-                      <a class="page-link" href="/adminCouponManagement?page=<%= (((Math.ceil(totalCoupons / 10)) === currentPage) || (Math.ceil(totalCoupons / 10)) && !currentPage)?(currentPage?currentPage:1):(currentPage === 1 || !currentPage)?2:(currentPage + 1) %>" aria-label="Next">
+                      <a class="page-link" href="/adminCouponManagement?page=<%= (((Math.ceil(totalCoupons / 12)) === currentPage) || (Math.ceil(totalCoupons / 12)) && !currentPage)?(currentPage?currentPage:1):(currentPage === 1 || !currentPage)?2:(currentPage + 1) %>" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                       </a>
                     </li>

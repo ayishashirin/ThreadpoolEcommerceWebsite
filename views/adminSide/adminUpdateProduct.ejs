@@ -128,7 +128,7 @@
               <div class="d-flex align-items-center formRow priceInput">
                 <div class="<%= errMesg?.date?'errDiv':'' %>">
                   <label for="date" class="d-block">Date</label>
-                  <input type="date" name="date" value="<%= (product.date || product.date === 0)?product.date:'' %>">
+                  <input type="date" name="date" value="<%= (product.date || product.date === 0)?product.date?.toISOString().split('T')[0]:'' %>">
                   <p class="err"><%= errMesg?.date %></p>
               </div>
             </div>
@@ -153,7 +153,7 @@
               data-Id="<%= product._id %>">
               <% for( let i=0; i < product.variations[0].images.length; i++ ) { %>
                 <div class="img">
-                  <img src="<%= product.variations[0].images[i] %>" alt="">
+                  <img src="/<%= product.variations[0].images[i] %>" alt="">
                   <a onclick="deleteImgFromDB('<%= product._id %>', '<%= i %>')">
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <circle cx="10" cy="10" r="10" fill="white" />

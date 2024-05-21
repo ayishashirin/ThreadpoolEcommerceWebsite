@@ -175,6 +175,7 @@ adminAddProduct: async (req, res) => {
       console.log(req.query, "ayshaaaaa")
      
       req.body.pName = req.body.pName?.trim();
+      req.body.category = req.body.category?.trim();
       req.body.pDescription = req.body.pDescription?.trim();
       req.body.fPrice = req.body.fPrice?.trim();
       req.body.lPrice = req.body.lPrice?.trim();
@@ -187,11 +188,17 @@ adminAddProduct: async (req, res) => {
       // Validate form inputs
       const errors = {};
 
-  
+      const existingUpdateProduct = await Productdb.findOne({
+        pName: req.body.pName,
+      });
+      const existingUpdateProductVariation = await ProductVariationdb.findOne({
+        productId: existingUpdateProduct._id
+      });
+      
       // Check for required fields
       if (!req.body.pName) errors.pName = "This Field is required";
-      if (!req.body.pDescription)
-        errors.pDescription = "This Field is required";
+      if (!req.body.pName) errors.pName = "This Field is required";
+      if (!req.body.pDescription) errors.pDescription = "This Field is required";
       if (!req.body.fPrice) errors.fPrice = "This Field is required";
       if (!req.body.lPrice) errors.lPrice = "This Field is required";
       if (!req.body.discount) errors.discount = "This Field is required";
@@ -199,13 +206,10 @@ adminAddProduct: async (req, res) => {
       if (!req.body.size) errors.size = "This Field is required";
       if (!req.body.quantity) errors.quantity = "This Field is required";
       if (!req.body.date) errors.date = "This Field is required";
-      if (req.files.length === 0) errors.files = "This Field is required";
+      if (!existingUpdateProductVariation.images.length && !req.files.length) errors.files = "This Field is required";
   
       
       // Check for existing product with the same name
-      const existingUpdateProduct = await Productdb.findOne({
-        pName: req.body.pName,
-      });
       if (existingUpdateProduct && existingUpdateProduct._id.toString() !== req.query.id) {
         errors.pName = "Product Name already exists";
       }
@@ -215,6 +219,7 @@ adminAddProduct: async (req, res) => {
         req.flash("userUpdateProductErrors", errors);
         const userUpdateProductFormData = {
           pName: req.body.pName,
+          category: req.body.category,
           pDescription: req.body.pDescription,
           fPrice: req.body.fPrice,
           lPrice: req.body.lPrice,
@@ -231,7 +236,8 @@ adminAddProduct: async (req, res) => {
   
     // Update product information in the database
 const updateProduct = {
-  pName: req.body.pName,
+          pName: req.body.pName,
+          category: req.body.category,
           pDescription: req.body.pDescription,
           fPrice: req.body.fPrice,
           lPrice: req.body.lPrice,

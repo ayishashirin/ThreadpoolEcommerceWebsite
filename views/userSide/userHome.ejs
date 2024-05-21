@@ -16,8 +16,8 @@
                             <h1>Winter-Spring!</h1>
                             <p>Take 20% Off ‘Sale Must-Haves'</p>
                             <div class="btn-box">
-                                <a href="userSingleCategoryProducts" class="default-btn">Shop Women's</a>
-                                <a href="userSingleCategoryProducts" class="optional-btn">Shop Men's</a>
+                                <a href="/category?genderCat=Women" class="default-btn">Shop Women's</a>
+                                <a href="/category?genderCat=Men" class="optional-btn">Shop Men's</a>
                             </div>
                         </div>
                     </div>
@@ -60,7 +60,26 @@
         </div>
     </div>
 
-
+    <script>
+        const toastMessage = '<%= toast %>';
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          }
+        });
+        if(toastMessage){
+          Toast.fire({
+            icon: "success",
+            title: toastMessage
+          });
+        }
+      </script>
    <!-- featured Products -->
    <%- include('../includes/userSide/featuredProducts') %>
    <!-- end of featured Products -->

@@ -164,7 +164,7 @@ router.get('/orderSuccessfull', authMiddleware.isUserLoggedIn, authMiddleware.is
 
 router.get('/orders', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userOrderRender.userOrders);// User order history listing page
 
-router.get('/orderCancel/:orderId/:productId', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userOrderController.userOrderCancel);// Option to cancel order of user
+router.post('/orderCancel/:orderId/:productId', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userOrderController.userOrderCancel);// Option to cancel order of user
 
 
 router.get('/orderDetails/:orderId/:productId',  authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userOrderRender.orderDetails)
@@ -210,13 +210,13 @@ router.post('/api/changeAddressPayment', authMiddleware.isUserLoggedIn, authMidd
 // --------------------------------------------------------------------------------------------------------------------
 
 
-//Filter
-
-
-// router.get('/sort',userController.Filter)
+//search
 
 
 
+
+
+router.get('/aboutUs',userRender.userAboutUs)
 
 
 

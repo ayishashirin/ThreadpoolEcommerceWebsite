@@ -47,7 +47,7 @@ const userVariationSchema = new mongodb.Schema({
         }
     ],
     defaultAddress: {
-        type: mongodb.SchemaTypes.ObjectId,
+        type: String,
     }
 });
 

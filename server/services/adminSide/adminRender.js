@@ -66,7 +66,7 @@ module.exports = {
           res.status(200).render(
         "adminSide/adminAddProduct",
         {
-          savedDetails: productInfo,
+         productInfo,
           errMesg,
           category, 
           savedDetails: req.session.productInfo,

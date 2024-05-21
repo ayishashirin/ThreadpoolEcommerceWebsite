@@ -35,6 +35,7 @@ module.exports = {
         newProducts: products,
         user: req.session.isUserAuth,
         counts: counts,
+        toast: req.flash('toastMessage'),
         cartItems,
         wishlistItems
       });
@@ -384,8 +385,8 @@ module.exports = {
         cartItems,
         userInfo,
         referralOffer,
-        wishlistItems
-        
+        wishlistItems,
+       
       });
     } catch (err) {
       console.log("Update query err:", err);
@@ -410,6 +411,10 @@ module.exports = {
         req.session.isUserAuth
       );
 
+      const wishlistItems = await userHelper.getWishlistItemsAll(
+        req.session.isUserAuth
+      );
+
       res.status(200).render(
         "userSide/userUpdateAccount",
         {
@@ -427,10 +432,11 @@ module.exports = {
           user: req.session.isUserAuth,
           counts,
           cartItems,
+          wishlistItems,
         },
         (err, html) => {
           if (err) {
-            console.log("Render err update ac");
+            console.log(err);
             return res.send("Internal server err");
           }
 
@@ -485,6 +491,40 @@ module.exports = {
       });
     } catch (err) {
       console.log(err);
+      res.status(500).render("errorPages/500ErrorPage");
+    }
+  },
+  userAboutUs: async (req, res) => {
+    try {
+      // User Helper function to get all listed categories
+      const category = await userHelper.getAllListedCategory();
+
+      // User Helper function to get the count of products in the cart
+      const counts = await userHelper.getTheCountOfWhislistCart(
+        req.session.isUserAuth
+      );
+
+      const wishlistItems = await userHelper.getWishlistItemsAll(
+        req.session.isUserAuth
+      );
+
+      // User Helper function to get newly launched products on the homepage
+      const products = await userHelper.getProductDetails(null, true);
+
+      const cartItems = await userHelper.getCartItemsAll(
+        req.session.isUserAuth
+      );
+
+      res.status(200).render("userSide/about", {
+        category,
+        newProducts: products,
+        user: req.session.isUserAuth,
+        counts: counts,
+        cartItems,
+        wishlistItems
+      });
+    } catch (err) {
+      console.error("Home page err:", err);
       res.status(500).render("errorPages/500ErrorPage");
     }
   },

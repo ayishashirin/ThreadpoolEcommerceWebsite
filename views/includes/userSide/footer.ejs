@@ -144,21 +144,21 @@
                                                 <h3>New In Store</h3>
                                                 <ul class="products-list">
                                                     <li>
-                                                        <a href="#"><img src="/userSide/img/products/img1.jpg" alt="image"></></a>
+                                                        <a href="#"><img src="/userSide/img/products/img1.jpg" alt="image"></a>
                                                     </li>
                                                     <li>
-                                                        <a href="#"><img src="/userSide/img/products/img2.jpg" alt="image"></></a>
+                                                        <a href="#"><img src="/userSide/img/products/img2.jpg" alt="image"></a>
                                                     </li>
                                                     <li>
-                                                        <a href="#"><img src="/userSide/img/products/img3.jpg" alt="image"></></a>
+                                                        <a href="#"><img src="/userSide/img/products/img3.jpg" alt="image"></a>
                                                     </li>
                                                     <li>
-                                                        <a href="#"><img src="/userSide/img/products/img4.jpg" alt="image"></></a>
+                                                        <a href="#"><img src="/userSide/img/products/img4.jpg" alt="image"></a>
                                                     </li>
                                                 </ul>
                                                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
                                                     labore et dolore magna aliqua.</p>
-                                                <a href="#" class="shop-now-btn">Shop Now</a>
+                                                <a href="category" class="shop-now-btn">Shop Now</a>
                                             </div>
                                         </div>
                                     </div>
@@ -296,13 +296,13 @@
                                             <span aria-hidden="true"><i class="bx bx-x"></i></span>
                                         </button>
                                         <div class="modal-body">
-                                            <h3>My Wish List (<%= cartItems.length %>)</h3>
+                                            <h3>My Wish List (<%= wishlistItems.length %>)</h3>
                                             <div class="products-cart-content">
                                                 <% wishlistItems.forEach((item, index) => { %>
 
                                                 <div class="products-cart">
                                                     <div class="products-image">
-                                                        <a href="#"><img src="<%= item.variations[0].images[0] %>" alt="image"></a>
+                                                        <a href="#"><img src="/<%= item.variations[0].images[0] %>" alt="image"></a>
                                                     </div>
                                                     <div class="products-content">
                                                         <h3><a href="#"><%= item.pDetails[0].pName %></a></h3>
@@ -598,23 +598,13 @@
                                                         <li><a href="#" title="Teal" class="color-teal"></a></li>
                                                     </ul>
                                                 </div>
-                                                <div class="woocommerce-widget brands-list-widget">
-                                                    <h3 class="woocommerce-widget-title">Brands</h3>
-                                                    <ul class="brands-list-row">
-                                                        <li><a href="#">Gucci</a></li>
-                                                        <li><a href="#">Virgil Abloh</a></li>
-                                                        <li><a href="#">Balenciaga</a></li>
-                                                        <li class="active"><a href="#">Moncler</a></li>
-                                                        <li><a href="#">Fendi</a></li>
-                                                        <li><a href="#">Versace</a></li>
-                                                    </ul>
-                                                </div>
+                                               
                                                 <div class="woocommerce-widget aside-trending-widget">
                                                     <div class="aside-trending-products">
                                                         <img src="/userSide/img/offer-bg.jpg" alt="image">
                                                             <div class="category">
                                                                 <h3>Top Trending</h3>
-                                                                <span>Spring/Summer 2021 Collection</span>
+                                                                <span>Spring/Summer 2026 Collection</span>
                                                             </div>
                                                             <a href="#" class="link-btn"></a>
                                                         </div>
@@ -639,9 +629,9 @@
                                                             York</a></li>
                                                         <li><i class="bx bx-phone-call"></i> <a href="tel:+01321654214">+01 321 654 214</a></li>
                                                         <li><i class="bx bx-envelope"></i> <a
-                                                            href="https://templates.hibootstrap.com/cdn-cgi/l/email-protection#b9d1dcd5d5d6f9c1cdd6d797dad6d4"><span
+                                                            href="www.threadpool.com"><span
                                                                 class="__cf_email__"
-                                                                data-cfemail="6f070a0303002f171b0001410c0002">[email&#160;protected]</span></a>
+                                                                data-cfemail="6f070a0303002f171b0001410c0002">www.threadpool.com</span></a>
                                                         </li>
                                                     </ul>
                                                 </div>
@@ -659,7 +649,7 @@
                                             <div class="single-footer-widget pl-4">
                                                 <h3>Quick Links</h3>
                                                 <ul class="quick-links">
-                                                    <li><a href="about.html">About Us</a></li>
+                                                    <li><a href="">About Us</a></li>
                                                     <li><a href="products-left-sidebar.html">Shop Now!</a></li>
                                                     <li><a href="products-left-sidebar-2.html">Woman's</a></li>
                                                     <li><a href="faqs.html">FAQ's</a></li>
@@ -672,7 +662,7 @@
                                             <div class="single-footer-widget">
                                                 <h3>Customer Support</h3>
                                                 <ul class="customer-support">
-                                                    <li><a href="login.html">My Account</a></li>
+                                                    <li><a href="account">My Account</a></li>
                                                     <li><a href="checkout.html">Checkout</a></li>
                                                     <li><a href="cart.html">Cart</a></li>
                                                     <li><a href="faqs.html">FAQ's</a></li>

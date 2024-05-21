@@ -125,7 +125,7 @@ userSingleProductCategory : async (search = {}) => {
 
     // Calculating the skip value for pagination
     const page = Number(search.page);
-    const skip = page && page > 0 ? (page - 1) * 10 : 0;
+    const skip = page && page > 0 ? (page - 1) * 12 : 0;
 
     // Building the aggregation pipeline
     const agg = [
@@ -146,7 +146,7 @@ userSingleProductCategory : async (search = {}) => {
       // Adding color filter if a valid color is provided
       ...(validColors.includes(search.color) ? [{ $match: { "variations.color": search.color } }] : []),
       { $skip: skip },
-      { $limit: 10 },
+      { $limit: 12 },
       {
         $lookup: {
           from: "offerdbs",
@@ -164,7 +164,7 @@ userSingleProductCategory : async (search = {}) => {
           fPrice: { $first: "$fPrice" },
           lPrice: { $first: "$lPrice" },
           date: { $first: "$date" },
-          newlyLaunch: { $first: "$newlyLaunch" },
+          newlyLaunched: { $first: "$newlyLaunched" },
           unlistedProduct: { $first: "$unlistedProduct" },
           offers: { $first: "$offers" },
           allOffers: { $first: "$allOffers" },
@@ -201,7 +201,7 @@ userSingleProductCategory : async (search = {}) => {
         const products = await Productdb.aggregate([
           {
             $match: {
-              newlyLaunch: true,
+              newlyLaunched: true,
               unlistedProduct: false,
             },
           },
@@ -275,7 +275,8 @@ userSingleProductCategory : async (search = {}) => {
           return total;
         }, 0);
       });
-
+      
+      console.log("products:",products);
       return products;
     } catch (err) {
       throw err;
@@ -378,6 +379,7 @@ userSingleProductCategory : async (search = {}) => {
                 as: "variations",
               },
             },
+      
           ];
           
           //to get all product in cart with all details of produt
@@ -664,6 +666,7 @@ userSingleProductCategory : async (search = {}) => {
   },
 
   getAllOrdersOfUser: async (userId) => {
+  
     const totalOrders = await Orderdb.find({userId});
     return totalOrders;
   },
@@ -701,10 +704,10 @@ userSingleProductCategory : async (search = {}) => {
           },
         },
         {
-          $skip: 10 * skip,
+          $skip: 12 * skip,
         },
         {
-          $limit: 10,
+          $limit: 12,
         },
       ];
 
@@ -784,41 +787,7 @@ userSingleProductCategory : async (search = {}) => {
     }
   },
 
-  getSingleOrderfDetails: async (params, userId) => {
-    try {
-      if (
-        !isObjectIdOrHexString(params.orderId) ||
-        !isObjectIdOrHexString(params.productId)
-      ) {
-        return null;
-      }
-
-      const [orders] = await Orderdb.aggregate([
-        {
-          $unwind: {
-            path: "$orderItems",
-          },
-        },
-        {
-          $match: {
-            $and: [
-              { _id: new mongoose.Types.ObjectId(params.orderId) },
-              {
-                "orderItems.productId": new mongoose.Types.ObjectId(
-                  params.productId
-                ),
-              },
-              { userId: new mongoose.Types.ObjectId(userId) },
-            ],
-          },
-        },
-      ]);
-
-      return orders;
-    } catch (err) {
-      throw err;
-    }
-  },
+ 
 
   getSingleOrderOfDetails: async (params, userId) => {
     try {
@@ -848,8 +817,9 @@ userSingleProductCategory : async (search = {}) => {
             ],
           },
         },
-      ]);
-    
+
+      ])
+    console.log("orders:",orders);
       return orders;
     } catch (err) {
       throw err;

@@ -36,7 +36,7 @@ module.exports = {
             }
 
             if(req.body.discount && req.body.discount < 0){
-                req.session.discount = `Discount Should be in between 0 - 95%`;
+                req.session.discount = `Discount Should be in between 0 - 60%`;
             }
 
             if(req.session.productName || req.session.category || req.session.discount || req.session.expiry){
