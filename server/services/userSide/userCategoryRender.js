@@ -1,9 +1,5 @@
 const userHelper = require("../../databaseHelpers/userHelper");
-const adminHelper = require("../../databaseHelpers/adminHelper");
-const Productdb = require("../../model/adminSide/productModel").Productdb;
-const ProductVariationdb = require("../../model/adminSide/productModel").ProductVariationdb;
-const Cartdb = require("../../model/userSide/cartModel");
-const orderdb = require("../../model/userSide/orderModel");
+
 
 
 
@@ -53,7 +49,7 @@ module.exports = {
             
           const products = await userHelper.getWishlistItems(req.session.isUserAuth);
 
-    
+          
           res.status(200).render("userSide/userSingleCategoryProducts", {
             products: product,
             category,
@@ -67,7 +63,10 @@ module.exports = {
             singleProduct,
             product:products,
             wishlistItems,
-            iswishlistItem
+            iswishlistItem,
+            size:req.query.size,
+            collection:req.query.genderCat,
+            color:req.query.color
            
           });
         } catch (err) {

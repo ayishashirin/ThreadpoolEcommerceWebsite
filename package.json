@@ -30,7 +30,7 @@
     "passport": "^0.7.0",
     "passport-google-oauth2": "^0.2.0",
     "passport-google-oauth20": "^2.0.0",
-    "puppeteer-core": "^22.7.1",
+    "puppeteer": "^22.10.0",
     "razorpay": "^2.9.3",
     "sharp": "^0.33.3",
     "shortid": "^2.2.16",

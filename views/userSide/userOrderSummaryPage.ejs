@@ -72,7 +72,7 @@
                             <div class="price">
                               <span class="new-price">$<%= orderDetails.orderItems.lPrice%>.00</span>
                               <span class="old-price">$<%= orderDetails.orderItems.fPrice%>.00</span>
-                              <p>-%OFF</p>
+                              <p>-<%=offerDetails[0].discount %> %OFF</p>
                             </div>
                             <div class="products-review">
                               <div class="rating">
@@ -160,7 +160,7 @@
                               <tr>
                                 <td>Shipping Details</td>
                                 <td>
-                                  <%= orderDetails.address %>
+                                  <%=orderAddress[0].address[0].structuredAddress %>
                                   <br>
                                   Phone: <%= userInfo.phoneNumber %>
                                 </td>
@@ -235,10 +235,10 @@
                                 <td>Offer:</td>
                                 <td id="offerPrice">- <%=offerDetails[0].discount %> %OFF </td>
                               </tr>
-                              <tr>
+                              <!-- <tr>
                                 <td>Coupon Discount:</td>
                                 <td id="cDPrice">0.00</td>
-                              </tr>
+                              </tr> -->
 
 
                               <tr>
@@ -263,13 +263,14 @@
                       <div class="products-details-tab-content">
                         <p>Here are 5 more great reasons to buy from us:</p>
                         <ol>
-                          <li>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
-                            been the industry's standard dummy text ever since the 1500s.</li>
-                          <li> Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.</li>
-                          <li>When an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                          <li>Wide Selection of Trendy Products: Explore an extensive range of fashionable clothing, accessories, and footwear curated to keep you in style all year round.</li>
+                          <li>Exceptional Customer Service: Our dedicated team is committed to providing personalized assistance, answering queries, and resolving any concerns promptly to guarantee a seamless shopping experience.</li>
+                          <li>Fast and Reliable Shipping: Experience swift and reliable delivery services to your doorstep, ensuring your fashion essentials reach you in no time, wherever you are.
                           </li>
-                          <li>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</li>
-                          <li>When an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                          <li>Satisfaction Guaranteed: Your satisfaction is our top priority. Shop with confidence knowing that we offer hassle-free returns and exchanges, ensuring you find the perfect fit and style every time.</li>
+                          <li>Quality Assurance: We prioritize quality, offering products crafted from premium materials to ensure durability and comfort without compromising on style.
+
+
                           </li>
                         </ol>
                       </div>

@@ -4,6 +4,7 @@ const Orderdb = require('../../model/userSide/orderModel');
 const { Productdb } = require('../../model/adminSide/productModel');
 const Userdb = require('../../model/userSide/userModel');
 const offerdb = require('../../model/adminSide/offerModel');
+const userVariationdb = require("../../model/userSide/userVariationModel");
 
 
 
@@ -321,7 +322,8 @@ module.exports = {
       //adminHelper fn to get total number of orders
       const orderLength = await adminHelper.adminPageNation('OM'); // OM for orders management
       
-      res.status(200).render("adminSide/adminOrderManagement", {orders, filter: req.query.filter, currentPage: Number(req.query.page), orderLength});
+     
+      res.status(200).render("adminSide/adminOrderManagement", {orders, filter: req.query.filter, currentPage: Number(req.query.page), orderLength,});
     } catch (err) {
       console.log("err", err);
       res.send("Internal server err");
@@ -397,25 +399,26 @@ module.exports = {
 
   adminOrderDetails: async (req, res) => {
     try {
-      const product = await adminHelper.getSingleOrder(req.query.id)
-      const order = await Orderdb.findOne()
-      const orders = await adminHelper.getSingleOrder({_id:req.query.id})
-      const userInfo = await Userdb.findOne()
-      const offerDetails = await offerdb.findOne({})
-      const totalPrice = order.orderItems.reduce((total, item) => total + (item.fPrice * item.quantity), 0);
-      const totalDiscountAmount = order.orderItems.reduce((total, item) => total + item.DiscountAmount, 0);
-     
-console.log("product:",product);
-console.log("order:",order);
-console.log("offerDetails:",offerDetails);
-console.log("totalPrice:",totalPrice);
-console.log("totalDiscountAmount:",totalDiscountAmount);
+      const orders = await Orderdb.findOne({_id:req.query.id})
 
+      const userInfo = await Userdb.findOne()
+      console.log("userInfo:",userInfo);
+
+      const offerDetails = await offerdb.findOne({})
+      console.log("offerDetails:",offerDetails);
+
+      const totalPrice = orders?.orderItems.reduce((total, item) => total + (item.fPrice * item.quantity), 0);
+
+      const totalDiscountAmount = orders?.orderItems.reduce((total, item) => total + item.DiscountAmount, 0);
+      console.log("orders.address",orders?.address);
+      const orderAddress = await userVariationdb.find({ address: {
+        $elemMatch: { _id: orders?.address }
+      }})
 
 
       
    
-      res.status(200).render('adminSide/adminOrderDetails',{product:product[0], order:order,userInfo,totalPrice,orders,totalDiscountAmount,offerDetails,})
+      res.status(200).render('adminSide/adminOrderDetails',{ userInfo,totalPrice,orders,totalDiscountAmount,orderAddress,offerDetails})
       
     } catch (error) {
       console.error(error);

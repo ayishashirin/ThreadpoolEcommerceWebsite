@@ -538,35 +538,10 @@
                                                 <div class="woocommerce-widget price-list-widget">
                                                     <h3 class="woocommerce-widget-title">Price</h3>
                                                     <div class="collection-filter-by-price">
-                                                        <input class="js-range-of-price" type="range" min="0" max="1055" name="filter_by_price" step="10" onchange="sendValuesToBackend()">
+                                                        <input class="js-range-of-price" type="range" min="0" max="1055" name="filter_by_price" step="10" >
                                                     </div>
                                                 </div>
-                                                <script>
-                                                    function sendValuesToBackend() {
-                                                        // Retrieve starting and ending values
-                                                        var startValue = parseInt(document.querySelector('.js-range-of-price').value);
-                                                        console.log(startValue,'dfd')
-                                                    
-                                                        // Send values to the backend via fetch
-                                                        fetch('backend_endpoint_url_here', {
-                                                            method: 'POST',
-                                                            headers: {
-                                                                'Content-Type': 'application/json'
-                                                            },
-                                                            body: JSON.stringify({ startValue: startValue })
-                                                        })
-                                                        .then(response => {
-                                                            if (response.ok) {
-                                                                console.log('Value sent to backend successfully.');
-                                                            } else {
-                                                                console.error('Failed to send value to backend.');
-                                                            }
-                                                        })
-                                                        .catch(error => {
-                                                            console.error('Error sending value to backend:', error);
-                                                        });
-                                                    }
-                                                    </script>
+                                              
                                                 
                                                 <div class="woocommerce-widget size-list-widget">
                                                     <h3 class="woocommerce-widget-title">Size</h3>

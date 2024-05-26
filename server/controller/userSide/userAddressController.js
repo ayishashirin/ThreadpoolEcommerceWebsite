@@ -1,41 +1,14 @@
-
-
-const Userdb = require("../../model/userSide/userModel");
-const Otpdb = require("../../model/userSide/otpModel");
-const Productdb = require("../../model/adminSide/productModel").Productdb;
-const ProductVariationdb = require("../../model/adminSide/productModel").ProductVariationdb;
 const userVariationdb = require("../../model/userSide/userVariationModel");
-const bcrypt = require("bcryptjs");
-const nodemailer = require("nodemailer");
-const Mailgen = require("mailgen");
-const mongoose = require("mongoose");
-const userHelper = require("../../databaseHelpers/userHelper");
-const path = require("path");
-const Cartdb = require("../../model/userSide/cartModel");
-const usersAddToCart = require("../../services/userSide/userRender");
-const saltRounds = 10; // Salt rounds for bcrypt
-const orderdb = require("../../model/userSide/orderModel");
-const shortid = require("shortid");
-const wishlistdb = require("../../model/userSide/wishlist");
-const Razorpay = require("razorpay");
-const puppeteer = require("puppeteer-core");
-const instance = new Razorpay({
-                                  key_id: process.env.key_id,
-                                  key_secret: process.env.key_secret,
-                              });
-
-
 
 module.exports = {
-
-userAddAddress: async (req, res) => {
+  userAddAddress: async (req, res) => {
     try {
       req.body.name = req.body.name?.trim();
       req.body.country = req.body.country?.trim();
       req.body.district = req.body.district?.trim();
       req.body.state = req.body.state?.trim();
       req.body.city = req.body.city?.trim();
-      req.body.houseName = req.body.houseName
+      req.body.houseName = req.body.houseName;
       if (!req.body.name) {
         req.session.name = `This Field is required`;
       }
@@ -76,14 +49,13 @@ userAddAddress: async (req, res) => {
         req.session.country ||
         req.session.name ||
         req.session.name
-
       ) {
         req.session.sAddress = req.body;
         return res.status(401).redirect("/addAddress");
       }
       function capitalizeFirstLetter(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
-    }
+      }
       req.body.name = capitalizeFirstLetter(req.body.name);
       req.body.country = capitalizeFirstLetter(req.body.country);
       req.body.district = capitalizeFirstLetter(req.body.district);
@@ -109,7 +81,8 @@ userAddAddress: async (req, res) => {
         return res.status(401).redirect("/addAddress");
       }
 
-      const structuredAddress = `${req.body.name},${req.body.houseName}-${req.body.houseNo},${req.body.city},${req.body.district},${req.body.state} - ${req.body.pin}`;
+      const structuredAddress = `${req.body.name},${req.body.houseName} - ${req.body.houseNo},${req.body.city},${req.body.district},${req.body.state} - ${req.body.pin}`;
+
 
       await userVariationdb.updateOne(
         { userId: req.session.isUserAuth },
@@ -275,7 +248,7 @@ userAddAddress: async (req, res) => {
         return res.status(401).redirect(`/editAddress/${req.query.adId}`);
       }
 
-      const structuredAddress = `${req.body.name},\n${req.body.houseName}- ${req.body.houseNo}, \n ${req.body.district},\n ${req.body.city},\n ${req.body.state} - ${req.body.pin}`;
+      const structuredAddress = `${req.body.name}\n${req.body.houseName}-${req.body.houseNo}\n${req.body.city}\n${req.body.district}\n${req.body.state} - ${req.body.pin}`;
 
       await userVariationdb.updateOne(
         { userId: req.session.isUserAuth, "address._id": req.query.adId },
@@ -301,9 +274,6 @@ userAddAddress: async (req, res) => {
     }
   },
 
-
-
-
   changeAddressPayment: async (req, res) => {
     try {
       await userVariationdb.updateOne(
@@ -319,7 +289,4 @@ userAddAddress: async (req, res) => {
       res.status(500).render("errorPages/500ErrorPage");
     }
   },
-
-
-
-}
+};

@@ -8,15 +8,15 @@
     <div class="content-header">
       <div>
         <h2 class="content-title card-title">Order detail</h2>
-        <p>Details for Order ID: <%= order._id %></p>
+        <p>Details for Order ID: <%= orders?._id %></p>
       </div>
     </div>
     <div class="card">
       <header class="card-header">
         <div class="row align-items-center">
           <div class="col-lg-6 col-md-6 mb-lg-0 mb-15">
-            <span> <i class="material-icons md-calendar_today"></i> <b><%=order.orderDate.toISOString().split('T')[0].split('-').reverse().join('-')%></b> </span> <br />
-            <small class="text-muted">Order ID: <%=  order._id %></small>
+            <span> <i class="material-icons md-calendar_today"></i> <b><%=orders?.orderDate?.toISOString().split('T')[0].split('-').reverse().join('-')%></b> </span> <br />
+            <small class="text-muted">Order ID: <%=  orders?._id %></small>
           </div>
 
         </div>
@@ -51,7 +51,7 @@
                 <h6 class="mb-1">Order info</h6>
                 <p class="mb-1">
                   Shipping: Fargo express <br />
-                  Pay method:<%= order.paymentMethode %> <br />
+                  payment Methode :<%= orders?.paymentMethode %> <br />
                   Status: new
                 </p>
               </div>
@@ -66,7 +66,7 @@
               <div class="text">
                 <h6 class="mb-1">Deliver to</h6>
                 <p class="mb-1">
-                  <%=  order.address %>
+                  <%=orderAddress[0]?.address[0]?.structuredAddress %>
                 </p>
 
               </div>
@@ -91,7 +91,7 @@
                 </thead>
                 <tbody>
 
-                  <% order.orderItems.forEach(function(item) { %>
+                  <% orders?.orderItems?.forEach(function(item) { %>
                   <tr>
                     <td>
                       <a class="itemside" href="#">
@@ -105,74 +105,94 @@
                     <td><%= item.quantity %></td>
                     <td><%= (item.fPrice * item.quantity) %></td>
 
-                    <td>
-                      <form action="/adminChangeOrderStatus/<%= item._id %>/<%= item.productId%>" class="changeStatus" method="post">
-                        <div class="d-flex gap-3">
+                    <!-- <td>
+                      <form action="/adminChangeOrderStatus/<%= item._id %>/<%= item.productId%>"     class="changeStatus" method="post">
+                          <div class="d-flex gap-3">
+  
+  
+                            <% if ((item.orderStatus === "Delivered") || (item.orderStatus === "Cancelled")  || (item.orderStatus === "Ordered") || (item.orderStatus === "Shipped")) { %>
+                            <p class="badge rounded-pill <%= (item.orderStatus === 'Cancelled') ? 'alert-danger text-danger' : 'alert-success text-success' %>">
+                              <%= item.orderStatus %>
+                            </p>
+                            <% } else { %>
+                            <select name="orderStatus" id="filler" class="bg-white border-1 border-black">
+                              <option value="Ordered" <%= (item.orderStatus === "Ordered") ? "selected" : "" %>>Ordered</option>
+                              <option value="Shipped" <%= (item.orderStatus === "Shipped") ? "selected" : "" %>>Shipped</option>
+                              <option value="Delivered">Delivered</option>
+                              <option value="Cancelled">Cancelled</option>
+                            </select>
+                         </td>
+  
+                          <% } %>
+                          <td> <button type="submit" class="">
+                          Change
+                          </button>
+                      </form>
+                         </td> -->
+                         <td>
+                          <div class="d-flex" p-5 m-5 style="padding-left:10px">
+                            <select id="statusDropdown" name="statusDropdown">
+                              <option value="Ordered">Ordered</option>
+                              <option value="Shipped">Shipped</option>
+                              <option value="Delivered">Delivered</option>
+                              <option value="Cancelled">Cancelled</option>
+                            </select>
+
+                            <td>   
+                              <button class="" onclick="handleChange('<%= orders._id %>', '<%= item.productId %>')">Change</button>
+                            </td>
+                            
+                          </div>
+                        </td>
 
 
-                          <% if ((item.orderStatus === "Delivered") || (item.orderStatus === "Cancelled")  || (item.orderStatus === "Ordered") || (item.orderStatus === "Shipped")) { %>
-                          <p class="badge rounded-pill <%= (item.orderStatus === 'Cancelled') ? 'alert-danger text-danger' : 'alert-success text-success' %>">
-                            <%= item.orderStatus %>
-                          </p>
-                          <% } else { %>
-                          <select name="orderStatus" id="filler" class="bg-white border-1 border-black">
-                            <option value="Ordered" <%= (item.orderStatus === "Ordered") ? "selected" : "" %>>Ordered</option>
-                            <option value="Shipped" <%= (item.orderStatus === "Shipped") ? "selected" : "" %>>Shipped</option>
-                            <option value="Delivered">Delivered</option>
-                            <option value="Cancelled">Cancelled</option>
-                          </select>
-                    </td>
-
-                    <% } %>
-                    <td> <button type="submit" class="">
-                        Change
-                      </button>
-                    </td>
-
+                        <script>
+                          function handleChange(orderId, productId) {
+                            var dropdown = document.getElementById("statusDropdown");
+                            if (dropdown) {
+                              var selectedStatus = dropdown.value;
+                        
+                              // Send data to backend using Axios
+                              axios.post(`/statusUpdate/${orderId}/${productId}`, {
+                                status: selectedStatus
+                              })
+                              .then(function (response) {
+                                console.log(response);
+                                alert('Status updated successfully!');
+                              })
+                              .catch(function (error) {
+                                console.error(error);
+                                alert('Error updating status!');
+                              });
+                            } else {
+                              console.error('Dropdown with id "statusDropdown" not found.');
+                            }
+                          }
+                        </script>
+                        
+                      </tr>
             </div>
-            </form>
+        
 
-            </tr>
+            
             <% }); %>
 
 
 
 
             <tr>
-              <td colspan="4">
-                <article class="float-end">
-                  <dl class="dlist">
-                    <dt>Subtotal:</dt>
-                    <dd>$<%= totalPrice %></dd>
-                  </dl>
-                  <dl class="dlist">
-                    <dt>Shipping cost:</dt>
-                    <dd>Free</dd>
-                  </dl>
-                  <dl class="dlist">
-                    <dt>Discount:</dt>
-                    <dd>$<%= totalDiscountAmount%></b></dd>
-                  </dl>
-                  <dl class="dlist">
-                    <dt>Offer:</dt>
-                    <dd>-$0.00</b></dd>
-                  </dl>
-                  <dl class="dlist">
-                    <dt>Coupon discount:</dt>
-                    <dd>-$0.00</b></dd>
-                  </dl>
-                  <dl class="dlist">
-                    <dt>Grand total:</dt>
-                    <dd><b class="h5">$<%= totalPrice-totalDiscountAmount %></b></dd>
-                  </dl>
+              <td>
                   <dl class="dlist">
                     <dt class="text-muted">Status:</dt>
-                    <dd>
-                      <!-- <span class="badge rounded-pill alert-success text-success">Payment done</span> -->
-                    </dd>
+                    <% if (orders?.paymentMethode === 'razorpay' || orders?.paymentMethode === 'wallet') { %>
+                      <dd>
+                          <span class="badge rounded-pill alert-success text-success">Payment done</span>
+                      </dd>
+                  <% } else { %>
+                      <span class="badge rounded-pill alert-danger text-danger">Payment not done</span>
+                  <% } %>
                   </dl>
-                </article>
-              </td>
+                </td>
             </tr>
             </tbody>
             </table>
@@ -200,6 +220,10 @@
     </div>
   </footer>
   </main>
+  <!-- <script src="/adminSide/js/adminOrderManagement.js"></script> -->
+ 
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
   <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
   <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
   <script src="assets/js/vendors/select2.min.js"></script>

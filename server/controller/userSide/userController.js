@@ -1,140 +1,122 @@
 const Userdb = require("../../model/userSide/userModel");
 const Otpdb = require("../../model/userSide/otpModel");
-const Productdb = require("../../model/adminSide/productModel").Productdb;
-const ProductVariationdb = require("../../model/adminSide/productModel").ProductVariationdb;
-const userVariationdb = require("../../model/userSide/userVariationModel");
+const productdb  = require('../../model/adminSide/productModel');
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const Mailgen = require("mailgen");
-const mongoose = require("mongoose");
 const userHelper = require("../../databaseHelpers/userHelper");
-const path = require("path");
-const Cartdb = require("../../model/userSide/cartModel");
-const usersAddToCart = require("../../services/userSide/userRender");
 const saltRounds = 10; // Salt rounds for bcrypt
-const orderdb = require("../../model/userSide/orderModel");
 const shortid = require("shortid");
-const wishlistdb = require("../../model/userSide/wishlist");
 const Razorpay = require("razorpay");
 
-const instance = new Razorpay({
-                                  key_id: process.env.key_id,
-                                  key_secret: process.env.key_secret,
-                              });
-
-                       
 function capitalizeFirstLetter(str) {
-    str = str.toLowerCase();
-    return str.charAt(0).toUpperCase() + str.slice(1);
+  str = str.toLowerCase();
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+const deleteOtpFromdb = async (_id) => {
+  await Otpdb.deleteOne({ _id });
+};
+
+const otpGenrator = () => {
+  return `${Math.floor(1000 + Math.random() * 9000)}`;
+};
+
+const sendOtpMail = async (req, res, getRoute) => {
+  const otp = otpGenrator();
+
+  console.log(otp, "-------------------------------------------------");
+
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.AUTH_EMAIL,
+      pass: process.env.AUTH_PASS,
+    },
+  });
+
+  const MailGenerator = new Mailgen({
+    theme: "default",
+    product: {
+      name: "Threadpool",
+      link: "https://mailgen.js/",
+      logo: "Threadpool",
+    },
+  });
+
+  const response = {
+    body: {
+      name: req.session.verifyEmail,
+      intro: "Your OTP for Threapool verification is:",
+      table: {
+        data: [
+          {
+            OTP: otp,
+          },
+        ],
+      },
+      outro: "Looking forward to doing more business",
+    },
+  };
+
+  const mail = MailGenerator.generate(response);
+
+  const message = {
+    from: process.env.AUTH_EMAIL,
+    to: req.session.verifyEmail,
+    subject: "Threadpool OTP Verification",
+    html: mail,
+  };
+
+  try {
+    const newOtp = new Otpdb({
+      email: req.session.verifyEmail,
+      otp: otp,
+      createdAt: Date.now(),
+      expiresAt: Date.now() + 60000,
+    });
+    const data = await newOtp.save();
+    req.session.otpId = data._id;
+    res.status(200).redirect(getRoute);
+    await transporter.sendMail(message);
+  } catch (err) {
+    console.error(err);
+    res.status(500).render("errorPages/500ErrorPage");
   }
-  
-  const deleteOtpFromdb = async (_id) => {
-    await Otpdb.deleteOne({ _id });
-  };
-  
-  const otpGenrator = () => {
-    return `${Math.floor(1000 + Math.random() * 9000)}`;
-  };
-  
-  const sendOtpMail = async (req, res, getRoute) => {
-    const otp = otpGenrator();
-  
-    console.log(otp, "-------------------------------------------------");
-  
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.AUTH_EMAIL,
-        pass: process.env.AUTH_PASS,
-      },
-    });
-  
-    const MailGenerator = new Mailgen({
-      theme: "default",
-      product: {
-        name: "Threadpool",
-        link: "https://mailgen.js/",
-        logo: "Threadpool",
-      },
-    });
-  
-    const response = {
-      body: {
-        name: req.session.verifyEmail,
-        intro: "Your OTP for Threapool verification is:",
-        table: {
-          data: [
-            {
-              OTP: otp,
-            },
-          ],
-        },
-        outro: "Looking forward to doing more business",
-      },
-    };
-  
-    const mail = MailGenerator.generate(response);
-  
-    const message = {
-      from: process.env.AUTH_EMAIL,
-      to: req.session.verifyEmail,
-      subject: "Threadpool OTP Verification",
-      html: mail,
-    };
-  
-    try {
-      const newOtp = new Otpdb({
-        email: req.session.verifyEmail,
-        otp: otp,
-        createdAt: Date.now(),
-        expiresAt: Date.now() + 60000,
-      });
-      const data = await newOtp.save();
-      req.session.otpId = data._id;
-      res.status(200).redirect(getRoute);
-      await transporter.sendMail(message);
-    } catch (err) {
-      console.error(err);
-      res.status(500).render("errorPages/500ErrorPage");
+};
+
+const userOtpVerify = async (req, res, getRoute) => {
+  try {
+    const data = await Otpdb.findOne({ _id: req.session.otpId });
+
+    if (!data) {
+      req.session.otpError = "OTP Expired";
+      req.session.rTime = "0";
+      return res.status(401).redirect(getRoute);
     }
-  };
 
-
-
-  const userOtpVerify = async (req, res, getRoute) => {
-    try {
-      const data = await Otpdb.findOne({ _id: req.session.otpId });
-  
-      if (!data) {
-        req.session.otpError = "OTP Expired";
-        req.session.rTime = "0";
-        return res.status(401).redirect(getRoute);
-      }
-  
-      if (data.expiresAt < Date.now()) {
-        req.session.otpError = "OTP Expired";
-        req.session.rTime = "0";
-        deleteOtpFromdb(req.session.otpId);
-        return res.status(401).redirect(getRoute);
-      }
-  
-      if (data.otp != req.body.otp) {
-        req.session.otpError = "Wrong OTP";
-        req.session.rTime = req.body.rTime;
-        return res.status(401).redirect(getRoute);
-      }
-  
-      return true;
-    } catch (err) {
-      console.error("Function error", err);
-      res.status(500).render("errorPages/500ErrorPage");
+    if (data.expiresAt < Date.now()) {
+      req.session.otpError = "OTP Expired";
+      req.session.rTime = "0";
+      deleteOtpFromdb(req.session.otpId);
+      return res.status(401).redirect(getRoute);
     }
-  };
 
+    if (data.otp != req.body.otp) {
+      req.session.otpError = "Wrong OTP";
+      req.session.rTime = req.body.rTime;
+      return res.status(401).redirect(getRoute);
+    }
 
-  
-  // -----------------------------------------------------------------------------------------------------------
-  
+    return true;
+  } catch (err) {
+    console.error("Function error", err);
+    res.status(500).render("errorPages/500ErrorPage");
+  }
+};
+
+// -----------------------------------------------------------------------------------------------------------
+
 module.exports = {
   userLogin: async (req, res) => {
     try {
@@ -262,56 +244,55 @@ module.exports = {
           fName: req.body.fullName,
         };
 
-        if(req.query.referralCode){
-          return res.status(401).redirect(`/register?referralCode=${req.query.referralCode}`);
+        if (req.query.referralCode) {
+          return res
+            .status(401)
+            .redirect(`/register?referralCode=${req.query.referralCode}`);
         }
         req.flash("userRegisterFormData", userRegisterFormData);
         return res.status(401).redirect("/register");
       }
       if (req.body.password === req.body.confirmPassword) {
+        // Hash password
+        const hashedPass = await bcrypt.hash(req.body.password, saltRounds);
 
-      // Hash password
-      const hashedPass = await bcrypt.hash(req.body.password, saltRounds);
+        try {
+          const isReferr = await userHelper.userRegisterWithOrWithoutRefferal(
+            req.query
+          );
 
+          if (isReferr && isReferr.referralCodeStatus === false) {
+            return res
+              .status(401)
+              .redirect(`/register?referralCode=${req.query.referralCode}`);
+          }
 
-      try {
-        const isReferr = await userHelper.userRegisterWithOrWithoutRefferal(req.query);
+          // Create new user
+          const newUser = new Userdb({
+            fullName: req.body.fullName,
+            email: req.body.email,
+            phoneNumber: req.body.phoneNumber,
+            password: hashedPass,
+            userStatus: true,
+            referralCode: shortid.generate(),
+          });
 
-        if(isReferr && (isReferr.referralCodeStatus === false)){
-          return res.status(401).redirect(`/register?referralCode=${req.query.referralCode}`);
+          await newUser.save();
+
+          req.flash("userID", newUser._id);
+
+          if (isReferr && isReferr.referralCodeStatus === true) {
+            newUser.referredBy = req.query.referralCode;
+          }
+          // Redirect to verify OTP page
+          req.session.verifyOtpPage = true;
+          req.session.verifyEmail = req.body.email;
+          await sendOtpMail(req, res, "/registerOtpVerify");
+        } catch (err) {
+          console.error(err);
+          res.status(500).render("errorPages/500ErrorPage");
         }
-
-
-
-      // Create new user
-      const newUser = new Userdb({
-        fullName: req.body.fullName,
-        email: req.body.email,
-        phoneNumber: req.body.phoneNumber,
-        password: hashedPass,
-        userStatus: true,
-        referralCode: shortid.generate()
-      });
-
-      await newUser.save();
-
-      req.flash("userID", newUser._id);
-     
-      if(isReferr && (isReferr.referralCodeStatus === true)){
-        newUser.referredBy = req.query.referralCode;
       }
-      // Redirect to verify OTP page
-      req.session.verifyOtpPage = true;
-      req.session.verifyEmail = req.body.email;
-      await sendOtpMail(req, res, "/registerOtpVerify");
-    
-    } catch (err) {
-      console.error(err);
-      res.status(500).render("errorPages/500ErrorPage");
-    }
-  }
-
-  
     } catch (err) {
       console.error(err);
       res.status(500).render("errorPages/500ErrorPage");
@@ -387,7 +368,7 @@ module.exports = {
 
   userRegisterOtpVerify: async (req, res) => {
     try {
-     if (!req.body.otp) {
+      if (!req.body.otp) {
         req.session.otpError = `This Field is required`;
       }
       if (String(req.body.otp).length != 4) {
@@ -678,7 +659,27 @@ module.exports = {
     }
   },
 
-
+// filterByPrice : async (req, res) => {
+//     try {
+//       const { minPrice, maxPrice } = req.body;
+  
+//       // Validate the price range
+//       if (typeof minPrice !== 'number' || typeof maxPrice !== 'number') {
+//         return res.status(400).send('Invalid price range');
+//       }
+  
+//       // Query to filter products based on the price range
+//       const products = await productdb.find({
+//         price: { $gte: minPrice, $lte: maxPrice }
+//       });
+  
+//       // Send the filtered products back to the frontend
+//       res.json(products);
+//     } catch (error) {
+//       console.error('Error filtering products:', error);
+//       res.status(500).send('Internal Server Error');
+//     }
+//   },
   //  Filter:async(req,res)=>{
   //   try {
 
@@ -709,16 +710,15 @@ module.exports = {
   //       }
 
   //   //userHelper fn to get all listed category
-    
+
   //   const category = await userHelper.getAllListedCategory();
-    
+
   //   //userHelper fn to get counts of product in cart
   //   const counts = await userHelper.getTheCountOfWhislistCart(
   //     req.session.isUserAuth
   //   );
 
   //   //userHelper fn to get product details of specific category
-  
 
   //   const cartItems = await userHelper.getCartItemsAll(
   //     req.session.isUserAuth
@@ -745,9 +745,9 @@ module.exports = {
 
   //   //userHelper fn to get details of single product in buy now page
   //   const [singleProduct] = await userHelper.getProductDetails(req.params.productId);
-      
+
   //   // const products = await userHelper.getWishlistItems(req.session.isUserAuth);
-   
+
   //      res.render('userSide/userSingleCategoryProducts',{
   //       products: products,
   //       category,
@@ -764,12 +764,9 @@ module.exports = {
   //       iswishlistItem})
 
   //   } catch (error) {
-      
+
   //   }
   //  }
 
   // ------------------------------------------------------------------------------------------------------
 };
-
-
-

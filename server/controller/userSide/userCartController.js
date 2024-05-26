@@ -1,68 +1,54 @@
-const Userdb = require("../../model/userSide/userModel");
-const Otpdb = require("../../model/userSide/otpModel");
-const Productdb = require("../../model/adminSide/productModel").Productdb;
 const ProductVariationdb = require("../../model/adminSide/productModel").ProductVariationdb;
 const userVariationdb = require("../../model/userSide/userVariationModel");
-const bcrypt = require("bcryptjs");
-const nodemailer = require("nodemailer");
-const Mailgen = require("mailgen");
-const mongoose = require("mongoose");
 const userHelper = require("../../databaseHelpers/userHelper");
-const path = require("path");
 const Cartdb = require("../../model/userSide/cartModel");
-const usersAddToCart = require("../../services/userSide/userRender");
-const saltRounds = 10; // Salt rounds for bcrypt
 const orderdb = require("../../model/userSide/orderModel");
-const shortid = require("shortid");
-const wishlistdb = require("../../model/userSide/wishlist");
 const Razorpay = require("razorpay");
-const coupondb = require("../../model/adminSide/couponModel");
+const { v4: uuidv4 } = require("uuid");
 const instance = new Razorpay({
-    key_id: process.env.key_id,
-    key_secret: process.env.key_secret,
+  key_id: process.env.key_id,
+  key_secret: process.env.key_secret,
 });
-
-const { v4: uuidv4 } = require('uuid');
-
-  // -----------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------------------
 module.exports = {
-
-
   userCartNow: async (req, res) => {
     try {
-    
-
-
       const isCart = await Cartdb.findOne({
         userId: req.session.isUserAuth,
         "products.productId": req.params.productId,
       });
-
+  
       if (!isCart) {
-
         await Cartdb.updateOne(
           { userId: req.session.isUserAuth },
           { $push: { products: { productId: req.params.productId } } },
           { upsert: true }
         );
-
-        return res.status(200).json({success:true})
+  
+        return res.status(200).json({
+          success: true,
+          message: "Product added to cart",
+          
+        });
       } else {
-        return res.status(200).redirect("/addToCart")
+        return res.status(200).json({
+          success: false,
+          message: "Product already exists in cart"
+        });
       }
     } catch (err) {
       console.error(err);
       res.status(500).json({
-        err
-      })
+        success: false,
+        err,
+      });
     }
   },
+  
 
+  // --------------------------------------------------------------
 
-// --------------------------------------------------------------
- 
-
-userCartDelete: async (req, res) => {
+  userCartDelete: async (req, res) => {
     try {
       await Cartdb.updateOne(
         { userId: req.session.isUserAuth },
@@ -71,13 +57,11 @@ userCartDelete: async (req, res) => {
 
       res.redirect("/addToCart");
     } catch (err) {
-      console.error("cart Update err", err);
       res.status(500).render("errorPages/500ErrorPage");
     }
   },
 
-
-// --------------------------------------------------------------
+  // --------------------------------------------------------------
 
   userCartDeleteAll: async (req, res) => {
     try {
@@ -94,7 +78,6 @@ userCartDelete: async (req, res) => {
   },
 
   // ----------------------------------------------------------------------------------------------------
-
 
   userCartItemUpdate: async (req, res) => {
     try {
@@ -150,8 +133,6 @@ userCartDelete: async (req, res) => {
           return total + discountAmount;
         }, 0);
 
-
-        
         const total = cartItems.reduce((total, value) => {
           return (total += value.pDetails[0].lPrice * value.products.quantity);
         }, 0);
@@ -176,36 +157,35 @@ userCartDelete: async (req, res) => {
     }
   },
 
-
-// ----------------------------------------------------------------------------------------------------------
-
-
-
-
+  // ----------------------------------------------------------------------------------------------------------
 
   userCartCheckOut: async (req, res) => {
     try {
       const { paymentMethode, adId, coupon, offerPrice } = req.body;
 
+      // Validate payment method
       if (!paymentMethode) {
-        req.session.payErr = `Choose a payment Methode`;
+        req.session.payErr = "Choose a payment Methode";
       }
 
+      // Validate address
       if (!adId) {
-        req.session.adErr = `Choose an Address`;
+        req.session.adErr = "Choose an Address";
       }
 
-      const address = req.body.adId
+      // Retrieve address details
+      const address = adId
         ? await userVariationdb.findOne(
-            { userId: req.session.isUserAuth, "address._id": req.body.adId },
+            { userId: req.session.isUserAuth, "address._id": adId },
             { "address.$": 1, _id: 0 }
           )
         : null;
 
       if (!address) {
-        req.session.adErr = `Invalid address Choose an Address`;
+        req.session.adErr = "Invalid address. Choose an Address";
       }
 
+      // If there are errors, respond with the appropriate URL and error flag
       if (req.session.payErr || req.session.adErr) {
         return res.json({
           url: "/cartCheckOut",
@@ -214,8 +194,12 @@ userCartDelete: async (req, res) => {
         });
       }
 
-      const cartItems = await userHelper.getCartItemsAll(req.session.isUserAuth);
+      // Retrieve all cart items for the user
+      const cartItems = await userHelper.getCartItemsAll(
+        req.session.isUserAuth
+      );
 
+      // Check for quantity availability
       let flag = 0;
       cartItems.forEach((element) => {
         if (element.products.quantity > element.variations[0].quantity) {
@@ -231,12 +215,18 @@ userCartDelete: async (req, res) => {
         });
       }
 
+      // Retrieve coupon details
       const couponDetails = await userHelper.getCoupon(coupon);
+      // console.log('couponDetails:', couponDetails);
 
       if (couponDetails) {
         await userHelper.UpdateCouponCount(couponDetails._id);
       }
 
+      // Initialize total coupon discount amount
+      let totalCouponDiscountAmount = 0;
+
+      // Create order items
       const orderItems = cartItems.map((element) => {
         const orderItem = {
           productId: element.products.productId,
@@ -245,30 +235,40 @@ userCartDelete: async (req, res) => {
           pDescription: element.pDetails[0].pDescription,
           quantity: element.products.quantity,
           offerDiscountAmount: Math.round(
-            element.pDetails[0].fPrice *
+            (element.pDetails[0].fPrice *
               element.products.quantity *
-              element.allOffers / 100
+              element.allOffers) /
+              100
           ),
           fPrice: element.pDetails[0].fPrice,
           lPrice: element.pDetails[0].lPrice,
           color: element.variations[0].color,
           size: element.variations[0].size,
           images: element.variations[0].images[0],
+          couponDiscountAmount: element.couponDiscountAmount || 0,
         };
+
+        // Calculate coupon discount amount if applicable
         if (
           couponDetails &&
-          (couponDetails.category === 'All' ||
+          (couponDetails.category === "All" ||
             couponDetails.category === orderItem.category)
         ) {
           orderItem.couponDiscountAmount = Math.round(
-            orderItem.fPrice * orderItem.quantity * couponDetails.discount / 100
+            (orderItem.fPrice * orderItem.quantity * couponDetails.discount) /
+              100
           );
         } else {
           orderItem.couponDiscountAmount = 0;
         }
+
+        // Accumulate total coupon discount amount
+        totalCouponDiscountAmount += orderItem.couponDiscountAmount;
+
         return orderItem;
       });
 
+      // Update product quantities and calculate total price
       let tPrice = 0;
 
       for (const element of orderItems) {
@@ -276,16 +276,16 @@ userCartDelete: async (req, res) => {
           { productId: element.productId },
           { $inc: { quantity: element.quantity * -1 } }
         );
-      }
 
-      for (const element of orderItems) {
-        tPrice += element.quantity * element.lPrice - element.couponDiscountAmount;
+        tPrice +=
+          element.quantity * element.lPrice - element.couponDiscountAmount;
       }
 
       if (Number(offerPrice)) {
         tPrice -= Number(offerPrice);
       }
 
+      // Create a new order
       const orderId = uuidv4();
 
       const newOrder = new orderdb({
@@ -295,9 +295,11 @@ userCartDelete: async (req, res) => {
         paymentMethode: paymentMethode,
         address: req.body.adId,
         totalPrice: tPrice,
+        couponDiscountAmount: totalCouponDiscountAmount,
       });
 
-      if (paymentMethode === 'COD') {
+      // Handle payment methods
+      if (paymentMethode === "COD") {
         await newOrder.save();
         await Cartdb.updateOne(
           { userId: req.session.isUserAuth },
@@ -307,7 +309,7 @@ userCartDelete: async (req, res) => {
           url: "/userOrderSuccessfull",
           paymentMethode: "COD",
         });
-      } else if (paymentMethode === 'razorpay') {
+      } else if (paymentMethode === "razorpay") {
         try {
           const options = {
             amount: tPrice * 100,
@@ -325,76 +327,98 @@ userCartDelete: async (req, res) => {
             keyId: process.env.key_id,
           });
         } catch (err) {
-          console.error('Razorpay err', err);
+          console.error("Razorpay err", err);
           return res.status(500).render("errorPages/500ErrorPage");
         }
-      } else if (paymentMethode === 'wallet') {
+      } else if (paymentMethode === "wallet") {
         try {
+          const userId = req.session.isUserAuth;
+          const walletBalance = await userHelper.getWalletBalance(userId);
+
+          if (walletBalance < orderTotal) {
+            // Assuming orderTotal is defined elsewhere in your code
+            return res.status(400).json({
+              message: "Insufficient wallet balance",
+            });
+          }
+
+          // Deduct the order amount from the wallet balance
+          await User.updateOne(
+            { _id: userId },
+            { $inc: { walletBalance: -orderTotal } }
+          );
+
           await newOrder.save();
           await Cartdb.updateOne(
-            { userId: req.session.isUserAuth },
+            { userId: userId },
             { $set: { products: [] } }
           ); // empty cart items
+
           return res.json({
             url: "/orderSuccessfull",
             paymentMethode: "wallet",
           });
         } catch (error) {
-          console.error('wallet err', error);
+          console.error("wallet err", error);
           return res.status(500).render("errorPages/500ErrorPage");
         }
       }
     } catch (err) {
-      console.error('Main err in user cart checkout', err);
+      console.error("Main err in user cart checkout", err);
       res.status(500).render("errorPages/500ErrorPage");
     }
   },
+  //   ----------------------------------------------------------------------------------------------------------
 
-
-
-//   ----------------------------------------------------------------------------------------------------------
-
-isCouponValidCart: async (req, res) => {
+  isCouponValidCart: async (req, res) => {
     try {
       const coupon = await userHelper.getCoupon(req.body.code);
 
-      if(!coupon){
+      if (!coupon) {
         return res.status(401).json({
           err: true,
           reload: false,
-          message: 'Invalid coupon code'
+          message: "Invalid coupon code",
         });
       }
 
-      if(new Date(coupon.expiry) < new Date()){
+      if (new Date(coupon.expiry) < new Date()) {
         return res.status(401).json({
           err: true,
           reload: false,
-          message: 'Coupon expired'
+          message: "Coupon expired",
         });
       }
 
-      if(coupon.count <= 0){
+      if (coupon.count <= 0) {
         return res.status(401).json({
           err: true,
           reload: false,
-          message: `This coupon is Expired`
+          message: `This coupon is Expired`,
         });
       }
 
       //user Helper fn to get product all product in cart
-      const cartItems = await userHelper.getCartItemsAll(req.session.isUserAuth);
-      let minPriceErr = false;  
+      const cartItems = await userHelper.getCartItemsAll(
+        req.session.isUserAuth
+      );
+      let minPriceErr = false;
       const total = cartItems.reduce((total, value) => {
-        return total += Math.round((value.pDetails[0].fPrice * value.products.quantity));
-    }, 0);
-      
+        return (total += Math.round(
+          value.pDetails[0].fPrice * value.products.quantity
+        ));
+      }, 0);
+
       const totalDiscount = cartItems.reduce((total, value, i) => {
-        if(((value.pDetails[0].category === coupon.category) || (coupon.category === 'All')) && (total >= coupon.minPrice)){
-          return total += Math.round((total * coupon.discount) / 100);
+        if (
+          (value.pDetails[0].category === coupon.category ||
+            coupon.category === "All") &&
+          total >= coupon.minPrice
+        ) {
+          return (total += Math.round((total * coupon.discount) / 100));
         }
 
-        if((total < coupon.minPrice)){
+        if (total < coupon.minPrice) {
           minPriceErr = true;
         }
 
@@ -417,27 +441,23 @@ isCouponValidCart: async (req, res) => {
       //   });
       // }
 
-
       res.status(200).json({
         status: true,
         message: `Coupon code ${coupon.code} applied successfully!`,
         totalDiscount,
         coupon,
         minPriceErr,
-        total
+        total,
       });
     } catch (err) {
       console.error("isCoupon cart err", err);
       res.status(500).json({
         err: true,
         reload: true,
-        message:"errorPages/500ErrorPage"
+        message: "errorPages/500ErrorPage",
       });
     }
   },
 
-// --------------------------------------------------------------------------------------------------------------------
-
-
-
-}                      
+  // --------------------------------------------------------------------------------------------------------------------
+};

@@ -1,30 +1,30 @@
-const Userdb = require('../../../server/model/userSide/userModel');
-const userHelper = require('../../../server/databaseHelpers/userHelper');
+const Userdb = require("../../../server/model/userSide/userModel");
+const userHelper = require("../../../server/databaseHelpers/userHelper");
 
 module.exports = {
-    otpVerify : (req, res, next) => {
+    otpVerify: (req, res, next) => {
         try {
             // this session is to identify which side is the get err
             req.session.adminPageErr = false;
-            
-            if(req.session.verifyOtpPage){
+
+            if (req.session.verifyOtpPage) {
                 next();
-            }else{
-                res.redirect('/userRegister');
+            } else {
+                res.redirect("/userRegister");
             }
         } catch (err) {
             console.error("Middleware err:", err);
             res.status(500).render("errorPages/500ErrorPage");
         }
     },
-    noOtpVerify : (req, res, next) => {
+    noOtpVerify: (req, res, next) => {
         try {
             // this session is to identify which side is the get err
             req.session.adminPageErr = false;
 
-            if(req.session.verifyOtpPage){
-                res.redirect('/registerOtpVerify');
-            }else{
+            if (req.session.verifyOtpPage) {
+                res.redirect("/registerOtpVerify");
+            } else {
                 next();
             }
         } catch (err) {
@@ -37,10 +37,10 @@ module.exports = {
             // this session is to identify which side is the get err
             req.session.adminPageErr = false;
 
-            if(req.session.resetPasswordPage) {
+            if (req.session.resetPasswordPage) {
                 next();
-            }else{
-                res.redirect('/login');
+            } else {
+                res.redirect("/login");
             }
         } catch (err) {
             console.error("Middleware err:", err);
@@ -52,9 +52,9 @@ module.exports = {
             // this session is to identify which side is the get err
             req.session.adminPageErr = false;
 
-            if(req.session.resetPasswordPage) {
-                res.redirect('/loginResetPassword');
-            }else{
+            if (req.session.resetPasswordPage) {
+                res.redirect("/loginResetPassword");
+            } else {
                 next();
             }
         } catch (err) {
@@ -62,14 +62,14 @@ module.exports = {
             res.status(500).render("errorPages/500ErrorPage");
         }
     },
-     isUserAuth: (req, res, next) => {
+    isUserAuth: (req, res, next) => {
         try {
             // this session is to identify which side is the get err
             req.session.adminPageErr = false;
 
-            if(req.session.isUserAuth){
-                res.redirect('/');
-            }else{
+            if (req.session.isUserAuth) {
+                res.redirect("/");
+            } else {
                 next();
             }
         } catch (err) {
@@ -85,17 +85,17 @@ module.exports = {
             if (!req.session.isUserAuth) {
                 return next();
             }
-            const data = await Userdb.findOne({_id: req.session.isUserAuth});
+            const data = await Userdb.findOne({ _id: req.session.isUserAuth });
 
-            if(!data.userStatus){
+            if (!data.userStatus) {
                 req.session.userBlockedMesg = true;
                 delete req.session.isUserAuth;
-                return res.status(200).redirect('/login');
+                return res.status(200).redirect("/login");
             }
             next();
         } catch (err) {
-            console.error('Middle ware err', err);
-            res.status(401).send('You are block');
+            console.error("Middle ware err", err);
+            res.status(401).send("You are block");
         }
     },
     isUserLoggedIn: (req, res, next) => {
@@ -103,10 +103,10 @@ module.exports = {
             // this session is to identify which side is the get err
             req.session.adminPageErr = false;
 
-            if(req.session.isUserAuth){
+            if (req.session.isUserAuth) {
                 next();
-            }else{
-                res.status(200).redirect('/login');
+            } else {
+                res.status(200).redirect("/login");
             }
         } catch (err) {
             console.error("Middleware err:", err);
@@ -114,31 +114,34 @@ module.exports = {
         }
     },
     // isAuthOrder: (req, res, next) => {
-    //    try {
-    //         // this session is to identify which side is the get err
-    //         req.session.adminPageErr = false;
-    //         console.log(req.session.orderSucessPage,'jhdsgfhjgsdgf');
+    // try {
+    // // this session is to identify which side is the get err
+    // req.session.adminPageErr = false;
+    // console.log(req.session.orderSucessPage,'jhdsgfhjgsdgf');
 
-    //         if(req.session.orderSucessPage){
-    //             next();
-    //         }else{
-    //             res.status(401).redirect('/');
-    //         }
-    //    } catch (err) {
-    //         console.error("Middleware err:", err);
-    //         res.status(500).render("errorPages/500ErrorPage");
-    //    }
+    // if(req.session.orderSucessPage){
+    // next();
+    // }else{
+    // res.status(401).redirect('/');
+    // }
+    // } catch (err) {
+    // console.error("Middleware err:", err);
+    // res.status(500).render("errorPages/500ErrorPage");
+    // }
     // },
-    isDelivered: async(req, res, next) => {
+    isDelivered: async (req, res, next) => {
         try {
             // this session is to identify which side is the get err
             req.session.adminPageErr = false;
 
-            const isOrder = await userHelper.isOrdered(req.params.productId, req.session.isUserAuth);
-            if(isOrder){
+            const isOrder = await userHelper.isOrdered(
+                req.params.productId,
+                req.session.isUserAuth
+            );
+            if (isOrder) {
                 return next();
             }
-            req.flash('message', 'not purchased');
+            req.flash("message", "not purchased");
             res.status(200).redirect(`/productDetail/${req.params.productId}`);
         } catch (err) {
             console.error("Middleware err:", err);
@@ -155,5 +158,5 @@ module.exports = {
             console.error("Simple Middleware err:", err);
             res.status(500).render("errorPages/500ErrorPage");
         }
-    }
-}
+    },
+};

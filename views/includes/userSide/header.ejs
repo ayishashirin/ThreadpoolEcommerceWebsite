@@ -28,6 +28,11 @@
 </head>
 
 <body>
+  <style>
+    .actived {
+            background-color: #f53f85; /* Example style for active state */
+        }
+  </style>
 
     <div class="top-header">
         <div class="container">
@@ -329,27 +334,55 @@
 
     <!-- search bar -->
     
-    <!-- Search overlay -->
-   
+    <!-- Search overlay
     <div class="search-overlay">
       <div class="d-table">
-          <div class="d-table-cell">
-              <div class="search-overlay-layer"></div>
-              <div class="search-overlay-layer"></div>
-              <div class="search-overlay-layer"></div>
-              <div class="search-overlay-close">
-                  <span class="search-overlay-close-line"></span>
-                  <span class="search-overlay-close-line"></span>
-              </div>
-              <div class="search-overlay-form">
-                  <form>
-                      <input type="text" class="input-search" placeholder="Search here..." id="search">
-                      <button type="submit"><i class="bx bx-search-alt"></i></button>
-                  </form>
-              </div>
+        <div class="d-table-cell">
+          <div class="search-overlay-layer"></div>
+          <div class="search-overlay-layer"></div>
+          <div class="search-overlay-layer"></div>
+          <div class="search-overlay-close">
+            <span class="search-overlay-close-line"></span>
+            <span class="search-overlay-close-line"></span>
           </div>
+          <div class="search-overlay-form">
+            <form id="searchForm" action="/api/search">
+              <input type="text" class="input-search" placeholder="Search here..." id="search" name="search">
+              <button type="submit"><i class="bx bx-search-alt"></i></button>
+            </form>
+            <div id="searchResults"></div>
+          </div>
+        </div>
       </div>
-  </div>
+    </div>
+    <script>
+      document.getElementById('search').addEventListener('input', async function () {
+        const query = this.value;
+    
+        if (query.length > 0) {
+          try {
+            const response = await axios.get('/api/search', { params: { q: query } });
+            const products = response.data;
+    
+            // Clear previous results
+            const resultsContainer = document.getElementById('searchResults');
+            resultsContainer.innerHTML = '';
+    
+            // Display new results
+            products.forEach(product => {
+              const productElement = document.createElement('div');
+              productElement.textContent = product.name; // Adjust this based on your product object structure
+              resultsContainer.appendChild(productElement);
+            });
+          } catch (error) {
+            console.error('Error fetching search results:', error);
+          }
+        } else {
+          // Clear results if query is empty
+          document.getElementById('searchResults').innerHTML = '';
+        }
+      });
+    </script> -->
   
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://kit.fontawesome.com/62954eafbc.js" crossorigin="anonymous"></script>

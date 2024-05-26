@@ -28,6 +28,7 @@ router.route('/adminLogin')
 // Admin Dashboard Route
 router.get('/adminHome' , adminAuthMiddleware.isAdminAuth, adminRender.adminHome); // get the page of dashboard
 
+router.post('/downloadSalesReport', adminAuthMiddleware.isAdminAuth, adminController.downloadSalesReport); // Option to download sales report
 
 
 
@@ -101,7 +102,10 @@ router.get('/adminUserDelete/:id', adminAuthMiddleware.isAdminAuth, adminControl
 // Admin Order Management Routes
 router.get('/adminOrderManagement', adminAuthMiddleware.isAdminAuth, adminRender.adminOrderManagement); // All order are listed and can be managed
 
-router.post('/adminChangeOrderStatus/:orderId/:productId', adminAuthMiddleware.isAdminAuth, adminController.adminChangeOrderStatus); // Option to change order status
+// router.post('/adminChangeOrderStatus/:orderId/:productId', adminAuthMiddleware.isAdminAuth, adminController.adminChangeOrderStatus); // Option to change order status
+
+
+router.post('/statusUpdate/:orderId/:productId', adminAuthMiddleware.isAdminAuth,adminController.statusUpdate)
 
 router.get('/adminOrderDetails',adminAuthMiddleware.isAdminAuth, adminRender.adminOrderDetails)
 
@@ -193,21 +197,10 @@ router.delete('/adminDeleteOffer/:offerId', adminAuthMiddleware.isAdminAuth, adm
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 router.get('/adminLogout', adminAuthMiddleware.isAdminAuth, adminController.adminLogout);
 
  
-
+//api
+router.post('/api/getDetailsChart', adminAuthMiddleware.isAdminAuth, adminController.getDetailsChart);// Option to get chart details
 
 module.exports = router;

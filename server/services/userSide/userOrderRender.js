@@ -1,12 +1,7 @@
 const userHelper = require("../../databaseHelpers/userHelper");
-const adminHelper = require("../../databaseHelpers/adminHelper");
-const Productdb = require("../../model/adminSide/productModel").Productdb;
-const ProductVariationdb = require("../../model/adminSide/productModel").ProductVariationdb;
-const Cartdb = require("../../model/userSide/cartModel");
-const orderdb = require("../../model/userSide/orderModel");
 const offerdb = require("../../model/adminSide/offerModel");
 const userVariationdb = require("../../model/userSide/userVariationModel");
-
+ 
 
 
 module.exports = {
@@ -20,7 +15,6 @@ module.exports = {
           const counts = await userHelper.getTheCountOfWhislistCart(
             req.session.isUserAuth
           );
-    
           const wishlistItems = await userHelper.getWishlistItemsAll(
             req.session.isUserAuth
           );
@@ -82,7 +76,6 @@ module.exports = {
 
           const allOrderItems = await userHelper.getAllOrdersOfUser(req.session.isUserAuth)
 
-          console.log(allOrderItems,'sgdhgdgshf');
 
           res.status(200).render("userSide/userOrderPage", {
             category,
@@ -115,7 +108,7 @@ module.exports = {
     
           //userHelper fn to get the order Details of singleProduct
           const orderDetails = await userHelper.getSingleOrderOfDetails(req.params,req.session.isUserAuth)
-
+          console.log("orderDetails:",orderDetails);
 
            const offerDetails = await offerdb.find()
           const wishlistItems = await userHelper.getWishlistItemsAll(
@@ -125,10 +118,13 @@ module.exports = {
           const userInfo = await userHelper.userInfo(req.session.isUserAuth);
 
           const cartItems = await userHelper.getCartItemsAll(req.session.isUserAuth);
-           //userHelper fn to get all order history
-        
 
-
+             
+         
+          //  //userHelper fn to get all order history
+          const orderAddress = await userVariationdb.find({userId:orderDetails.userId, address: {
+            $elemMatch: { _id: orderDetails.address }
+          }})
           if (!orderDetails) {
             return res.status(401).redirect("/orders");
           }
@@ -142,7 +138,7 @@ module.exports = {
             user: req.session.isUserAuth,
             cartItems,
             wishlistItems,
-            offerDetails
+            offerDetails,orderAddress,
         
           });
         } catch (err) {

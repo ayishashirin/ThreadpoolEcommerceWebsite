@@ -1,38 +1,13 @@
-const Userdb = require("../../model/userSide/userModel");
-const Otpdb = require("../../model/userSide/otpModel");
 const Productdb = require("../../model/adminSide/productModel").Productdb;
-const ProductVariationdb = require("../../model/adminSide/productModel").ProductVariationdb;
-const userVariationdb = require("../../model/userSide/userVariationModel");
-const bcrypt = require("bcryptjs");
-const nodemailer = require("nodemailer");
-const Mailgen = require("mailgen");
-const mongoose = require("mongoose");
-const userHelper = require("../../databaseHelpers/userHelper");
+const ProductVariationdb =
+  require("../../model/adminSide/productModel").ProductVariationdb;
 const path = require("path");
-const Cartdb = require("../../model/userSide/cartModel");
-const usersAddToCart = require("../../services/userSide/userRender");
-const saltRounds = 10; // Salt rounds for bcrypt
-const orderdb = require("../../model/userSide/orderModel");
-const shortid = require("shortid");
-const wishlistdb = require("../../model/userSide/wishlist");
-const Razorpay = require("razorpay");
-const puppeteer = require("puppeteer-core");
 const sharp = require("sharp");
 
-
-const instance = new Razorpay({
-                                  key_id: process.env.key_id,
-                                  key_secret: process.env.key_secret,
-                              });
-
-
 module.exports = {
-
-adminAddProduct: async (req, res) => {
+  adminAddProduct: async (req, res) => {
     try {
       
-     
-      // Trim whitespace from form fields
       req.body.pName = req.body.pName?.trim();
       req.body.pDescription = req.body.pDescription?.trim();
       req.body.fPrice = req.body.fPrice?.trim();
@@ -41,14 +16,15 @@ adminAddProduct: async (req, res) => {
       req.body.color = req.body.color?.trim();
       req.body.size = req.body.size?.trim();
       req.body.quantity = req.body.quantity?.trim();
-     req.body.date = req.body.date?.trim();
+      req.body.date = req.body.date?.trim();
 
       // Validate form inputs
       const errors = {};
 
       // Check for required fields
       if (!req.body.pName) errors.pName = "This Field is required";
-      if (!req.body.pDescription) errors.pDescription = "This Field is required";
+      if (!req.body.pDescription)
+        errors.pDescription = "This Field is required";
       if (!req.body.fPrice) errors.fPrice = "This Field is required";
       if (!req.body.lPrice) errors.lPrice = "This Field is required";
       if (!req.body.discount) errors.discount = "This Field is required";
@@ -79,7 +55,7 @@ adminAddProduct: async (req, res) => {
           date: req.body.date,
         };
         req.flash("userProductFormData", userProductFormData);
-     
+
         return res.status(401).redirect("/adminAddProduct");
       }
 
@@ -104,23 +80,26 @@ adminAddProduct: async (req, res) => {
         (value) => `/uploadedImages/${value.filename}`
       );
       let arrImages = [];
-    
+
       for (let i = 0; i < req.files.length; i++) {
-
         console.log(req.files[i].path);
-          // Use sharp to resize and crop the image
-          const croppedBuffer = await sharp(req.files[i].path)
-              .resize({ width: 306, height: 408, fit: sharp.fit.cover })
-              .toBuffer();
+        // Use sharp to resize and crop the image
+        const croppedBuffer = await sharp(req.files[i].path)
+          .resize({ width: 306, height: 408, fit: sharp.fit.cover })
+          .toBuffer();
 
-          const filename = `uploadedImages/cropped_${req.files[i].originalname}`;
-          const sfilename = `cropped_${req.files[i].originalname}`;
-          arrImages[i] = filename;
+        const filename = `uploadedImages/cropped_${req.files[i].originalname}`;
+        const sfilename = `cropped_${req.files[i].originalname}`;
+        arrImages[i] = filename;
 
-          // Save the cropped image
-          const filePath = path.join(__dirname, '../../../public/uploadedImages', sfilename);
-          console.log(filePath);
-          await sharp(croppedBuffer).toFile(filePath);
+        // Save the cropped image
+        const filePath = path.join(
+          __dirname,
+          "../../../public/uploadedImages",
+          sfilename
+        );
+        console.log(filePath);
+        await sharp(croppedBuffer).toFile(filePath);
       }
 
       const newProductVariation = new ProductVariationdb({
@@ -132,7 +111,6 @@ adminAddProduct: async (req, res) => {
       });
       await newProductVariation.save();
 
-   
       res.redirect("/adminProductManagement");
     } catch (err) {
       console.error(err);
@@ -169,11 +147,11 @@ adminAddProduct: async (req, res) => {
 
     res.status(200).redirect(`/adminUpdateProduct/${req.query.id}`);
   },
-  
+
   adminUpdateProduct: async (req, res) => {
     try {
-      console.log(req.query, "ayshaaaaa")
-     
+      console.log(req.query, "ayshaaaaa");
+
       req.body.pName = req.body.pName?.trim();
       req.body.category = req.body.category?.trim();
       req.body.pDescription = req.body.pDescription?.trim();
@@ -184,7 +162,7 @@ adminAddProduct: async (req, res) => {
       req.body.size = req.body.size?.trim();
       req.body.quantity = req.body.quantity?.trim();
       req.body.date = req.body.date?.trim();
-  
+
       // Validate form inputs
       const errors = {};
 
@@ -192,9 +170,9 @@ adminAddProduct: async (req, res) => {
         pName: req.body.pName,
       });
       const existingUpdateProductVariation = await ProductVariationdb.findOne({
-        productId: existingUpdateProduct._id
+        productId: existingUpdateProduct._id,
       });
-      
+
       // Check for required fields
       if (!req.body.pName) errors.pName = "This Field is required";
       if (!req.body.pName) errors.pName = "This Field is required";
@@ -206,14 +184,17 @@ adminAddProduct: async (req, res) => {
       if (!req.body.size) errors.size = "This Field is required";
       if (!req.body.quantity) errors.quantity = "This Field is required";
       if (!req.body.date) errors.date = "This Field is required";
-      if (!existingUpdateProductVariation.images.length && !req.files.length) errors.files = "This Field is required";
-  
-      
+      if (!existingUpdateProductVariation.images.length && !req.files.length)
+        errors.files = "This Field is required";
+
       // Check for existing product with the same name
-      if (existingUpdateProduct && existingUpdateProduct._id.toString() !== req.query.id) {
+      if (
+        existingUpdateProduct &&
+        existingUpdateProduct._id.toString() !== req.query.id
+      ) {
         errors.pName = "Product Name already exists";
       }
-  
+
       // If there are validation errors, redirect back to the form with error messages
       if (Object.keys(errors).length > 0) {
         req.flash("userUpdateProductErrors", errors);
@@ -227,53 +208,55 @@ adminAddProduct: async (req, res) => {
           color: req.body.color,
           size: req.body.size,
           quantity: req.body.quantity,
-          date:req.body.date,
+          date: req.body.date,
         };
         req.flash("userUpdateProductFormData", userUpdateProductFormData);
-        console.log(errors, 'Validation errors occurred');
+        console.log(errors, "Validation errors occurred");
         return res.redirect(`/adminUpdateProduct/${req.query.id}`);
       }
-  
-    // Update product information in the database
-const updateProduct = {
-          pName: req.body.pName,
-          category: req.body.category,
-          pDescription: req.body.pDescription,
-          fPrice: req.body.fPrice,
-          lPrice: req.body.lPrice,
-          discount: req.body.discount,
-          color: req.body.color,
-          size: req.body.size,
-          quantity: req.body.quantity,
-          date:req.body.date,
-};
 
-// Correctly update the product document
-await Productdb.updateOne({ _id: req.query.id }, { $set: updateProduct });
+      // Update product information in the database
+      const updateProduct = {
+        pName: req.body.pName,
+        category: req.body.category,
+        pDescription: req.body.pDescription,
+        fPrice: req.body.fPrice,
+        lPrice: req.body.lPrice,
+        discount: req.body.discount,
+        color: req.body.color,
+        size: req.body.size,
+        quantity: req.body.quantity,
+        date: req.body.date,
+      };
+
+      // Correctly update the product document
+      await Productdb.updateOne({ _id: req.query.id }, { $set: updateProduct });
 
       const files = req.files;
-      const uploadImg = files.map((value) => `/uploadedImages/${value.filename}`);
-  
+      const uploadImg = files.map(
+        (value) => `/uploadedImages/${value.filename}`
+      );
+
       // Update product variation information in the database
       const updateProductVariation = {
         color: req.body.color,
         size: req.body.size,
         quantity: req.body.quantity,
       };
-  
+
       await ProductVariationdb.updateOne(
         { productId: req.query.id },
         { $set: updateProductVariation }
       );
-  
+
       // Push uploaded images to the product variation
       if (uploadImg.length > 0) {
         await ProductVariationdb.updateOne(
           { productId: req.query.id },
           { $push: { images: uploadImg } }
-          );
+        );
       }
-  
+
       // Redirect to admin product management page after successful update
       return res.status(200).json(true);
     } catch (error) {
@@ -283,5 +266,4 @@ await Productdb.updateOne({ _id: req.query.id }, { $set: updateProduct });
       res.status(500).send("Internal Server Error");
     }
   },
-
-}
+};

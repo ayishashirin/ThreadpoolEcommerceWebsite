@@ -14,57 +14,60 @@
 
 
 
-  function applyCoupon() {
-    // Get the order total value
-    var orderTotal = document.getElementById("orderTotal").innerText.replace("$", "");
-    
-    // Get the coupon code
-    var couponCode = document.getElementById("coupon").value;
-    
-    // Clear the input field after getting the coupon code
-    document.getElementById("coupon").value = "";
-    
-    // Get the total amount
-    var totalAmount = document.getElementById("totalAmount").innerText.replace("$", "");
-    
-    // Show the coupon row
-    // document.getElementById("couponRow")?.classList?.remove("d-none");
+function applyCoupon() {
+  // Get the order total value
+  var orderTotal = document.getElementById("orderTotal").innerText.replace("$", "");
+  
+  // Get the coupon code
+  var couponCode = document.getElementById("coupon").value;
+  
+  // Clear the input field after getting the coupon code
+  document.getElementById("coupon").value = "";
+  
+  // Get the total amount
+  var totalAmount = document.getElementById("totalAmount").innerText.replace("$", "");
+ 
+  // Hide the coupon row initially
+  document.getElementById("couponRow").style.display = "none";
 
-    document.getElementById("couponRow").style.display = "block";
-    
-    // Send a request to check if the coupon is valid
-    axios.post('/isCouponValidCart', {
-        code: couponCode,
-        total: totalAmount
-      })
-      .then(function(response) {
-        console.log(response.data);
+  // Hide the error message initially
+  document.getElementById("couponError").style.display = "none";
+  
+  // Send a request to check if the coupon is valid
+  axios.post('/isCouponValidCart', {
+      code: couponCode,
+      total: totalAmount
+  })
+  .then(function(response) {
+      console.log(response.data);
 
-        // Calculate the discount amount
-        var discountAmount = Math.round((response.data.total * response.data.coupon.discount) / 100);
+      // Calculate the discount amount
+      var discountAmount = Math.round((response.data.total * response.data.coupon.discount) / 100);
 
-        // Set the discount amount in the element
-        document.getElementById("cDPrice").innerHTML = `-$${discountAmount.toFixed(2)}`;
+      // Set the discount amount in the element
+      document.getElementById("cDPrice").innerHTML = `-$${discountAmount.toFixed(2)}`;
 
-        console.log("Total", response.data.total);
-        console.log("Discount Percentage:", response.data.coupon.discount);
+      console.log("Total", response.data.total);
+      console.log("Discount Percentage:", response.data.coupon.discount);
 
-        // Display the discount amount and coupon code
-        document.getElementById("cDPrice").style.display = "block";
-        document.getElementById("code").innerHTML = response.data.coupon.code;
-        document.getElementById("code").style.display = "block";
+      // Display the discount amount and coupon code
+      document.getElementById("couponRow").style.display = "block";
+      document.getElementById("cDPrice").style.display = "block";
+      document.getElementById("code").innerHTML = response.data.coupon.code;
+      document.getElementById("code").style.display = "block";
 
-        alert(response.data.message);
+      alert(response.data.message);
 
-        // Recalculate and update the order total
-        calculateOrderTotal();
-      })
-      .catch(function(error) {
-        console.error('Error:', error);
-        alert('An error occurred while applying the coupon. Please try again later.');
-      });
-
-  }
+      // Recalculate and update the order total
+      calculateOrderTotal();
+  })
+  .catch(function(error) {
+      console.error('Error:', error);
+      
+      // Show the error message
+      document.getElementById("couponError").style.display = "block";
+  });
+}
 
 // --------------------------------------------------------------------------------------------------------------
 
@@ -74,7 +77,7 @@
     //   var couponRow = document.getElementById("couponRow");
     //   couponRow.parentNode.removeChild(couponRow);
       document.getElementById("couponRow").style.display = "none";
-  
+      window.location.reload()
       // Find the cDPrice span element and remove it
       var cDPrice = document.getElementById("cDPrice");
       cDPrice.innerText="-$00.00"

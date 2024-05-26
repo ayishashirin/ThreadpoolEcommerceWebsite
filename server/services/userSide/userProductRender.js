@@ -1,10 +1,5 @@
 const userHelper = require("../../databaseHelpers/userHelper");
-const adminHelper = require("../../databaseHelpers/adminHelper");
-const Productdb = require("../../model/adminSide/productModel").Productdb;
-const ProductVariationdb =
-  require("../../model/adminSide/productModel").ProductVariationdb;
-const Cartdb = require("../../model/userSide/cartModel");
-const orderdb = require("../../model/userSide/orderModel");
+
 
 
 

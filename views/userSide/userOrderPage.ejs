@@ -8,12 +8,12 @@
 
     <link rel="stylesheet" href="/userSide/css/userOrderPage.css" />
     <!-- end of Style css -->
-    <!-- <link
+    <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
     rel="stylesheet"
     integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
     crossorigin="anonymous"
-    /> -->
+    />
   <!-- end of Bootstrap css cdn link -->
     <div class="page-title-area">
       <div class="container">
@@ -38,16 +38,13 @@
       <div id="confirmation-popup" class="modal">
         <div class="modal-content">
           <p>Do you want to cancel the order?</p>
-          <table>
-            <tr>
-              <td><button class="close-btn" onclick="closePopUp()">NO</button></td>
-            </tr>
-            <tr>
-              <td><button id="confirm-btn" class="close-btn" onclick="cancelOrder()">YES</button></td>
-            </tr>
-          </table>
+          <div class="button-container">
+            <button class="close-btn" onclick="closePopUp()">NO</button>
+            <button id="confirm-btn" class="confirm-btn" onclick="cancelOrder()">YES</button>
+          </div>
         </div>
       </div>
+      
     
       
 <style>
@@ -226,45 +223,46 @@
      <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
      <!-- JavaScript -->
-     <script>
-      let orderId, productId, cancelButton;
-    
-      function showPopUp(oid, pid, btn) {
-        console.log('showPopUp called with orderId:', oid, 'productId:', pid);
-        orderId = oid;
-        productId = pid;
-        cancelButton = btn;
-        document.getElementById('confirmation-popup').classList.add('show');
+    <script>
+  let orderId, productId, cancelButton;
+
+  function showPopUp(oid, pid, btn) {
+    console.log('showPopUp called with orderId:', oid, 'productId:', pid);
+    orderId = oid;
+    productId = pid;
+    cancelButton = btn;
+    document.getElementById('confirmation-popup').classList.add('show');
+  }
+
+  function closePopUp() {
+    document.getElementById('confirmation-popup').classList.remove('show');
+  }
+
+  function cancelOrder() {
+    axios.post(`/orderCancel/${orderId}/${productId}`, {
+      orderId: orderId,
+      productId: productId
+    })
+    .then(response => {
+      reloadPage(); // Call the reload function after the cancellation process is complete
+      console.log('Order cancelled:', response.data);
+      if (response.data.success) {
+        cancelButton.innerText = 'Cancelled';
+        cancelButton.disabled = true;
       }
+      closePopUp();
     
-      function closePopUp() {
-        document.getElementById('confirmation-popup').classList.remove('show');
-      }
-    
-      function cancelOrder() {
-        axios.post(`/orderCancel/${orderId}/${productId}`, {
-          orderId: orderId,
-          productId: productId
-        })
-        .then(response => {
-          console.log('Order cancelled:', response.data);
-          if (response.data.success) {
-            cancelButton.innerText = 'Cancelled';
-            cancelButton.disabled = true;
-          }
-          closePopUp();
-          reloadPage(); // Call the reload function after the cancellation process is complete
-        })
-        .catch(error => {
-          console.error('There was an error cancelling the order:', error);
-        });
-      }
-    
-      function reloadPage() {
-        window.location.reload(); // Reload the page
-      }
-    </script>
-    
+    })
+    .catch(error => {
+      console.error('There was an error cancelling the order:', error);
+    });
+  }
+
+  function reloadPage() {
+    window.location.reload(); // Reload the page
+  }
+</script>
+
        <!-- custom js -->
        <script src="userSide/js/userOrderPage.js"></script>
 

@@ -33,14 +33,14 @@ const orderSchema = new mongodb.Schema({
                 required: true
             },
             lPrice: {
-                type: String,
+                type: Number,
                 required: true
             },
             size:{
                 type: String,
                 required:true
             },
-            DiscountAmount: {
+            offerDiscountAmount: {
                 type: Number,
                 default: 0,
             },

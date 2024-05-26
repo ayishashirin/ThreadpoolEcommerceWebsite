@@ -43,7 +43,7 @@ aria-hidden="true"
             </clipPath>
             </defs>
           </svg>                                             
-          <h2 class="m-0 p-0 text-capitalize">Add Address</h2>
+          <!-- <h2 class="m-0 p-0 text-capitalize">Add Address</h2> -->
         </div>
       </div>
       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -96,9 +96,7 @@ aria-hidden="true"
                 </p>
                 
               </div>
-              <button type="submit" class="saveBtn oneBtn">
-                Add 
-              </button>
+              <button type="submit" class="saveBtn oneBtn">Add Address</button>
             </div>
             <div class="sides">
               <div class="left">
@@ -124,7 +122,7 @@ aria-hidden="true"
                 </p>
                 <label for="houseNo">House No</label>
                 <input
-                  name="houseName"
+                  name="houseNo"
                   class="d-block"
                   type="number"
                   value=""
@@ -144,9 +142,7 @@ aria-hidden="true"
                 </p>
               
               </div>
-              <button type="submit" class="saveBtn twoBtn">
-                Add
-              </button>
+              <button type="submit" class="saveBtn twoBtn">Add Address</button>
             </div>
           </div>
         </div>
@@ -235,9 +231,8 @@ aria-hidden="true"
 <div class="col-lg-6 col-md-12">
 <div class="billing-details">
 <h3 class="title">Billing Details</h3>
-<div class="row">
-
-  <div class="orderSummary m-0 w-100">
+<div class="row" style="padding-right:20px; margin-right:100px;" >
+  <div class="orderSummary ">
     <div class="orderHeading">
       <h2>Delivery Address</h2>
     </div>
@@ -246,7 +241,7 @@ aria-hidden="true"
         <% if (userInfo.variations[0]?.address.length === 0 || !userInfo.variations[0]) { %>
         <% } else { %>
               <div class="existingAddress">
-                <p class="name text-capitalize"><%= userInfo.fullName %></p>
+               
                 <p><%= userInfo.variations[0]?.address.find((value) => String(value._id) === String(userInfo.variations[0]?.defaultAddress))?.structuredAddress %></p>
                 <p class="phone">Phone: <%= userInfo.phoneNumber %></p>
                 <input type="text" name="adId" value="<%= userInfo.variations[0]?.defaultAddress %>" hidden>
@@ -258,9 +253,9 @@ aria-hidden="true"
             data-bs-toggle="modal"
             data-bs-target="#staticBackdrop"
           >
-            <button type="button" class="default-btn">
-              Add Address
-            </button>
+            <!-- <button type="button" class="default-btn">
+              Add 
+            </button> -->
           </a>
         <% } else { %>
           <a
@@ -332,7 +327,12 @@ aria-hidden="true"
 <form action="" method="post">
   <label for="coupon">Enter your coupon code:</label><br>
   <input type="text" id="coupon" name="coupon" placeholder="Enter coupon code"><br>
+<p id="couponError" style="color:#ff0000; display: none;">
+  <i class="fa-solid fa-circle-exclamation" style="color: #ff0000;"></i> Invalid Coupon
+</p>
+
   <button type="button" onclick="applyCoupon()"  onclick=" calculateOrderTotal()">Apply Coupon</button>
+ 
 </form>
 
 
@@ -420,16 +420,14 @@ aria-hidden="true"
   </tr>
   <tr  id="couponRow" style="display: none;">
     <td>
-      <!-- Display the coupon code -->
-      <p class="commonSub commonText m-0 p-0 text-danger" id="code" style="display: none;"></p>
+      <span class="commonSub commonText  text-danger" id="code" style="display: none;"></span>
     </td>
     <td>
-      <!-- Button to remove the coupon code -->
-      <p class="commonSub m-0 p-0 text-danger remove " onclick="removeCoupon()">
+      <span class="commonSub  text-danger remove"  onclick="removeCoupon()">
         <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M4.41602 9.21669H12.416V7.61669H4.41602V9.21669ZM8.41602 16.4167C7.30935 16.4167 6.26935 16.2067 5.29602 15.7867C4.32268 15.3667 3.47602 14.7967 2.75602 14.0767C2.03602 13.3567 1.46602 12.51 1.04602 11.5367C0.626016 10.5634 0.416016 9.52335 0.416016 8.41669C0.416016 7.31002 0.626016 6.27002 1.04602 5.29669C1.46602 4.32335 2.03602 3.47669 2.75602 2.75669C3.47602 2.03669 4.32268 1.46669 5.29602 1.04669C6.26935 0.626687 7.30935 0.416687 8.41602 0.416687C9.52268 0.416687 10.5627 0.626687 11.536 1.04669C12.5093 1.46669 13.356 2.03669 14.076 2.75669C14.796 3.47669 15.366 4.32335 15.786 5.29669C16.206 6.27002 16.416 7.31002 16.416 8.41669C16.416 9.52335 16.206 10.5634 15.786 11.5367C15.366 12.51 14.796 13.3567 14.076 14.0767C13.356 14.7967 12.5093 15.3667 11.536 15.7867C10.5627 16.2067 9.52268 16.4167 8.41602 16.4167ZM8.41602 14.8167C10.2027 14.8167 11.716 14.1967 12.956 12.9567C14.196 11.7167 14.816 10.2034 14.816 8.41669C14.816 6.63002 14.196 5.11669 12.956 3.87669C11.716 2.63669 10.2027 2.01669 8.41602 2.01669C6.62935 2.01669 5.11602 2.63669 3.87602 3.87669C2.63602 5.11669 2.01602 6.63002 2.01602 8.41669C2.01602 10.2034 2.63602 11.7167 3.87602 12.9567C5.11602 14.1967 6.62935 14.8167 8.41602 14.8167Z" fill="#DC3545"/>
         </svg> remove
-      </p>
+      </span>
     </td>
   </tr>
   
