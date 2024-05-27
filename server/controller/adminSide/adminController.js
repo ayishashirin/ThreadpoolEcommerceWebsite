@@ -367,20 +367,23 @@ module.exports = {
     }
   },
 
-  statusUpdate: async (req, res) =>{
+  statusUpdate: async (req, res) => {
     try {
-      console.log(req.body,req.params,'ayisha')
-      await adminHelper.statusUpdate(
+      console.log('Request Params:', req.params);
+      console.log('Request Body:', req.body);
+  
+      const updateResult = await adminHelper.statusUpdate(
         req.params.orderId,
         req.params.productId,
-        req.body.orderStatus
+        req.body.status // Adjust to match your actual request payload
       );
-      console.log("req.params:",req.params);
+  
+      console.log('Update Result:', updateResult);
       return res.status(200).redirect("/adminOrderDetails");
-     
     } catch (error) {
-
-      
+      console.log('Error in Controller:', error);
+      return res.status(500).send('Internal Server Error');
     }
-  }
+  },
+  
 };

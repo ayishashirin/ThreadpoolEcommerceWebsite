@@ -107,6 +107,15 @@ module.exports = {
           });
         }
 
+        if (values > 0  &&
+          cartProduct.products[0].quantity + values > 10) {
+          return res.json({
+            message: "Quantity cannot be greater than 10",
+            result: false,
+            stock: stock.quantity,
+          });
+        }
+
         if (values < 0 && cartProduct.products[0].quantity + values < 1) {
           return res.json({
             message: "Quantity cannot be less than 1",

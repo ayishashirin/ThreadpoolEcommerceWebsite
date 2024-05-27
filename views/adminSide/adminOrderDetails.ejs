@@ -84,8 +84,8 @@
                     <th width="40%">Product</th>
                     <th width="20%">Unit Price</th>
                     <th width="20%">Quantity</th>
-                    <th width="20%">Total</th>
                     <th width="20%">Status</th>
+                    <th width="20%">Action</th>
                     <th width="20%" class="text-end">Change Status</th>
                   </tr>
                 </thead>
@@ -103,35 +103,23 @@
                     </td>
                     <td><%= item.fPrice %></td>
                     <td><%= item.quantity %></td>
-                    <td><%= (item.fPrice * item.quantity) %></td>
+                    <td> <% if (["Delivered", "Cancelled", "Ordered", "Shipped"].includes(item.orderStatus)) { %>
+                      <p id="statusBadge-<%= item.productId %>" class="badge rounded-pill <%= (item.orderStatus === 'Cancelled') ? 'alert-danger text-danger' : 'alert-success text-success' %>">
+                        <%= item.orderStatus %>
+                      </p>
+                    <% } else { %>
+                      <select name="orderStatus" id="filler" class="bg-white border-1 border-black">
+                        <option value="Ordered" <%= (item.orderStatus === "Ordered") ? "selected" : "" %>>Ordered</option>
+                        <option value="Shipped" <%= (item.orderStatus === "Shipped") ? "selected" : "" %>>Shipped</option>
+                        <option value="Delivered" <%= (item.orderStatus === "Delivered") ? "selected" : "" %>>Delivered</option>
+                        <option value="Cancelled" <%= (item.orderStatus === "Cancelled") ? "selected" : "" %>>Cancelled</option>
+                      </select>
+                    <% } %></td>
 
-                    <!-- <td>
-                      <form action="/adminChangeOrderStatus/<%= item._id %>/<%= item.productId%>"     class="changeStatus" method="post">
-                          <div class="d-flex gap-3">
-  
-  
-                            <% if ((item.orderStatus === "Delivered") || (item.orderStatus === "Cancelled")  || (item.orderStatus === "Ordered") || (item.orderStatus === "Shipped")) { %>
-                            <p class="badge rounded-pill <%= (item.orderStatus === 'Cancelled') ? 'alert-danger text-danger' : 'alert-success text-success' %>">
-                              <%= item.orderStatus %>
-                            </p>
-                            <% } else { %>
-                            <select name="orderStatus" id="filler" class="bg-white border-1 border-black">
-                              <option value="Ordered" <%= (item.orderStatus === "Ordered") ? "selected" : "" %>>Ordered</option>
-                              <option value="Shipped" <%= (item.orderStatus === "Shipped") ? "selected" : "" %>>Shipped</option>
-                              <option value="Delivered">Delivered</option>
-                              <option value="Cancelled">Cancelled</option>
-                            </select>
-                         </td>
-  
-                          <% } %>
-                          <td> <button type="submit" class="">
-                          Change
-                          </button>
-                      </form>
-                         </td> -->
+                    
                          <td>
                           <div class="d-flex" p-5 m-5 style="padding-left:10px">
-                            <select id="statusDropdown" name="statusDropdown">
+                            <select id="orderStatus" name="orderStatus">
                               <option value="Ordered">Ordered</option>
                               <option value="Shipped">Shipped</option>
                               <option value="Delivered">Delivered</option>
@@ -148,10 +136,10 @@
 
                         <script>
                           function handleChange(orderId, productId) {
-                            var dropdown = document.getElementById("statusDropdown");
+                            var dropdown = document.getElementById("orderStatus");
                             if (dropdown) {
                               var selectedStatus = dropdown.value;
-                        
+                        console.log(selectedStatus,"selectedStatus");
                               // Send data to backend using Axios
                               axios.post(`/statusUpdate/${orderId}/${productId}`, {
                                 status: selectedStatus

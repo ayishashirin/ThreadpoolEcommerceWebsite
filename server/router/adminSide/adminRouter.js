@@ -105,7 +105,7 @@ router.get('/adminOrderManagement', adminAuthMiddleware.isAdminAuth, adminRender
 // router.post('/adminChangeOrderStatus/:orderId/:productId', adminAuthMiddleware.isAdminAuth, adminController.adminChangeOrderStatus); // Option to change order status
 
 
-router.post('/statusUpdate/:orderId/:productId', adminAuthMiddleware.isAdminAuth,adminController.statusUpdate)
+router.post('/statusUpdate/:orderId/:productId', adminAuthMiddleware.isAdminAuth, adminController.statusUpdate);
 
 router.get('/adminOrderDetails',adminAuthMiddleware.isAdminAuth, adminRender.adminOrderDetails)
 

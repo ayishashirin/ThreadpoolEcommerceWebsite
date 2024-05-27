@@ -53,16 +53,19 @@
 
           <div class="col-lg-3 col-md-3">
             <div class="products-ordering-list">
-              <select>
-                <option>Sort by Price: Low to High</option>
-                <option>Default Sorting</option>
-                <option>Sort by Popularity</option>
-                <option>Sort by Average Rating</option>
-                <option>Sort by Latest</option>
-                <option>Sort by Price: High to Low</option>
+              <select id="sortOrder">
+                <option value="priceAsc">Sort by Price: Low to High</option>
+                <option value="default">Default Sorting</option>
+                <option value="popularity">Sort by Popularity</option>
+                <option value="rating">Sort by Average Rating</option>
+                <option value="latest">Sort by Latest</option>
+                <option value="priceDesc">Sort by Price: High to Low</option>
               </select>
             </div>
           </div>
+          
+         
+          
         </div>
       </div>
       <div id="products-collections-filter" class="row">
@@ -231,19 +234,48 @@
               </div>
 
 
-            <div class="woocommerce-widget price-list-widget">
-              <h3 class="woocommerce-widget-title">Price</h3>
-              <div class="collection-filter-by-price">
-                <input class="js-range-of-price" type="text" data-min="0" data-max="1055" name="filter_by_price"
-                  data-step="10">
+              <div class="woocommerce-widget price-list-widget">
+                <h3 class="woocommerce-widget-title">Price</h3>
+                <div class="price">
+                  <input type="range" id="priceRange" />
+                  <span class="priceValue">500</span>
+                </div>
               </div>
-            </div>
+              
+              <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                  const priceRange = document.querySelector("#priceRange");
+                  const priceValue = document.querySelector(".priceValue");
+              
+                  // Function to update URL query parameters
+                  function updateQueryParams(param, value) {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    urlParams.set(param, value);
+                    window.location.search = urlParams.toString();
+                  }
+              
+                  // Set initial min and max price values
+                  function setPrices(minPrice, maxPrice) {
+                    priceRange.min = minPrice;
+                    priceRange.max = maxPrice;
+                    priceValue.textContent = "$." + maxPrice;
+              
+                    priceRange.addEventListener("input", (e) => {
+                      const selectedPrice = e.target.value;
+                      priceValue.textContent = "$." + selectedPrice;
+                      updateQueryParams('maxPrice', selectedPrice);
+                    });
+                  }
+              
+                  // Example values for min and max prices
+                  const minPrice = 1;  // Replace with actual minimum price from your data
+                  const maxPrice = 1000; // Replace with actual maximum price from your data
+                  setPrices(minPrice, maxPrice);
+                });
+              </script>
+              
 
-
-
-
-
-            <div class="woocommerce-widget size-list-widget">
+             <div class="woocommerce-widget size-list-widget">
               <h3 class="woocommerce-widget-title">Size</h3>
               <ul class="size-list-row">
                 <li><a value="XS" href="/category?size=XS"
@@ -457,3 +489,10 @@
   <!-- footer -->
   <%- include('../includes/userSide/footer') %>
     <!-- end of footer -->
+
+    <script>document.addEventListener('DOMContentLoaded', () => {
+      const irsFromElement = document.querySelector('.irs-from');
+      const value = getBeforeContent(irsFromElement);
+      console.log(value);
+    });
+    </script>

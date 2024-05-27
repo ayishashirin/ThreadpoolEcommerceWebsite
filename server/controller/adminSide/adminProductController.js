@@ -23,16 +23,22 @@ module.exports = {
 
       // Check for required fields
       if (!req.body.pName) errors.pName = "This Field is required";
-      if (!req.body.pDescription)
-        errors.pDescription = "This Field is required";
+      if (!req.body.pDescription) errors.pDescription = "This Field is required";
       if (!req.body.fPrice) errors.fPrice = "This Field is required";
       if (!req.body.lPrice) errors.lPrice = "This Field is required";
       if (!req.body.discount) errors.discount = "This Field is required";
       if (!req.body.color) errors.color = "This Field is required";
       if (!req.body.size) errors.size = "This Field is required";
       if (!req.body.quantity) errors.quantity = "This Field is required";
-      if (!req.body.date) errors.date = "This Field is required";
-      if (req.files.length === 0) errors.files = "This Field is required";
+      if (req.body.quantity <= 0) errors.quantity = "Quantity must be greater than zero";
+      if (!req.body.date) {
+        errors.date = "This field is required";
+      } else {
+        const currentDate = new Date().toISOString().split('T')[0];
+        if (req.body.date !== currentDate) {
+          errors.date = "Date must be the current date";
+        }
+      }      if (req.files.length === 0) errors.files = "This Field is required";
 
       // Check for existing product with the same name
       const existingProduct = await Productdb.findOne({
@@ -183,7 +189,15 @@ module.exports = {
       if (!req.body.color) errors.color = "This Field is required";
       if (!req.body.size) errors.size = "This Field is required";
       if (!req.body.quantity) errors.quantity = "This Field is required";
-      if (!req.body.date) errors.date = "This Field is required";
+      if (req.body.quantity <= 0) errors.quantity = "Quantity must be greater than zero";
+      if (!req.body.date) {
+        errors.date = "This field is required";
+      } else {
+        const currentDate = new Date().toISOString().split('T')[0]; 
+        if (req.body.date !== currentDate) {
+          errors.date = "Date must be the current date";
+        }
+      }
       if (!existingUpdateProductVariation.images.length && !req.files.length)
         errors.files = "This Field is required";
 

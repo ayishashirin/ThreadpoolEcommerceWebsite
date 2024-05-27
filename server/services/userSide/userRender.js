@@ -156,7 +156,9 @@ module.exports = {
       const counts = await userHelper.getTheCountOfWhislistCart(
         req.session.isUserAuth
       );
-
+      const wishlistItems = await userHelper.getWishlistItemsAll(
+        req.session.isUserAuth
+      );
       const cartItems = await userHelper.getCartItemsAll(
         req.session.isUserAuth
       );
@@ -171,6 +173,7 @@ module.exports = {
           user: req.session.isUserAuth,
           counts,
           cartItems,
+          wishlistItems
         },
         (err, html) => {
           if (err) {

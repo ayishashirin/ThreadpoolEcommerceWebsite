@@ -110,8 +110,8 @@
               <i class="bx bxs-calendar-check"></i>
               <span class="text">
                 <h3 class="counter">
-               
-                </h3>
+                  <%= dashDetails?.newOrders || 0 %>
+                 </h3>
                 <p>New Order</p>
               </span>
             </li>
@@ -119,7 +119,7 @@
               <i class="bx bxs-group"></i>
               <span class="text">
                 <h3 class="counter">
-                 
+                  <%= dashDetails?.userCount?.dashDetails?.userCount:0 %>
                 </h3>
                 <p>Users</p>
               </span>
@@ -128,9 +128,7 @@
               <i class="bx bxs-dollar-circle"></i>
               <span class="text">
                 <h3>
-                  $<span class="counter"
-                    ></span
-                  >
+                  $<span class="counter"><%= dashDetails?.tSalary || 0 %></span>                  >
                 </h3>
                 <p>Total Sales</p>
               </span>

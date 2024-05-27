@@ -13,7 +13,6 @@ module.exports = {
       req.body.category = req.body.category?.trim();
       req.body.category = capitalizeFirstLetter(req.body.category);
       req.body.discount = req.body.discount?.trim();
-      req.body.expiry = req.body.expiry?.trim();
 
       if (!req.body.productName && !req.body.category) {
         req.session.productName = `This Field is required`;
@@ -27,9 +26,20 @@ module.exports = {
         req.session.discount = `This Field is required`;
       }
 
+      let errors = {};
+
       if (!req.body.expiry) {
-        req.session.expiry = `This Field is required`;
+        req.session.expiry = "This field is required";
+      } else {
+        const currentDate = new Date();
+        const expiryDate = new Date(req.body.expiry);
+        
+        if (expiryDate < currentDate) {
+          errors.expiry = "Expiry date must be the current date or after the current date";
+        }
       }
+      
+      
 
       if (req.body.discount && req.body.discount > 60) {
         req.session.discount = `Discount cannot be greater than 60%`;
@@ -43,6 +53,8 @@ module.exports = {
         req.session.category ||
         req.session.discount ||
         req.session.expiry
+       
+
       ) {
         req.session.savedDetails = req.body;
         return res.status(401).redirect("/adminAddOffer");
@@ -80,11 +92,18 @@ module.exports = {
       if (!req.body.discount) {
         req.session.discount = `This Field is required`;
       }
+      let errors = {};
 
       if (!req.body.expiry) {
-        req.session.expiry = `This Field is required`;
+        req.session.expiry = "This field is required";
+      } else {
+        const currentDate = new Date()
+        const expiryDate = new Date(req.body.expiry)
+        if (expiryDate < currentDate) {
+          errors.session.expiry = "Expiry date must be the current date or after the current date";
+        }
       }
-
+      
       if (req.body.discount && req.body.discount > 60) {
         req.session.discount = `Discount cannot be greater than 60%`;
       }

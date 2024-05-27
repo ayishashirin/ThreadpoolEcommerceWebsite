@@ -66,7 +66,7 @@ module.exports = {
             district: req.session.district,
             state: req.session.state,
             city: req.session.city,
-            houseNo: req.session.houseNo,
+            phoneNo: req.session.phoneNo,
             houseName: req.session.houseName,
             pin: req.session.pin,
             exist: req.session.exist,
@@ -88,7 +88,7 @@ module.exports = {
           delete req.session.district;
           delete req.session.state;
           delete req.session.city;
-          delete req.session.houseNo;
+          delete req.session.phoneNo;
           delete req.session.houseName;
           delete req.session.pin;
           delete req.session.sAddress;
@@ -108,6 +108,10 @@ module.exports = {
       const category = await userHelper.getAllListedCategory();
 
       const counts = await userHelper.getTheCountOfWhislistCart(
+        req.session.isUserAuth
+      );
+
+      const wishlistItems = await userHelper.getWishlistItemsAll(
         req.session.isUserAuth
       );
 
@@ -133,7 +137,7 @@ module.exports = {
             district: req.session.district,
             state: req.session.state,
             city: req.session.city,
-            houseNo: req.session.houseNo,
+            phoneNo: req.session.phoneNo,
             houseName: req.session.houseName,
             pin: req.session.pin,
             exist: req.session.exist,
@@ -141,10 +145,11 @@ module.exports = {
           counts,
           user: req.session.isUserAuth,
           cartItems,
+          wishlistItems
         },
         (err, html) => {
           if (err) {
-            console.log("Render err update ac");
+            console.log(err,"Render err update ac");
             return res.send("Internal server err");
           }
 
@@ -153,7 +158,7 @@ module.exports = {
           delete req.session.district;
           delete req.session.state;
           delete req.session.city;
-          delete req.session.houseNo;
+          delete req.session.phoneNo;
           delete req.session.houseName;
           delete req.session.pin;
           delete req.session.exist;

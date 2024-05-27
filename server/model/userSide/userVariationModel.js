@@ -32,7 +32,7 @@ const userVariationSchema = new mongodb.Schema({
             type: String,
             required: true
           },
-          houseNo: {
+          phoneNo: {
             type: Number,
             required: true
           },

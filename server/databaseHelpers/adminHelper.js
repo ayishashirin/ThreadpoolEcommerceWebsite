@@ -41,7 +41,81 @@ module.exports = {
       throw err;
     }
   },
+  getAllDashCount: async () => {
+    try {
 
+        //returns total user count
+        const userCount = await Userdb.countDocuments();
+
+        // retuns count of orders in newOrders Field
+        const [ orders ] = await Orderdb.aggregate([
+            {
+                $unwind: {
+                  path: "$orderItems",
+                },
+              },
+              {
+                $match: {
+                  "orderItems.orderStatus": "Ordered",
+                },
+              },
+              {
+                $count: "newOrders",
+              },
+        ]);
+
+        //return total Sales amount
+        const [ totalSales ] = await Orderdb.aggregate([
+            {
+                $unwind: {
+                  path: "$orderItems",
+                },
+            },
+            {
+                $match: {
+                    $or: [
+                        {
+                            $and: [
+                                { paymentMethode: "COD" },
+                                { "orderItems.orderStatus": "Delivered" }
+                            ]
+                        },
+                        {
+                            $and: [
+                                { paymentMethode: "razorpay" },
+                                { "orderItems.orderStatus": {$ne: "Cancelled"} }
+                            ]
+                        }
+                    ],
+                },
+            },
+            {
+                $group: {
+                    _id: null,
+                    tSalary: {
+                        $sum: {
+                            $multiply: ["$orderItems.lPrice", "$orderItems.quantity"],
+                        },
+                    },
+                },
+            },
+            {
+                $project: {
+                    _id: 0,
+                },
+            },
+        ]);
+
+        // return an object with all counts for admin dashboard
+        return {
+            userCount,
+            newOrders: orders?.newOrders,
+            tSalary: totalSales?.tSalary,
+        }
+    } catch (err) {
+        throw err;
+    }
+},
   adminGetAllUsers: async (search, page = 1) => {
     try {
       const skip = Number(page) ? Number(page) - 1 : 0;
@@ -131,21 +205,30 @@ module.exports = {
     }
   },
 
- statusUpdate: async (orderId, productId, orderStatus) => {
+ statusUpdate : async (orderId, productId, orderStatus) => {
     try {
+      console.log('Order ID:', orderId);
+      console.log('Product ID:', productId);
+      console.log('Order Status:', orderStatus);
+  
+      const orderIdObj = new mongoose.Types.ObjectId(orderId);
+      const productIdObj = new mongoose.Types.ObjectId(productId);
+  
       if (orderStatus === "Cancelled") {
         const qty = await Orderdb.findOne(
           {
             $and: [
-              { _id: new mongoose.Types.ObjectId(orderId) },
+              { _id: orderIdObj },
               { "orderItems.productId": productId },
             ],
           },
           { "orderItems.$": 1, _id: 0, userId: 1, paymentMethode: 1 }
         );
-
-        if (qty.paymentMethode === "razorpay") {
-          await UserWalletdb.updateOne(
+  
+        console.log('Quantity Info:', qty);
+  
+        if (qty && qty.paymentMethode === "razorpay") {
+          const walletUpdateResult = await UserWalletdb.updateOne(
             { userId: qty.userId },
             {
               $inc: {
@@ -163,23 +246,32 @@ module.exports = {
             },
             { upsert: true }
           );
+  
+          console.log('Wallet Update Result:', walletUpdateResult);
         }
-        await ProductVariationdb.updateOne(
-          { productId: productId },
+  
+        const productUpdateResult = await ProductVariationdb.updateOne(
+          { productId: productIdObj },
           { $inc: { quantity: qty.orderItems[0].quantity } }
         );
+  
+        console.log('Product Update Result:', productUpdateResult);
       }
-      return await Orderdb.updateOne(
+  
+      const updateResult = await Orderdb.updateOne(
         {
           $and: [
-            { _id: new mongoose.Types.ObjectId(orderId) },
-            { "orderItems.productId": productId },
+            { _id: orderIdObj },
+            { "orderItems.productId": productIdObj },
           ],
         },
         { $set: { "orderItems.$.orderStatus": orderStatus } }
       );
+  
+      console.log('Update Result:', updateResult);
+      return updateResult;
     } catch (err) {
-      console.log(err);
+      console.log('Error:', err);
       throw err;
     }
   },

@@ -40,23 +40,23 @@
                 <h2 class="m-0 p-0 text-capitalize">Update Address</h2>
               </div>
             </div>
-            <form action="/UpdateAddress?adId=<%= address._id %>" method="post">
+            <form action="/UpdateAddress?adId=<%= address?._id %>" method="post">
                 <div class="editBody">
                     <div class="d-flex uAcc">
                         <div class="sides">
                             <div>
                                 <label for="name">Name</label>
-                                <input name="name" class="d-block text-capitalize <%= errMesg?.name?'errDiv':'' %>" type="text" value="<%= sInfo?.name?sInfo.name:address.name %>">
+                                <input name="name" class="d-block text-capitalize <%= errMesg?.name?'errDiv':'' %>" type="text" value="<%= sInfo?.name?sInfo?.name:address?.name %>">
                                 <p class="err <%= errMesg?.name?'':'d-none' %>"><%= errMesg?.name %></p>
                                 <label for="country">Country</label>
-                                <input name="country" class="d-block <%= errMesg?.country?'errDiv':'' %>" type="text" value="<%= sInfo?.country?sInfo.country:address.country %>">
+                                <input name="country" class="d-block <%= errMesg?.country?'errDiv':'' %>" type="text" value="<%= sInfo?.country?sInfo?.country:address?.country %>">
                                 <p class="err <%= errMesg?.country?'':'d-none' %>"><%= errMesg?.country %></p>
                               
                                 <label for="state">State</label>
-                                <input name="state" class="d-block <%= errMesg?.state?'errDiv':'' %>" type="text" value="<%= sInfo?.state?sInfo.state:address.state %>">
+                                <input name="state" class="d-block <%= errMesg?.state?'errDiv':'' %>" type="text" value="<%= sInfo?.state?sInfo?.state:address?.state %>">
                                 <p class="err <%= errMesg?.state?'':'d-none' %>"><%= errMesg?.state %></p>
                                 <label for="district">District</label>
-                                <input name="district" class="d-block <%= errMesg?.district?'errDiv':'' %>" type="text" value="<%= sInfo?.district?sInfo.district:address.district %>">
+                                <input name="district" class="d-block <%= errMesg?.district?'errDiv':'' %>" type="text" value="<%= sInfo?.district?sInfo?.district:address?.district %>">
                                 <p class="err <%= errMesg?.district?'':'d-none' %>"><%= errMesg?.district %></p>
                             </div>
                             <button type="submit" class="saveBtn oneBtn">Update Address</button>
@@ -64,16 +64,16 @@
                         <div class="sides">
                             <div class="left">
                                 <label for="city">City</label>
-                                <input name="city" class="d-block text-capitalize <%= errMesg?.city?'errDiv':'' %>" type="text" value="<%= sInfo?.city?sInfo.city:address.city %>">
+                                <input name="city" class="d-block text-capitalize <%= errMesg?.city?'errDiv':'' %>" type="text" value="<%= sInfo?.city?sInfo?.city:address?.city %>">
                                 <p class="err <%= errMesg?.city?'':'d-none' %>"><%= errMesg?.city %></p>
                                 <label for="houseName">House Name</label>
-                                <input name="houseName" class="d-block <%= errMesg?.houseName?'errDiv':'' %>" type="text" value="<%= sInfo?.houseName?sInfo.houseName:address.houseName %>">
+                                <input name="houseName" class="d-block <%= errMesg?.houseName?'errDiv':'' %>" type="text" value="<%= sInfo?.houseName?sInfo?.houseName:address?.houseName %>">
                                 <p class="err <%= errMesg?.houseName?'':'d-none' %>"><%= errMesg?.houseName %></p>
-                                <label for="houseNo">House NO</label>
-                                <input name="houseNo" class="d-block <%= errMesg?.houseNo?'errDiv':'' %>" type="number" value="<%= sInfo?.houseNo?sInfo.houseNo:address.houseNo %>">
-                                <p class="err <%= errMesg?.houseNo?'':'d-none' %>"><%= errMesg?.houseNo %></p>
+                                <label for="phoneNo">Phone Number</label>
+                                <input name="phoneNo" class="d-block <%= errMesg?.phoneNo?'errDiv':'' %>" type="number" value="<%= sInfo?.phoneNo?sInfo?.phoneNo:address?.phoneNo %>">
+                                <p class="err <%= errMesg?.phoneNo?'':'d-none' %>"><%= errMesg?.phoneNo %></p>
                                 <label for="pin">PIN Code</label>
-                                <input name="pin" class="d-block <%= errMesg?.pin?'errDiv':'' %>" type="number" value="<%= sInfo?.pin?sInfo.pin:address.pin %>">
+                                <input name="pin" class="d-block <%= errMesg?.pin?'errDiv':'' %>" type="number" value="<%= sInfo?.pin?sInfo?.pin:address?.pin %>">
                                 <p class="err <%= errMesg?.pin?'':'d-none' %>"><%= errMesg?.pin %></p>
                                 <p class="err <%= errMesg?.exist?'':'d-none' %>"><%= errMesg?.exist %></p>
                             </div>

@@ -1,19 +1,25 @@
-// function showPopUp(orderId, productId) {
-//   console.log('showPopUp called with orderId:', orderId, 'productId:', productId);
-//   document.getElementById('dCat').setAttribute('href', `/orderCancel/${orderId}/${productId}`);
-//   document.getElementById('confirmation-popup').classList.add('show');
-// } 
+const dCat = document.querySelector('.dCat');
 
-// document.getElementById('confirm-btn').addEventListener('click', function() {
-//   console.log('Confirm button clicked');
-//   document.getElementById('confirmation-popup').classList.remove('show');
-// });
+function showPopUp(orderId, productId) {
+	dCat.setAttribute('href', href=`/orderCancel/${orderId}/${productId}`);
+	document.getElementById('confirmation-popup').style.display = 'block';
+};
 
-// document.getElementById('cancel-btn').addEventListener('click', function() {
-//   console.log('Cancel button clicked');
-//   document.getElementById('confirmation-popup').classList.remove('show');
-// });
+document.getElementById('confirm-btn').addEventListener('click', function() {
+	document.getElementById('confirmation-popup').style.display = 'none';
+});
 
+document.getElementById('cancel-btn').addEventListener('click', function() {
+	document.getElementById('confirmation-popup').style.display = 'none';
+});
+
+const aTag = document.querySelectorAll('.aTag');
+
+aTag.forEach(element => {
+  element.addEventListener('click', (e) => {
+    e.stopPropagation();
+  })
+})
  
 
 

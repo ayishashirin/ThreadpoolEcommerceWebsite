@@ -115,6 +115,10 @@ module.exports = {
         filterConditions.category = search.genderCat;
       }
 
+         // Adding price filter if maxPrice is provided
+    if (search.maxPrice) {
+      filterConditions.fPrice = { $lte: parseFloat(search.maxPrice) };
+    }
       // Valid sizes and colors arrays
       const validSizes = ["XS", "S", "M", "L", "XL", "XXL"];
       const validColors = [
