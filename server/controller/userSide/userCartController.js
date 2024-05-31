@@ -25,11 +25,7 @@ module.exports = {
           { upsert: true }
         );
   
-        return res.status(200).json({
-          success: true,
-          message: "Product added to cart",
-          
-        });
+        return res.status(200).redirect("/addToCart" );
       } else {
         return res.status(200).json({
           success: false,
@@ -302,11 +298,10 @@ module.exports = {
         orderId: orderId,
         orderItems: orderItems,
         paymentMethode: paymentMethode,
-        address: req.body.adId,
+        address: address.address,
         totalPrice: tPrice,
         couponDiscountAmount: totalCouponDiscountAmount,
       });
-
       // Handle payment methods
       if (paymentMethode === "COD") {
         await newOrder.save();

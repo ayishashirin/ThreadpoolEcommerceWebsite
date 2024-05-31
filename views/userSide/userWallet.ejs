@@ -48,12 +48,22 @@
                       <p>₹<%= userWallet?.walletBalance?((userWallet.walletBalance).toFixed(2)):'0.00' %></p>
                     </div>
                     <div>
-                      <button class="ps-2 pe-2 pt-1 pb-1 rounded-3 addMoney default-btn">Add Money</button>
+                      <!-- <button class="ps-2 pe-2 pt-1 pb-1 rounded-3 addMoney default-btn">Add Money</button> -->
                     </div>
                   </div>
-                  <p class="m-0 mt-2 transation">
-                    Transactions
-                  </p>
+
+                   <% if (!userWallet || userWallet?.transactions?.length === 0) { %>
+
+                 <div>
+                    <div class="errNoProduct" style="display: flex; justify-content: center; align-items: center;   padding-bottom: 5px;">
+                      <img src="/userSide/img/errorPages/wallet-removebg-preview.png" width="200px;" alt="No Data">
+                  </div>
+                  <div class="errNoProduct d-flex justify-content-center"style="padding-top:1px;"><h5>No Transactions Yet!</h5></div>
+                </div>
+                  <% }else{%>
+                    <p class="m-0 mt-2 transation">
+                      Transactions
+                    </p>
                   <div id="tBody" class="mt-4" >
                     <table class="table table-striped mb-0">
                       <thead>
@@ -64,25 +74,27 @@
                         </tr>
                       </thead>
                       <tbody class="tBody">
-                        <% for( let i = 0; i < userWallet?.transtions.length; i++ ) { %>
+                        <% for( let i = 0; i < userWallet?.transactions.length; i++ ) { %>
                           <tr>
                             <th scope="row"><%= (i + 1) %></th>
-                            <td><%= userWallet.transtions[i].transtionDate.toISOString().split("T")[0].split("-").reverse().join("-") %></td>
-                            <% if (userWallet.transtions[i].amount > 0) { %>
-                                <td class="text-success">₹<%= userWallet.transtions[i].amount %> <i class="fa-solid fa-arrow-trend-up" style="color: #37ff00;"></i></td>
+                            <td><%= userWallet.transactions[i].transactionDate.toISOString().split("T")[0].split("-").reverse().join("-") %></td>
+                            <% if (userWallet.transactions[i].amount > 0) { %>
+                                <td class="text-success">₹<%= userWallet.transactions[i].amount %> <i class="fa-solid fa-arrow-trend-up" style="color: #37ff00;"></i></td>
                             <% } else { %>
-                                <td class="text-danger">₹<%= userWallet.transtions[i].amount %> <i class="fa-solid fa-arrow-trend-down" style="color: #ff0000;"></i></td>
+                                <td class="text-danger">₹<%= userWallet.transactions[i].amount %> <i class="fa-solid fa-arrow-trend-down" style="color: #ff0000;"></i></td>
                             <% } %>
                           </tr>
                         <% } %>
-                        <% if (!userWallet || userWallet?.transtions?.length === 0) { %>
-                              <tr>
-                                <th colspan="3" class="text-center">No Transactions Yet.</td>
-                              </tr>
-                        <% } %>
+                      
+
+
+                      
                       </tbody>
                     </table>
                   </div>
+
+                  <% } %>
+
                 </div>
               </div>
             </div>

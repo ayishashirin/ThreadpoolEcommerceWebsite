@@ -9,12 +9,12 @@ const userWalletSchema = new mongoose.Schema({
         type: Number,
         default: 0,
     },
-    transtions: [
+    transactions: [
         {
             amount: {
                 type: Number
             },
-            transtionDate: {
+            transactionDate: {
                 type: Date,
                 default: Date.now(),
             },

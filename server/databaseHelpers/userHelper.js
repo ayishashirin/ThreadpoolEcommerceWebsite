@@ -106,19 +106,25 @@ module.exports = {
     }
   },
 
-  userSingleProductCategory: async (search = {}) => {
+   userSingleProductCategory : async (search = {}) => {
     try {
       let filterConditions = { unlistedProduct: false };
-
+  
       // Adding category filter if genderCat is provided
       if (search.genderCat) {
         filterConditions.category = search.genderCat;
       }
-
-         // Adding price filter if maxPrice is provided
-    if (search.maxPrice) {
-      filterConditions.fPrice = { $lte: parseFloat(search.maxPrice) };
-    }
+  
+      // Text search stage
+      if (search.search) {
+        filterConditions.$text = { $search: search.search };
+      }
+  
+      // Adding price filter if maxPrice is provided
+      if (search.maxPrice) {
+        filterConditions.fPrice = { $lte: parseFloat(search.maxPrice) };
+      }
+  
       // Valid sizes and colors arrays
       const validSizes = ["XS", "S", "M", "L", "XL", "XXL"];
       const validColors = [
@@ -131,14 +137,37 @@ module.exports = {
         "Pink",
         "BlueViolet",
       ];
-
+  
       // Creating the filter match stage for aggregation
       let filter = { $match: filterConditions };
-
+  
       // Calculating the skip value for pagination
       const page = Number(search.page);
       const skip = page && page > 0 ? (page - 1) * 12 : 0;
-
+  
+      // Determine the sort order
+      let sortOrder = {};
+      switch (search.sortOrder) {
+        case 'priceAsc':
+          sortOrder = { lPrice: 1 };
+          break;
+        case 'priceDesc':
+          sortOrder = { lPrice: -1 };
+          break;
+        case 'popularity':
+          sortOrder = { popularity: -1 }; // Assuming there's a popularity field
+          break;
+        case 'rating':
+          sortOrder = { rating: -1 }; // Assuming there's a rating field
+          break;
+        case 'latest':
+          sortOrder = { date: -1 };
+          break;
+        default:
+          sortOrder = { _id: 1 }; // Default sorting
+          break;
+      }
+  
       // Building the aggregation pipeline
       const agg = [
         filter,
@@ -161,6 +190,7 @@ module.exports = {
         ...(validColors.includes(search.color)
           ? [{ $match: { "variations.color": search.color } }]
           : []),
+        { $sort: sortOrder },
         { $skip: skip },
         { $limit: 12 },
         {
@@ -188,10 +218,10 @@ module.exports = {
           },
         },
       ];
-
+  
       // Aggregating to get all product details of the selected category
       const products = await Productdb.aggregate(agg);
-
+  
       // Processing offers to find the maximum valid discount
       products.forEach((each) => {
         each.allOffers = each.allOffers.reduce((maxDiscount, offer) => {
@@ -201,12 +231,14 @@ module.exports = {
           return maxDiscount;
         }, 0);
       });
-
+  
       return products;
     } catch (err) {
       throw err;
     }
   },
+  
+  
 
   getProductDetails: async (productId, newlyLauched = false) => {
     try {
@@ -290,7 +322,6 @@ module.exports = {
         }, 0);
       });
 
-      console.log("products:", products);
       return products;
     } catch (err) {
       throw err;
@@ -652,7 +683,7 @@ module.exports = {
       const newUserWallet = new UserWalletdb({
         userId: newUserId,
         walletBalance: offerRewards.referredUserRewards,
-        transtions: [
+        transactions: [
           {
             amount: offerRewards.referredUserRewards,
           },
@@ -952,7 +983,7 @@ module.exports = {
               ),
             },
             $push: {
-              transtions: {
+              transactions: {
                 amount: Math.round(
                   qty.quantity * qty.fPrice - (qty.fPrice - qty.lPrice)
                 ),

@@ -147,11 +147,11 @@ module.exports = {
           }
           req.session.isUserAuth = data._id;
           req.flash("toastMessage", "Signed in successfully");
-          res.status(200).redirect("/"); //Login Sucessfull
           await Userdb.updateOne(
             { _id: data._id },
             { $set: { userLstatus: true } }
           );
+          res.status(200).redirect("/"); //Login Successful
         } else {
           req.session.userInfo = req.body.email;
           req.session.invalidUser = `Invalid credentials!`;
@@ -168,6 +168,7 @@ module.exports = {
       res.status(401).redirect("/login");
     }
   },
+
 
   // --------------------------------------------------------------------------------------------------------------------
 
@@ -645,19 +646,24 @@ module.exports = {
 
   userLogOut: async (req, res) => {
     try {
-      await Userdb.updateOne(
-        { _id: req.session.isUserAuth },
-        { $set: { userLstatus: false } }
-      );
+        await Userdb.updateOne(
+            { _id: req.session.isUserAuth },
+            { $set: { userLstatus: false } }
+        );
 
-      req.session.destroy();
+        // Flash the toast message
+        req.flash('toastMessage', 'You have been successfully logged out.');
 
-      res.status(200).redirect("/");
+        req.session.destroy();
+
+        res.redirect('/');
     } catch (err) {
-      console.error(err);
-      res.status(500).render("errorPages/500ErrorPage");
+        console.error(err);
+        res.status(500).render("errorPages/500ErrorPage");
     }
-  },
+},
+
+  
 
 // filterByPrice : async (req, res) => {
 //     try {

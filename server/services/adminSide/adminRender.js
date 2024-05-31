@@ -35,8 +35,11 @@ module.exports = {
   adminHome: async (req, res) => {
     try {
      
+      const details = await adminHelper.getAllDashCount();
 
-      res.status(200).render("adminSide/adminDashboard");
+      res.status(200).render("adminSide/adminDashboard",
+      {details});
+      
     } catch (err) {
       console.log("err", err);
       res.send("Internal server err");

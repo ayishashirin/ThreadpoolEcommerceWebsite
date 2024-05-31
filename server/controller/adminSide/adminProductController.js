@@ -5,9 +5,9 @@ const path = require("path");
 const sharp = require("sharp");
 
 module.exports = {
-  adminAddProduct: async (req, res) => {
+adminAddProduct : async (req, res) => {
     try {
-      
+      // Trim the form inputs
       req.body.pName = req.body.pName?.trim();
       req.body.pDescription = req.body.pDescription?.trim();
       req.body.fPrice = req.body.fPrice?.trim();
@@ -17,11 +17,10 @@ module.exports = {
       req.body.size = req.body.size?.trim();
       req.body.quantity = req.body.quantity?.trim();
       req.body.date = req.body.date?.trim();
-
+  
       // Validate form inputs
       const errors = {};
-
-      // Check for required fields
+  
       if (!req.body.pName) errors.pName = "This Field is required";
       if (!req.body.pDescription) errors.pDescription = "This Field is required";
       if (!req.body.fPrice) errors.fPrice = "This Field is required";
@@ -38,15 +37,12 @@ module.exports = {
         if (req.body.date !== currentDate) {
           errors.date = "Date must be the current date";
         }
-      }      if (req.files.length === 0) errors.files = "This Field is required";
-
-      // Check for existing product with the same name
-      const existingProduct = await Productdb.findOne({
-        pName: req.body.pName,
-      });
+      }
+      if (req.files.length === 0) errors.files = "This Field is required";
+  
+      const existingProduct = await Productdb.findOne({ pName: req.body.pName });
       if (existingProduct) errors.pName = "Product Name already exists";
-
-      // If there are validation errors, redirect back to the form with error messages
+  
       if (Object.keys(errors).length > 0) {
         req.flash("userProductErrors", errors);
         const userProductFormData = {
@@ -61,12 +57,13 @@ module.exports = {
           date: req.body.date,
         };
         req.flash("userProductFormData", userProductFormData);
-
         return res.status(401).redirect("/adminAddProduct");
       }
-
-      // Create a new product
-      const newlyLaunched = req.body.newlyLaunched || false;
+  
+      // Handle newlyLaunched and unlistedProduct fields
+      const newlyLaunched = req.body.newlyLaunched === 'on';
+      const unlistedProduct = req.body.unlistedProduct === 'on';
+  
       const newProduct = new Productdb({
         pName: req.body.pName,
         category: req.body.category,
@@ -74,40 +71,29 @@ module.exports = {
         fPrice: req.body.fPrice,
         lPrice: req.body.lPrice,
         newlyLaunched: newlyLaunched,
+        unlistedProduct: unlistedProduct,
         date: req.body.date,
       });
-
-      // Save the new product to the database
+  
       const savedProduct = await newProduct.save();
-
-      // Process file uploads and save file paths to the database
+  
       const files = req.files;
-      const uploadImg = files.map(
-        (value) => `/uploadedImages/${value.filename}`
-      );
+      const uploadImg = files.map(value => `/uploadedImages/${value.filename}`);
       let arrImages = [];
-
+  
       for (let i = 0; i < req.files.length; i++) {
-        console.log(req.files[i].path);
-        // Use sharp to resize and crop the image
         const croppedBuffer = await sharp(req.files[i].path)
           .resize({ width: 306, height: 408, fit: sharp.fit.cover })
           .toBuffer();
-
+  
         const filename = `uploadedImages/cropped_${req.files[i].originalname}`;
         const sfilename = `cropped_${req.files[i].originalname}`;
         arrImages[i] = filename;
-
-        // Save the cropped image
-        const filePath = path.join(
-          __dirname,
-          "../../../public/uploadedImages",
-          sfilename
-        );
-        console.log(filePath);
+  
+        const filePath = path.join(__dirname, "../../../public/uploadedImages", sfilename);
         await sharp(croppedBuffer).toFile(filePath);
       }
-
+  
       const newProductVariation = new ProductVariationdb({
         productId: savedProduct._id,
         color: req.body.color,
@@ -116,13 +102,17 @@ module.exports = {
         images: arrImages,
       });
       await newProductVariation.save();
-
+  
       res.redirect("/adminProductManagement");
     } catch (err) {
       console.error(err);
       res.status(500).send("Internal server error");
     }
+
+  
+
   },
+  
 
   adminSoftDeleteProduct: async (req, res) => {
     const data = await Productdb.updateOne(

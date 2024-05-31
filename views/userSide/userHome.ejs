@@ -1,6 +1,17 @@
    <!-- header -->
    <%- include('../includes/userSide/header') %>
    <!-- end of header -->
+   <% if (toast) { %>
+    <div class="toast-message" id="toast-message">
+      <span class="toast-icon">&#10003;</span>
+      <%= toast %>
+    </div>
+  <% } %>
+
+  
+  
+  
+   
 
 
 
@@ -60,26 +71,7 @@
         </div>
     </div>
 
-    <script>
-        const toastMessage = '<%= toast %>';
-        const Toast = Swal.mixin({
-          toast: true,
-          position: "top-end",
-          showConfirmButton: false,
-          timer: 3000,
-          timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.onmouseenter = Swal.stopTimer;
-            toast.onmouseleave = Swal.resumeTimer;
-          }
-        });
-        if(toastMessage){
-          Toast.fire({
-            icon: "success",
-            title: toastMessage
-          });
-        }
-      </script>
+   
    <!-- featured Products -->
    <%- include('../includes/userSide/featuredProducts') %>
    <!-- end of featured Products -->
@@ -118,3 +110,38 @@
    <!-- footer -->
     <%- include('../includes/userSide/footer') %>
     <!-- end of footer -->
+
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          const toastMessage = document.getElementById('toast-message');
+          if (toastMessage) {
+            setTimeout(() => {
+              toastMessage.style.display = 'none';
+            }, 2000); // Adjust the time (3000ms = 3s) as needed
+          }
+        });
+      </script>
+      
+      
+      <style>
+      .toast-message {
+  position: fixed;
+  top: 50px;
+  right: 200px;
+  background-color: #f53f85; /* White background */
+  color: white; /* Green text color */
+  padding: 15px;
+  border-radius: 5px;
+  z-index: 1000;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Optional: add shadow for better visibility */
+}
+
+.toast-icon {
+  margin-right: 20px;
+}
+
+      </style>
+
+

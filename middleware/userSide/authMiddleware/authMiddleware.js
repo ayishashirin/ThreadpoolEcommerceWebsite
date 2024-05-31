@@ -4,7 +4,6 @@ const userHelper = require("../../../server/databaseHelpers/userHelper");
 module.exports = {
     otpVerify: (req, res, next) => {
         try {
-            // this session is to identify which side is the get err
             req.session.adminPageErr = false;
 
             if (req.session.verifyOtpPage) {
@@ -19,7 +18,6 @@ module.exports = {
     },
     noOtpVerify: (req, res, next) => {
         try {
-            // this session is to identify which side is the get err
             req.session.adminPageErr = false;
 
             if (req.session.verifyOtpPage) {
@@ -34,7 +32,6 @@ module.exports = {
     },
     userLoginResetPassword: (req, res, next) => {
         try {
-            // this session is to identify which side is the get err
             req.session.adminPageErr = false;
 
             if (req.session.resetPasswordPage) {
@@ -49,7 +46,6 @@ module.exports = {
     },
     noUserLoginResetPassword: (req, res, next) => {
         try {
-            // this session is to identify which side is the get err
             req.session.adminPageErr = false;
 
             if (req.session.resetPasswordPage) {
@@ -64,7 +60,6 @@ module.exports = {
     },
     isUserAuth: (req, res, next) => {
         try {
-            // this session is to identify which side is the get err
             req.session.adminPageErr = false;
 
             if (req.session.isUserAuth) {
@@ -79,7 +74,6 @@ module.exports = {
     },
     isUserBlocked: async (req, res, next) => {
         try {
-            // this session is to identify which side is the get err
             req.session.adminPageErr = false;
 
             if (!req.session.isUserAuth) {
@@ -100,7 +94,6 @@ module.exports = {
     },
     isUserLoggedIn: (req, res, next) => {
         try {
-            // this session is to identify which side is the get err
             req.session.adminPageErr = false;
 
             if (req.session.isUserAuth) {
@@ -131,7 +124,6 @@ module.exports = {
     // },
     isDelivered: async (req, res, next) => {
         try {
-            // this session is to identify which side is the get err
             req.session.adminPageErr = false;
 
             const isOrder = await userHelper.isOrdered(
@@ -150,7 +142,6 @@ module.exports = {
     },
     simpleFindErrMiddleWare: (req, res, next) => {
         try {
-            // this session is to identify which side is the get err
             req.session.adminPageErr = false;
 
             return next();

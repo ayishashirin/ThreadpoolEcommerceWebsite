@@ -2,10 +2,27 @@
     <div class="container">
         <div class="section-title">
             <span class="sub-title">See Our Collection</span>
-            <h2>newly Launched Products </h2>
+
+
+            <% if (newProducts.length === 0) { %>
+            
+                <div class="my-5">    
+                    <div class="errNoProduct d-flex justify-content-center" >
+                        <img src="/userSide/img/errorPages/no-product.png" width="300px" alt="No Data">
+                    </div>
+                    <div class="errNoProduct d-flex justify-content-center"><h3>Ooops! No products found.</h3></div>
+                    </div>
+                </div>
+
+
+
+
+
+            <% }else{ %>
+            <h2>Newly Launched Products </h2>
         </div>
        
-
+       
             <div class="row">
                 <% for( let i = 0; i < newProducts.length; i++ ) { %>
                 <div class="col-lg-4 col-md-6 col-sm-6">
@@ -70,6 +87,8 @@
                 <% } %>
 
             </div>
+
+            <% } %>
 
     </div>
 </section>

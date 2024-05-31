@@ -99,8 +99,8 @@ module.exports = {
       } else {
         const currentDate = new Date()
         const expiryDate = new Date(req.body.expiry)
-        if (expiryDate < currentDate) {
-          errors.session.expiry = "Expiry date must be the current date or after the current date";
+        if (expiryDate <= currentDate) {
+          req.session.expiry = "Expiry date must be the current date or after the current date";
         }
       }
       

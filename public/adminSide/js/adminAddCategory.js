@@ -6,7 +6,6 @@ const addBtn = document.querySelector('.addBtn');
 
 lPrice.addEventListener('keyup', () => {
 	if(Number(fPrice.value) >= Number(lPrice.value)){
-		console.log(fPrice.value, typeof fPrice.value, lPrice.value, typeof lPrice.value);
 		errMesg.innerHTML = ``;
 		fPrice.style.border = `none`
 		addBtn.setAttribute('type', 'submit');
@@ -70,7 +69,6 @@ allSideMenu.forEach(item=> {
 
 
 
-// TOGGLE SIDEBAR
 const menuBar = document.querySelector('#content nav .bx.bx-menu');
 const sidebar = document.getElementById('sidebar');
 

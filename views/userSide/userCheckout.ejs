@@ -194,9 +194,7 @@ aria-hidden="true"
       <form action="/api/changeAddressPayment" method="post" class="formDiv">
       <% for( let i = 0; i < userInfo.variations[0]?.address.length; i++ ) { %>
             <div class="chooseAdd existingAddress p-3 w-100 mb-3 position-relative">
-              <p class="name text-capitalize" id="fullName"><%= userInfo.fullName %></p>
               <p><%= userInfo.variations[0].address[i].structuredAddress %></p>
-              <p class="phone">Phone: <%= userInfo.phoneNumber %></p>
                 <input name="adId" class="position-absolute radio" type="radio" value="<%= userInfo.variations[0].address[i]._id %>" <%= (String(userInfo.variations[0].address[i]._id) === String(userInfo.variations[0].defaultAddress))?'checked':'' %>>
             </div>
       <% } %>
@@ -471,7 +469,11 @@ aria-hidden="true"
   </div>
   <a href="" class="default-btn" id="placeOrderBtn" disabled>Place Order</a>
 </div>
-
+<% if (errMesg) { %>
+  <div>
+    <p class="err"><%= errMesg %></p>
+  </div>
+<% } %>
 
 
 </div>

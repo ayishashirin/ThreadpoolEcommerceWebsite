@@ -6,11 +6,30 @@
 
   <section class="content-main" style="padding-left: 400px;">
     <div class="content-header">
-      <div>
-        <h2 class="content-title card-title">Order detail</h2>
-        <p>Details for Order ID: <%= orders?._id %></p>
-      </div>
-    </div>
+      <div class="head-title">
+          <div class="left">
+            <h1>Order Details</h1>
+            <ul class="breadcrumb">
+              <li>
+                <a href="#">Dashboard</a>
+              </li>
+              <li><i class="bx bx-chevron-right"></i></li>
+              <li>
+                <a class="active" 
+                  >Order Details</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+  
+        <div class="manageOptions">
+          
+          <a href="/adminOrderManagement">
+            <button>Go To Orders</button>
+          </a>
+        </div>
+  </div>
     <div class="card">
       <header class="card-header">
         <div class="row align-items-center">
@@ -42,7 +61,7 @@
             </article>
           </div>
           <!-- col// -->
-          <div class="col-md-4">
+          <div class="col-md-4" style="padding-right: 50px;">
             <article class="icontext align-items-start">
               <span class="icon icon-sm rounded-circle bg-primary-light">
                 <i class="text-primary material-icons md-local_shipping"></i>
@@ -66,7 +85,19 @@
               <div class="text">
                 <h6 class="mb-1">Deliver to</h6>
                 <p class="mb-1">
-                  <%=orderAddress[0]?.address[0]?.structuredAddress %>
+                  <!-- <%=orderAddress[0]?.address[0]?.structuredAddress %> -->
+                  <td>
+                    Name:
+                    <%=orderAddress[0].address[0].name %>
+                    <br>
+                    Place:<%=orderAddress[0].address[0].state %>,<%=orderAddress[0].address[0].district%>,
+                    HouseName:<%=orderAddress[0].address[0].city %>
+                    <br>
+                    PinCode:<%=orderAddress[0].address[0].pin %>
+                    <br>
+                    PhoneNo:  <%=orderAddress[0].address[0].phoneNo %>
+                   
+                  </td>
                 </p>
 
               </div>
@@ -165,23 +196,6 @@
             
             <% }); %>
 
-
-
-
-            <tr>
-              <td>
-                  <dl class="dlist">
-                    <dt class="text-muted">Status:</dt>
-                    <% if (orders?.paymentMethode === 'razorpay' || orders?.paymentMethode === 'wallet') { %>
-                      <dd>
-                          <span class="badge rounded-pill alert-success text-success">Payment done</span>
-                      </dd>
-                  <% } else { %>
-                      <span class="badge rounded-pill alert-danger text-danger">Payment not done</span>
-                  <% } %>
-                  </dl>
-                </td>
-            </tr>
             </tbody>
             </table>
           </div>

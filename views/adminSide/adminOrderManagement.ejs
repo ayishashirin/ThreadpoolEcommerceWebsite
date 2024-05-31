@@ -6,39 +6,32 @@
 
             <section class="content-main" style="padding-left: 340px;">
                 <div class="content-header">
-                    <div>
-                        <h2 class="content-title card-title">Order List</h2>
-                    </div>
-                    
+                    <div class="head-title">
+                        <div class="left">
+                          <h1>Order Management</h1>
+                          <ul class="breadcrumb">
+                            <li>
+                              <a href="#">Dashboard</a>
+                            </li>
+                            <li><i class="bx bx-chevron-right"></i></li>
+                            <li>
+                              <a class="active" href="/adminOrderManagement"
+                                >Order Management</a
+                              >
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                
+                      <div class="manageOptions">
+                  
+                        <a href="/adminHome">
+                          <button>Go To Dashboard</button>
+                        </a>
+                      </div>
                 </div>
                 <div class="card mb-4">
-                    <header class="card-header">
-                        <div class="row gx-3">
-                            <div class="col-lg-4 col-md-6 me-auto">
-                                <form action="/adminFilterProducts" method="get">
-
-                                <input type="text" placeholder="Search..." class="form-control" name="Search" spellcheck="false" required />
-                            </form>
-
-                            </div>
-                            <form action="/adminOrderManagement" id="form-Filter" method="get">
-                                <% if (currentPage) { %>
-                                    <input name="page" type="text" value="<%= currentPage %>" hidden>
-                                <% } %>
-                                
-                                <div class="col-lg-2 col-6 col-md-3">
-                                <select class="form-select">
-                                    <option value="All" <%= (filter === "All" || !filter)?"selected":"" %> >Show all</option>
-                                    <option <%= (filter === "Ordered")?"selected":"" %> >Ordered</option>
-                                    <option <%= (filter === "Shipped")?"selected":"" %> >Shipped</option>
-                                    <option <%= (filter === "Delivered")?"selected":"" %> >Delivered</option>
-                                    <option <%= (filter === "Cancelled")?"selected":"" %> >Cancelled</option>
-                                </select>
-                           
-                            </div>
-                            </form>
-                        </div>
-                    </header>
+                    
                     <!-- card-header end// -->
                     <div class="card-body">
                         <div class="table-responsive">

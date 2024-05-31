@@ -3,7 +3,6 @@ const adminHelper = require("../../../server/databaseHelpers/adminHelper");
 module.exports = {
     isAdminAuth: (req, res, next) => {
         try {
-            //this session is for to identify which side the get err is occuring
             req.session.adminPageErr = true;
 
             if(req.session.isAdminAuth){
@@ -18,7 +17,6 @@ module.exports = {
     },
     noAdminAuth: (req, res, next) => {
         try {
-            //this session is for to identify which side the get err is occuring
             req.session.adminPageErr = true;
 
             if(req.session.isAdminAuth){

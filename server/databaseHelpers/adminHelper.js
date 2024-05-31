@@ -237,7 +237,7 @@ module.exports = {
                 ),
               },
               $push: {
-                transtions: {
+                transactions: {
                   amount: Math.round(
                     qty.orderItems[0].quantity * qty.orderItems[0].lPrice
                   ),

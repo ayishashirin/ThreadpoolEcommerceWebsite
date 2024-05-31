@@ -369,8 +369,6 @@ module.exports = {
 
   statusUpdate: async (req, res) => {
     try {
-      console.log('Request Params:', req.params);
-      console.log('Request Body:', req.body);
   
       const updateResult = await adminHelper.statusUpdate(
         req.params.orderId,

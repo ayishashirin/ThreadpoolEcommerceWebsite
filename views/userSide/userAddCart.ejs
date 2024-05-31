@@ -1,7 +1,6 @@
 <!-- header -->
 <%- include('../includes/userSide/header') %>
 <!-- end of header -->
-<% console.log("coming here to ejs"); %>
 <div class="page-title-area">
   <div class="container">
     <div class="page-title-content">
@@ -14,139 +13,152 @@
   </div>
 </div>
 
-<section class="cart-area">
-  <div class="container">
-    <form>
-      <div class="cart-table table-responsive">
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th scope="col">Product</th>
-              <th scope="col">Name</th>
-              <th scope="col">Unit Price</th>
-              <th scope="col">Quantity</th>
-              <th scope="col">Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% for( let i = 0; i < cartItems.length; i++ ) { %>
-            <tr>
-              <td
-                class="product-thumbnail"
-                data-productId="<%= cartItems[i].products.productId %>"
-                onclick="location.href='/productDetail/<%= cartItems[i].products.productId %>'"
-              >
-                <a href="#">
-                  <img
-                    src="<%= cartItems[i].variations[0].images[0] %>"
-                    alt="item"
-                  />
-                </a>
-              </td>
-              <td class="product-name">
-                <a href="#"><%= cartItems[i].pDetails[0].pName %></a>
-                <ul>
-                  <li>
-                    Color: <span><%= cartItems[i].variations[0].color %></span>
-                  </li>
-                  <li>
-                    Size: <span><%= cartItems[i].variations[0].size %></span>
-                  </li>
-                  <% if (cartItems[i].variations[0].quantity === 0) { %>
-                  <p
-                    class="position-absolute stockErr <%= (cartItems[i].variations[0].quantity < cartItems[i].products.quantity)?'d-block':'' %>"
-                  >
-                    Out Of Stock
-                  </p>
-                  <% } else { %>
-                  <p
-                    class="position-absolute stockErr <%= (cartItems[i].variations[0].quantity < cartItems[i].products.quantity)?'d-block':'' %>"
-                  >
-                    Only <%= cartItems[i].variations[0].quantity %> stocks
-                    available
-                  </p>
-                  <% } %>
-                </ul>
-              </td>
-              <td class="product-price">
-                <span class="unit-amount " id="unit_price_<%= i %>"
-                  >$<%=cartItems[i].pDetails[0].fPrice %></span
-                >
-              </td>
-              <td class="product-quantity" >
-    <div class="input-counter">
-        <span class="minus-btn" onclick="decreaseQuantity('<%= i %>', '<%= cartItems[i].products.productId %>')"><i class="bx bx-minus"></i></span>
-        <input id="quantity_<%= i %>" type="text" min="1" value="<%= cartItems[i].products.quantity %>" readonly />
-        <span class="plus-btn" onclick="increaseQuantity('<%= i %>', '<%= cartItems[i].products.productId %>')"><i class="bx bx-plus"></i></span>
-    </div>
-</td>
-              <td class="product-subtotal">
-                <span class="subtotal-amount"  id="total_price_<%= i%>" onclick="updateTotalPrice('<%=i%>')">$<%= (cartItems[i].products.quantity)*(cartItems[i].pDetails[0].fPrice ) %></span>
-                <a href="/cartDelete/<%= cartItems[i].products.productId %>" class="remove"><i class="bx bx-trash"></i></a>
-                </td> 
-            </tr>
-            <% } %>
-          </tbody>
-        </table>
 
-        <% if (cartItems.length === 0) { %>
-        <div
-          class="d-flex justify-content-center align-items-center mb-4 noProduct ptb-100"
-        >
-          <p class="text-center fs-5">\(^Д^)/<br />No Products In Cart</p>
-        </div>
-        <% if(cartErr) { %>
-        <p class="err"><%= cartErr %></p>
-        <% } %> <% } %>
-      </div>
-      <div class="cart-buttons">
-        <div class="row align-items-center">
-          <div class="col-lg-7 col-sm-7 col-md-7">
-            <a href="/category" class="optional-btn">Continue Shopping</a>
-          </div>
-          <div class="col-lg-5 col-sm-5 col-md-5 text-end">
-            <a href="/cartDeleteAll" class="default-btn remove">Delete Cart</a>
-          </div>
-        </div>
-      </div>
-      <div class="cart-totals">
-        <h3>Cart Totals</h3>
-        <ul>
-          <li>Subtotal <span id="subtotal1">$<%= cartItems.reduce((total, value) => { return total +=
-            (value.pDetails[0].fPrice * value.products.quantity); }, 0);
-            %></span></li>
-          <li>Shipping <span>Free</span></li>
-          <li>Discount <span id="discount1">
-            - $<%= cartItems.reduce((total, value) => {
-                const fPrice = value.pDetails[0].fPrice;
-                const lPrice = value.pDetails[0].lPrice;
-                const discountAmount = (fPrice - lPrice) * value.products.quantity;
-                return total + discountAmount;
-            }, 0).toFixed(2); %>
-        </span></li>
-        <li>Offer <span id="offer">
-          - $<%= cartItems.reduce((total, value) => {
-            const offerAmount = Math.round((value.pDetails[0].fPrice * value.allOffers) / 100) * value.products.quantity;
-            return total + offerAmount;
-          }, 0).toFixed(2); %>
-        </span></li>
-        
-        <li>Total <span id="totalAmt1">
-          $<%= cartItems.reduce((total, value) => {
-            const offerAmount = Math.round((value.pDetails[0].fPrice * value.allOffers) / 100) * value.products.quantity;
-            const discountedPrice = (value.pDetails[0].lPrice * value.products.quantity) - offerAmount;
-            return total + discountedPrice;
-          }, 0).toFixed(2);
-          %>
-        </span></li>
-        
-        </ul>
-          <a href="/cartCheckOut" class="default-btn">Proceed to Checkout</a>
-      </form>
-      </div>
-    </form>
+<% if (cartItems.length === 0) { %>
+
+   <div class="my-5">    
+  <div class="errNoProduct d-flex justify-content-center" >
+      <img src="/userSide/img/errorPages/cart7.webp" width="500px" alt="No Data">
   </div>
-</section>
+  <div class="errNoProduct d-flex justify-content-center"><h3>Your Cart is empty!</h3></div>
+  <div class="row align-items-center m-2" >
+    <div class="d-flex justify-content-center">
+      <a href="/category" class="optional-btn">Continue Shopping</a>
+    </div>
+    
+  </div></div>
+
+  <% } else { %>
+  
+  <section class="cart-area">
+    <div class="container">
+      <form>
+        <div class="cart-table table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th scope="col">Product</th>
+                <th scope="col">Name</th>
+                <th scope="col">Unit Price</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% for( let i = 0; i < cartItems.length; i++ ) { %>
+              <tr>
+                <td
+                  class="product-thumbnail"
+                  data-productId="<%= cartItems[i].products.productId %>"
+                  onclick="location.href='/productDetail/<%= cartItems[i].products.productId %>'"
+                >
+                  <a href="#">
+                    <img
+                      src="<%= cartItems[i].variations[0].images[0] %>"
+                      alt="item"
+                    />
+                  </a>
+                </td>
+                <td class="product-name">
+                  <a href="#"><%= cartItems[i].pDetails[0].pName %></a>
+                  <ul>
+                    <li>
+                      Color: <span><%= cartItems[i].variations[0].color %></span>
+                    </li>
+                    <li>
+                      Size: <span><%= cartItems[i].variations[0].size %></span>
+                    </li>
+                    <% if (cartItems[i].variations[0].quantity === 0) { %>
+                    <p
+                      class="position-absolute stockErr <%= (cartItems[i].variations[0].quantity < cartItems[i].products.quantity)?'d-block':'' %>"
+                    >
+                      Out Of Stock
+                    </p>
+                    <% } else { %>
+                    <p
+                      class="position-absolute stockErr <%= (cartItems[i].variations[0].quantity < cartItems[i].products.quantity)?'d-block':'' %>"
+                    >
+                      Only <%= cartItems[i].variations[0].quantity %> stocks
+                      available
+                    </p>
+                    <% } %>
+                  </ul>
+                </td>
+                <td class="product-price">
+                  <span class="unit-amount " id="unit_price_<%= i %>"
+                    >$<%=cartItems[i].pDetails[0].fPrice %></span
+                  >
+                </td>
+                <td class="product-quantity" >
+      <div class="input-counter">
+          <span class="minus-btn" onclick="decreaseQuantity('<%= i %>', '<%= cartItems[i].products.productId %>')"><i class="bx bx-minus"></i></span>
+          <input id="quantity_<%= i %>" type="text" min="1" value="<%= cartItems[i].products.quantity %>" readonly />
+          <span class="plus-btn" onclick="increaseQuantity('<%= i %>', '<%= cartItems[i].products.productId %>')"><i class="bx bx-plus"></i></span>
+      </div>
+  </td>
+                <td class="product-subtotal">
+                  <span class="subtotal-amount"  id="total_price_<%= i%>" onclick="updateTotalPrice('<%=i%>')">$<%= (cartItems[i].products.quantity)*(cartItems[i].pDetails[0].fPrice ) %></span>
+                  <a href="/cartDelete/<%= cartItems[i].products.productId %>" class="remove"><i class="bx bx-trash"></i></a>
+                  </td> 
+              </tr>
+              <% } %>
+            </tbody>
+          </table>
+  
+       
+        </div>
+        <div class="cart-buttons">
+          <div class="row align-items-center">
+            <div class="col-lg-7 col-sm-7 col-md-7">
+              <a href="/category" class="optional-btn">Continue Shopping</a>
+            </div>
+            <div class="col-lg-5 col-sm-5 col-md-5 text-end">
+              <a href="/cartDeleteAll" class="default-btn remove">Delete Cart</a>
+            </div>
+          </div>
+        </div>
+        <div class="cart-totals">
+          <h3>Cart Totals</h3>
+          <ul>
+            <li>Subtotal <span id="subtotal1">$<%= cartItems.reduce((total, value) => { return total +=
+              (value.pDetails[0].fPrice * value.products.quantity); }, 0);
+              %></span></li>
+            <li>Shipping <span>Free</span></li>
+            <li>Discount <span id="discount1">
+              - $<%= cartItems.reduce((total, value) => {
+                  const fPrice = value.pDetails[0].fPrice;
+                  const lPrice = value.pDetails[0].lPrice;
+                  const discountAmount = (fPrice - lPrice) * value.products.quantity;
+                  return total + discountAmount;
+              }, 0).toFixed(2); %>
+          </span></li>
+          <li>Offer <span id="offer">
+            - $<%= cartItems.reduce((total, value) => {
+              const offerAmount = Math.round((value.pDetails[0].fPrice * value.allOffers) / 100) * value.products.quantity;
+              return total + offerAmount;
+            }, 0).toFixed(2); %>
+          </span></li>
+          
+          <li>Total <span id="totalAmt1">
+            $<%= cartItems.reduce((total, value) => {
+              const offerAmount = Math.round((value.pDetails[0].fPrice * value.allOffers) / 100) * value.products.quantity;
+              const discountedPrice = (value.pDetails[0].lPrice * value.products.quantity) - offerAmount;
+              return total + discountedPrice;
+            }, 0).toFixed(2);
+            %>
+          </span></li>
+          
+          </ul>
+            <a href="/cartCheckOut" class="default-btn">Proceed to Checkout</a>
+        </form>
+        </div>
+      </form>
+    </div>
+  </section>
+  
+  
+  
+  <% } %>
 
 
 

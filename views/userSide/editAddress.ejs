@@ -40,8 +40,34 @@
                 <h2 class="m-0 p-0 text-capitalize">Address</h2>
               </div>
             </div>
+
+
+
             <div class="cartBody d-flex">
               <div class="col-12">
+
+
+
+                
+              <% if (userInfo?.variations[0]?.address.length === 0) { %>
+
+                <div> 
+
+               <div class="errNoProduct d-flex justify-content-center" >
+                   <img src="/userSide/img/errorPages/address.png" width="200px" alt="No Data">
+               </div>
+
+               <div class="errNoProduct d-flex justify-content-center"><h3>No Address found!</h3></div>
+               <div class="row align-items-center" >
+                 <div class="d-flex justify-content-center">
+                   <a href="/addAddress" class="optional-btn ">Add New Address</a>
+                 </div>
+                 </div>
+               </div>
+              
+             
+               <% } else { %>
+               
                 <div class="d-flex btnAdd justify-content-end">
                     <a href="/addAddress" class="ms-auto">
                         <button class="logOutBtn mb-3  m-lg-1 ">Add New</button>
@@ -80,6 +106,8 @@
                             </div>
                         </div>
                       </div>
+                <% } %>
+
                 <% } %>
               </div>
             </div>

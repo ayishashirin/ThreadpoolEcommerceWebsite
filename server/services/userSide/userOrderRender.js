@@ -121,10 +121,11 @@ module.exports = {
 
              
          
-          //  //userHelper fn to get all order history
           const orderAddress = await userVariationdb.find({userId:orderDetails.userId, address: {
             $elemMatch: { _id: orderDetails.address }
           }})
+
+          console.log(orderAddress,'orderAddress');
           if (!orderDetails) {
             return res.status(401).redirect("/orders");
           }

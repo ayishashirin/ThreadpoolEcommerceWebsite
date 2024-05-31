@@ -28,7 +28,6 @@ $(".addProductForm").submit(function(event) {
 	contentType: false,
 	processData: false,
 	success: function(response) {
-		console.log(response);
 		window.location.href = '/adminProductManagement';
 	},
 	error: function(error) {
@@ -92,20 +91,17 @@ fPrice.addEventListener('keyup', () => {
 
 function reloadPage(){
 	$.ajax({
-		url: `/adminUpdateProduct/${document.querySelector('.uploadedImg').getAttribute('data-Id')}`, // Update the path to your EJS file
+		url: `/adminUpdateProduct/${document.querySelector('.uploadedImg').getAttribute('data-Id')}`,
 		method: 'GET',
 		dataType: 'html',
 		success: function (data) {
-		  // Extract the content of the #myDiv from the loaded data
 		  var newContent = $(data).find('.uploadedImg').html();
   
-		  // Update the content of the existing #myDiv
 		  $('.uploadedImg').html(newContent);
 
 		  showImg();
   
-		  // You may need to reinitialize any JavaScript associated with the new content
-		  // For example, if there are event listeners, you may need to reattach them.
+		  
 		},
 		error: function (error) {
 		  console.error('Error loading content:', error);
@@ -186,22 +182,18 @@ function deleteImg(index) {
 
 function deleteImgFromDB(id, index){
 	$.ajax({
-		url: `/adminDeleteProductImg?id=${id}&index=${index}`, // Update the path to your EJS file
-		method: 'GET',
+		url: `/adminDeleteProductImg?id=${id}&index=${index}`, 
 		dataType: 'html',
 		success: function (data) {
-		  // Extract the content of the #myDiv from the loaded data
 		  var newContent = $(data).find('.uploadedImg').html();
   
-		  // Update the content of the existing #myDiv
 		  console.log(newContent);
 		  $('.uploadedImg').html(newContent);
 		  document.querySelector('.uploadedImg').setAttribute('data-NoOfImg', `${Number(document.querySelector('.uploadedImg').getAttribute('data-NoOfImg')) - 1}`);
 
 		  showImg();
   
-		  // You may need to reinitialize any JavaScript associated with the new content
-		  // For example, if there are event listeners, you may need to reattach them.
+		
 		},
 		error: function (error) {
 		  console.error('Error loading content:', error);

@@ -7,24 +7,11 @@ const adminHelper = require("../../databaseHelpers/adminHelper");
 module.exports = {
   homePage: async (req, res) => {
     try {
-      // User Helper function to get all listed categories
       const category = await userHelper.getAllListedCategory();
-
-      // User Helper function to get the count of products in the cart
-      const counts = await userHelper.getTheCountOfWhislistCart(
-        req.session.isUserAuth
-      );
-
-      const wishlistItems = await userHelper.getWishlistItemsAll(
-        req.session.isUserAuth
-      );
-
-      // User Helper function to get newly launched products on the homepage
+      const counts = await userHelper.getTheCountOfWhislistCart(req.session.isUserAuth);
+      const wishlistItems = await userHelper.getWishlistItemsAll(req.session.isUserAuth);
       const products = await userHelper.getProductDetails(null, true);
-
-      const cartItems = await userHelper.getCartItemsAll(
-        req.session.isUserAuth
-      );
+      const cartItems = await userHelper.getCartItemsAll(req.session.isUserAuth);
 
       res.status(200).render("userSide/userHome", {
         category,
@@ -40,6 +27,7 @@ module.exports = {
       res.status(500).render("errorPages/500ErrorPage");
     }
   },
+
 
   // -------------------------------------------------------------------------------------------------------------------------
 
@@ -276,6 +264,10 @@ module.exports = {
         req.session.isUserAuth
       );
 
+      const wishlistItems = await userHelper.getWishlistItemsAll(
+        req.session.isUserAuth
+      );
+
       const cartItems = await userHelper.getCartItemsAll(
         req.session.isUserAuth
       );
@@ -291,6 +283,7 @@ module.exports = {
           user: req.session.isUserAuth,
           counts,
           cartItems,
+          wishlistItems
         },
         (err, html) => {
           if (err) {
@@ -322,6 +315,10 @@ module.exports = {
         req.session.isUserAuth
       );
 
+      const wishlistItems = await userHelper.getWishlistItemsAll(
+        req.session.isUserAuth
+      );
+
       const cartItems = await userHelper.getCartItemsAll(
         req.session.isUserAuth
       );
@@ -338,6 +335,7 @@ module.exports = {
           user: req.session.isUserAuth,
           counts,
           cartItems,
+          wishlistItems
         },
         (err, html) => {
           if (err) {

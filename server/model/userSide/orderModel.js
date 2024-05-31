@@ -50,6 +50,7 @@ const orderSchema = new mongodb.Schema({
             orderStatus: {
                 type: String,
                 default: "Ordered",
+
                 required: true
             },
             color:{
@@ -78,11 +79,47 @@ const orderSchema = new mongodb.Schema({
         default: 0,
     },
  
-    address: {
-        type:  mongodb.SchemaTypes.ObjectId,
-        required: true,
-      
-    }
+    address: [
+        {
+          name: {
+            type: String,
+            required: true
+          },
+          country: {
+            type: String,
+            required: true
+          },
+          state: {
+            type: String,
+            required: true
+          },
+          district: {
+            type: String,
+            required: true
+          },
+         
+          city: {
+            type: String,
+            required: true
+          },
+          houseName: {
+            type: String,
+            required: true
+          },
+          phoneNo: {
+            type: Number,
+            required: true
+          },
+          pin: {
+            type: Number,
+            required: true
+          },
+          structuredAddress: {
+            type: String,
+            required: true
+          }
+        }
+    ],
 });
 
 const Orderdb = mongodb.model('orderdbs', orderSchema);

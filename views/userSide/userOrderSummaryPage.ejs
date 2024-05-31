@@ -160,17 +160,32 @@
                               <tr>
                                 <td>Shipping Details</td>
                                 <td>
-                                  <%=orderAddress[0].address[0].structuredAddress %>
+                                  Name:
+                                  <%=orderAddress[0].address[0].name %>
                                   <br>
-                                  Phone: <%= userInfo.phoneNumber %>
+                                  Country:<%=orderAddress[0].address[0].country %>
+                                  <br>
+                                  State:<%=orderAddress[0].address[0].state %>
+                                  <br>
+                                  District:<%=orderAddress[0].address[0].district %>
+                                  <br>
+                                  City:<%=orderAddress[0].address[0].city %>
+                                  <br>
+                                  HouseName:<%=orderAddress[0].address[0].houseName %>
+                                  <br>
+                                  PinCode:<%=orderAddress[0].address[0].pin %>
+                                  <br>
+                                  PhoneNo:  <%=orderAddress[0].address[0].phoneNo %>
+                                 
                                 </td>
                               </tr>
                               <tr>
                                 <td>Delivery</td>
                                 <td>
-                                  Estimated between <%= orderDetails.orderDate?.toString().split(' ').splice(0, 4).join(' , ') %> and <% const orderDate = orderDetails.orderDate ? new Date(orderDetails.orderDate) : new Date(); %>
+                                  Estimated between <%= orderDetails.orderDate?.toString().split(' ').splice(0, 4).join(' - ') %>
+                                   and  <% const orderDate = orderDetails.orderDate ? new Date(orderDetails.orderDate) : new Date(); %>
                                   <% orderDate.setDate(orderDate.getDate() + 7); %>
-                                  <%= (orderDate.toString().split(' ').splice(0, 4).join(' , ')) %> 
+                                  <%= (orderDate.toString().split(' ').splice(0, 4).join(' - ')) %> 
                                   <br>
                                   Will usually ship within 1 bussiness day.
 
@@ -178,35 +193,40 @@
                                   <div class="ODhead pt-4 pb-4">
                                     <div class="d-flex gap-3 align-items-center">
                                       <p class="dot done"></p>
-                                      <p id="oText">Ordered Confirmed, <%= orderDetails.orderDate?.toString().split(' ').splice(0, 4).join(' , ') %></p>
+                                      <p id="oText">Ordered Confirmed, <%= orderDetails.orderDate?.toString().split(' ').splice(0, 4).join(' - ') %></p>
                                     </div>
                                     <div class="lineParent position-relative">
-                                      <div class="line position-relative <%= (orderDetails.orderItems.orderStatus === 'Cancelled')?'notDoneLine':((orderDetails.orderItems.orderStatus === 'Shipped' ) || (orderDetails.orderItems.orderStatus === 'Delivered'))?'doneLine':'' %>">
-
+                                      <div class="line position-relative <%= (orderDetails.orderItems.orderStatus === 'Cancelled')?'notDoneLine':((orderDetails.orderItems.orderStatus === 'Shipped' ) || (orderDetails.orderItems.orderStatus === 'Delivered'))?'doneLine':'' %>"></div>
+                                    </div>
+                                  
+                                    <% if (orderDetails.orderItems.orderStatus !== 'Cancelled') { %>
+                                      <div class="d-flex gap-3 align-items-center">
+                                        <p class="dot <%= ((orderDetails.orderItems.orderStatus === 'Shipped') || (orderDetails.orderItems.orderStatus === 'Delivered')) ? 'done' : '' %>"></p>
+                                        <p id="oText">Shipped</p>
                                       </div>
-                                    </div>
-                                    <% if (orderDetails.orderItems.orderStatus !=='Cancelled' ) { %>
-                                    <div class="d-flex gap-3 align-items-center">
-                                      <p class="dot <%= ((orderDetails.orderItems.orderStatus === 'Shipped') || (orderDetails.orderItems.orderStatus === 'Delivered'))?'done':'' %>">
-                                      </p>
-                                      <p id="oText">Shipped</p>
-                                    </div>
-                                    <div class="lineParent position-relative">
-                                      <div class="line position-relative <%= (orderDetails.orderItems.orderStatus === 'Delivered')?'doneLine':'' %>">
-
+                                      <div class="lineParent position-relative">
+                                        <div class="line position-relative <%= (orderDetails.orderItems.orderStatus === 'Delivered') ? 'doneLine' : '' %>"></div>
                                       </div>
-                                    </div>
-                                    <div class="d-flex gap-3 align-items-center">
-                                      <p class="dot <%= (orderDetails.orderItems.orderStatus === 'Delivered')?'done':'' %>"></p>
-                                      <p id="oText">Delivered</p>
-                                    </div>
+                                      <div class="d-flex gap-3 align-items-center">
+                                        <p class="dot <%= (orderDetails.orderItems.orderStatus === 'Delivered') ? 'done' : '' %>"></p>
+                                        <p id="oText">Delivered</p>
+                                      </div>
+                                      <div class="lineParent position-relative">
+                                        <div class="line position-relative returnedLine <%= (orderDetails.orderItems.orderStatus === 'Returned') ? 'doneLine' : '' %>"></div>
+                                      </div>
+                                      <div class="d-flex gap-3 align-items-center returnedDot <%= (orderDetails.orderItems.orderStatus === 'Returned') ? 'show' : 'hide' %>">
+                                        <p class="dot <%= (orderDetails.orderItems.orderStatus === 'Returned') ? 'done' : '' %>"></p>
+                                        <p id="oText">Returned</p>
+                                      </div>
                                     <% } else { %>
-                                    <div class="d-flex gap-3 align-items-center">
-                                      <p class="dot notDone"></p>
-                                      <p id="oText">Cancelled</p>
-                                    </div>
+                                      <div class="d-flex gap-3 align-items-center">
+                                        <p class="dot notDone"></p>
+                                        <p id="oText">Cancelled</p>
+                                      </div>
                                     <% } %>
                                   </div>
+                                  
+                                  
                                 </td>
 
                               </tr>

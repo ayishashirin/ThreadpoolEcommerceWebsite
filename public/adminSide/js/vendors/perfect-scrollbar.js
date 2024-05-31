@@ -251,7 +251,6 @@
 
     var element = i.element;
 
-    // reset reach
     i.reach[y] = null;
 
     // 1 for subpixel rounding

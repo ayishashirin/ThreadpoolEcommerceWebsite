@@ -6,7 +6,7 @@ const userHelper = require("../../databaseHelpers/userHelper");
 module.exports = {
 
 
-  showProductsCategory : async (req, res) => {
+  showProductsCategory: async (req, res) => {
     try {
       const category = await userHelper.getAllListedCategory();
       const counts = await userHelper.getTheCountOfWhislistCart(req.session.isUserAuth);
@@ -37,13 +37,15 @@ module.exports = {
         collection: req.query.genderCat,
         color: req.query.color,
         maxPrice: req.query.maxPrice,
-        // sort: req.query.sort, 
+        sortOrder: req.query.sortOrder,  // Ensure sortOrder is passed here
+        search: req.query.search,
       });
     } catch (err) {
       console.log("Update query err:", err);
       res.status(500).render("errorPages/500ErrorPage");
     }
   },
+  
   
       
        // --------------------------------------------------------------------------------------------------------------
