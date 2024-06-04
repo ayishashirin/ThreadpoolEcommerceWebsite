@@ -30,7 +30,7 @@ router.get('/adminHome' , adminAuthMiddleware.isAdminAuth, adminRender.adminHome
 
 router.post('/downloadSalesReport', adminAuthMiddleware.isAdminAuth, adminController.downloadSalesReport); // Option to download sales report
 
-
+router.post('/api/getDetailsChart', adminAuthMiddleware.isAdminAuth, adminController.getDetailsChart);// Option to get chart details
 
 // Admin Product Management Routes
 router.get('/adminProductManagement',adminAuthMiddleware.isAdminAuth, adminRender.adminProductManagement); // Product is listed in Page to manage
@@ -199,8 +199,5 @@ router.delete('/adminDeleteOffer/:offerId', adminAuthMiddleware.isAdminAuth, adm
 
 router.get('/adminLogout', adminAuthMiddleware.isAdminAuth, adminController.adminLogout);
 
- 
-//api
-router.post('/api/getDetailsChart', adminAuthMiddleware.isAdminAuth, adminController.getDetailsChart);// Option to get chart details
 
 module.exports = router;

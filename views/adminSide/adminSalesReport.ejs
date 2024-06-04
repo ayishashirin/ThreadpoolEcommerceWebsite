@@ -1,0 +1,195 @@
+<!-- header -->
+<%- include('../includes/adminSide/header') %>
+<!-- end of header -->
+
+<link rel="stylesheet" href="/adminSide/css/adminDashboard.css" />
+<link rel="stylesheet" href="/public/adminSide/sass/layout/_layout.scss" />
+
+<!-- CONTENT -->
+<section id="content">
+  <!-- MAIN -->
+  <main>
+    <div class="head-title">
+      <div class="left">
+        <h1>Dashboard</h1>
+        <ul class="breadcrumb">
+          <li>
+            <a href="#">Sales Report</a>
+          </li>
+          <li><i class="bx bx-chevron-right"></i></li>
+          <li>
+            <a class="active" href="#">Home</a>
+          </li>
+        </ul>
+      </div>
+      <a data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn-download">
+        <i class="bx bxs-cloud-download"></i>
+        <span class="text">Download Sales Report</span>
+      </a>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">PDF or Excel</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="d-flex">
+              <div class="form-check w-50 showErr">
+                <input value="pdf" class="form-check-input formVal" type="radio" name="type" id="flexRadioDefault1">
+                <label class="form-check-label" for="flexRadioDefault1">PDF</label>
+                <p class="err"></p>
+              </div>
+              <div class="form-check w-50 showErr">
+                <input value="excel" class="form-check-input formVal" type="radio" name="type" id="flexRadioDefault2">
+                <label class="form-check-label" for="flexRadioDefault2">Excel</label>
+              </div>
+            </div>
+            <div class="d-flex">
+              <div class="form-check">
+                <input class="form-check-input checkBox" name="full" type="checkbox" value="full" id="flexCheckIndeterminate">
+                <label class="form-check-label" for="flexCheckIndeterminate">Download All Sales</label>
+              </div>
+            </div>
+            <div class="d-flex">
+              <div class="w-50 showErr">
+                <label class="d-block mb-2 mt-2" for="fromDate">From Date</label>
+                <input class="formVal" type="date" name="fromDate">
+                <p class="err"></p>
+              </div>
+              <div class="w-50 showErr">
+                <label class="d-block mb-2 mt-2" for="toDate">To Date</label>
+                <input class="formVal" type="date" name="toDate">
+                <p class="err"></p>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" id="pdfButton" class="btn btn-primary">Download Now</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="table mt-5">
+      <div class="card mb-4">
+        <header class="card-header">
+          <h4 class="card-title">Sales Report</h4>
+          <div class="row align-items-center">
+            <div class="col-md-2 col-6">
+              <div class="custom-select ms-auto" style="width: 150px;">
+                <select id="filterSales">
+                  <option value="Monthly">Monthly</option>
+                  <option value="Yearly">Yearly</option>
+                  <option value="Weekly">Weekly</option>
+                  <option value="Daily">Daily</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </header>
+        <div class="card-body">
+         
+          <div class="table-responsive">
+            <table class="table align-middle table-nowrap mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th class="align-middle" scope="col">No</th>
+                  <th class="align-middle" scope="col">Order ID</th>
+                  <th class="align-middle" scope="col">Billing Name</th>
+                  <th class="align-middle" scope="col">Date</th>
+                  <th class="align-middle" scope="col">Product</th>
+                  <th class="align-middle" scope="col">Quantity</th>
+                  <th class="align-middle" scope="col">Total</th>
+                  <th class="align-middle" scope="col">Payment Method</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% for (let i = 0; i < order.length; i++) { %>
+                <tr>
+                  <td class="text-center">
+                    <div class="form-check">
+                      <%= (i + 1) %>
+                    </div>
+                  </td>
+                  <td><a href="#" class="fw-bold">#<%= order[i]._id %></a></td>
+                  <td>Neal Matthews</td>
+                  <td><%= order[i].orderDate.toISOString().split('T')[0].split('-').reverse().join('-') %></td>
+                  <td><%= order[i].orderItems.pName %></td>
+                  <td><%= order[i].orderItems.quantity %></td>
+                  <td>$<%= (order[i].orderItems.fPrice) * (order[i].orderItems.quantity) %></td>
+                  <td><i class="material-icons md-payment font-xxl text-muted mr-5"></i>Razorpay</td>
+                </tr>
+                <% } %>
+
+                <% if (order.length === 0) { %>
+                
+                <tr>
+                  <th class="text-center" colspan="8">No Sales from <%= order.fromDate.split('-').reverse().join('-') %> to <%= toDate.split('-').reverse().join('-') %>.</th>
+                </tr>
+                <% } else { %>
+                <tr>
+                  <th class="text-center" colspan="8">No Sales.</th>
+                </tr>
+                <% } %>
+             
+                <tr>
+               
+                  <th colspan="4" class="text-center">Total Sales from <%= fromDate.split('-').reverse().join('-') %> to <%= toDate.split('-').reverse().join('-') %></th>
+              
+                  <th colspan="4" class="text-center">Total Sales</th>
+               
+                  <td colspan="4" class="text-center">₹<%= order.reduce((total, value) => {
+                    if (((value.paymentMethode === 'razorpay') && (value.orderItems.orderStatus !== 'Cancelled'))) {
+                      return total += ((value.orderItems.quantity * value.orderItems.lPrice) - (value.orderItems.offerDiscountAmount + value.orderItems.couponDiscountAmount));
+                    }
+                    if (((value.paymentMethode === 'COD') && (value.orderItems.orderStatus === 'Delivered'))) {
+                      return total += ((value.orderItems.quantity * value.orderItems.lPrice) - (value.orderItems.offerDiscountAmount + value.orderItems.couponDiscountAmount));
+                    }
+                    return total;
+                  }, 0); %></td>
+                </tr>
+       
+                
+
+              </tbody>
+
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <!-- MAIN -->
+</section>
+<!-- CONTENT -->
+
+<!-- footer -->
+<%- include('../includes/adminSide/footer') %>
+
+<script>
+  document.getElementById("pdfButton").addEventListener("click", function () {
+    let doc = new window.jspdf.jsPDF();
+    let pageCenter = doc.internal.pageSize.getWidth() / 2;
+
+    doc.setFontSize(25);
+    doc.text("StepEX", pageCenter, 10, { align: 'center' });
+    doc.setFontSize(15);
+    doc.text("Sales Report", pageCenter, 20, { align: 'center' });
+
+    let table = document.querySelector(".table");
+
+    doc.autoTable({ html: table, startY: 35 });
+
+    doc.save("sales_report.pdf");
+  });
+</script>
+<script src="/adminSide/js/adminDashboard.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+<!-- end of footer -->

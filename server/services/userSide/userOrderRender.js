@@ -32,7 +32,7 @@ module.exports = {
               (err, html) => {
                 if (err) {
                   console.log(err);
-                  return res.send("Internal server err");
+                  return res.status(500).render("errorPages/500ErrorPage");
                 }
     
                 delete req.session.orderSuccessPage;
@@ -98,55 +98,50 @@ module.exports = {
     
       orderDetails: async (req, res) => {
         try {
-          //userHelper fn to get all listed category
-          const category = await userHelper.getAllListedCategory();
+            // userHelper fn to get all listed category
+            const category = await userHelper.getAllListedCategory();
     
-          //userHelper fn to get counts of product in cart and wishlist
-          const counts = await userHelper.getTheCountOfWhislistCart(
-            req.session.isUserAuth
-          );
+            // userHelper fn to get counts of product in cart and wishlist
+            const counts = await userHelper.getTheCountOfWhislistCart(req.session.isUserAuth);
     
-          //userHelper fn to get the order Details of singleProduct
-          const orderDetails = await userHelper.getSingleOrderOfDetails(req.params,req.session.isUserAuth)
-          console.log("orderDetails:",orderDetails);
-
-           const offerDetails = await offerdb.find()
-          const wishlistItems = await userHelper.getWishlistItemsAll(
-            req.session.isUserAuth
-          );
-          //userHelper fn to get the userDetails
-          const userInfo = await userHelper.userInfo(req.session.isUserAuth);
-
-          const cartItems = await userHelper.getCartItemsAll(req.session.isUserAuth);
-
-             
-         
-          const orderAddress = await userVariationdb.find({userId:orderDetails.userId, address: {
-            $elemMatch: { _id: orderDetails.address }
-          }})
-
-          console.log(orderAddress,'orderAddress');
-          if (!orderDetails) {
-            return res.status(401).redirect("/orders");
-          }
-          
+            // userHelper fn to get the order Details of singleProduct
+            const orderDetails = await userHelper.getSingleOrderOfDetails(req.params, req.session.isUserAuth);
     
-          res.status(200).render("userSide/userOrderSummaryPage", {
-            category,
-            counts,
-            orderDetails,
-            userInfo,
-            user: req.session.isUserAuth,
-            cartItems,
-            wishlistItems,
-            offerDetails,orderAddress,
-        
-          });
+            // Check if orderDetails is null or undefined
+            if (!orderDetails) {
+                return res.status(401).redirect("/orders");
+            }
+    
+            const offerDetails = await offerdb.find();
+            const wishlistItems = await userHelper.getWishlistItemsAll(req.session.isUserAuth);
+            
+            // userHelper fn to get the userDetails
+            const userInfo = await userHelper.userInfo(req.session.isUserAuth);
+            
+            const cartItems = await userHelper.getCartItemsAll(req.session.isUserAuth);
+    
+            const orderAddress = await userVariationdb.find({
+                userId: orderDetails.userId, 
+                address: { $elemMatch: { _id: orderDetails.address } }
+            });
+    
+            
+            res.status(200).render("userSide/userOrderSummaryPage", {
+                category,
+                counts,
+                orderDetails,
+                userInfo,
+                user: req.session.isUserAuth,
+                cartItems,
+                wishlistItems,
+                offerDetails,
+                orderAddress,
+            });
         } catch (err) {
-          console.log("user order summary err err:", err);
-          res.status(500).render("errorPages/500ErrorPage");
+            console.log("user order summary err err:", err);
+            res.status(500).render("errorPages/500ErrorPage");
         }
-      },
-
+    },
+    
       
 }

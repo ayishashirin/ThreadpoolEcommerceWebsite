@@ -150,7 +150,7 @@ module.exports = {
         (err, html) => {
           if (err) {
             console.log(err,"Render err update ac");
-            return res.send("Internal server err");
+            return res.status(500).render("errorPages/500ErrorPage");
           }
 
           delete req.session.name;

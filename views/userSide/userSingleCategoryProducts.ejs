@@ -53,25 +53,18 @@
 
           <div class="col-lg-3 col-md-3">
             <div class="products-ordering-list">
-              <select id="sortOrder">
-                <option value="default">Default Sorting</option>
-                <option value="priceAsc">Sort by Price: Low to High</option>
-                <option value="popularity">Sort by Popularity</option>
-                <option value="rating">Sort by Average Rating</option>
-                <option value="latest">Sort by Latest</option>
-                <option value="priceDesc">Sort by Price: High to Low</option>
-              </select>
+                <select id="sortOrder" onchange="handleSort()">
+                    <option value="default">Default Sorting</option>
+                    <option value="priceAsc">Sort by Price: Low to High</option>
+                    <option value="aATozZ">Sort by aA - zZ </option>
+                    <option value="zZToaA">Sort by zZ - aA</option>
+                    <option value="latest">Sort by Latest</option>
+                    <option value="priceDesc">Sort by Price: High to Low</option>
+                </select>
             </div>
-          </div>
+        </div>
           
-          <script>
-            document.getElementById('sortOrder').addEventListener('change', function() {
-              const sortOrder = this.value;
-              const searchParams = new URLSearchParams(window.location.search);
-              searchParams.set('sortOrder', sortOrder);
-              window.location.search = searchParams.toString();
-            });
-          </script>
+         
           
          
           
@@ -482,6 +475,22 @@
 
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
+  
+    function handleSort() {
+    var sortOrder = document.getElementById("sortOrder").value;
+
+    var currentURL = window.location.href;
+    var baseURL = currentURL.split('?')[0]; 
+    var queryParams = new URLSearchParams(window.location.search);
+
+    queryParams.set('sort', sortOrder);
+
+    var newURL = baseURL + '?' + queryParams.toString();
+
+    window.location.href = newURL;
+}
+  </script>
+  <script>
     document.addEventListener("DOMContentLoaded", function () {
       const addToCartButtons = document.querySelectorAll(".add-to-cart");
 
@@ -570,9 +579,7 @@
             .catch(error => {
               console.error("Error adding product to wishlist:", error);
 
-              // Check if the error is due to the user not being logged in
               if (error.response && error.response.status === 401) {
-                // Show error SweetAlert for not logged in
                 Swal.fire({
                   icon: 'error',
                   title: 'Error',

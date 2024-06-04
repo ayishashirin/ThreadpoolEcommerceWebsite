@@ -42,7 +42,7 @@ module.exports = {
             res.status(401).redirect('/adminReferralOfferManagement');
         } catch (err) {
             console.error('add referral middleware in offer', err);
-            res.status(500).res.send('Internal server err');
+            res.status(500).res.render("errorPages/500ErrorPage");
         }
     }
 }

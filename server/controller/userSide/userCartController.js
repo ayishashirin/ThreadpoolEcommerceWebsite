@@ -167,17 +167,17 @@ module.exports = {
   userCartCheckOut: async (req, res) => {
     try {
       const { paymentMethode, adId, coupon, offerPrice } = req.body;
-
+  
       // Validate payment method
       if (!paymentMethode) {
         req.session.payErr = "Choose a payment Methode";
       }
-
+  
       // Validate address
       if (!adId) {
         req.session.adErr = "Choose an Address";
       }
-
+  
       // Retrieve address details
       const address = adId
         ? await userVariationdb.findOne(
@@ -185,11 +185,11 @@ module.exports = {
             { "address.$": 1, _id: 0 }
           )
         : null;
-
+  
       if (!address) {
         req.session.adErr = "Invalid address. Choose an Address";
       }
-
+  
       // If there are errors, respond with the appropriate URL and error flag
       if (req.session.payErr || req.session.adErr) {
         return res.json({
@@ -198,12 +198,10 @@ module.exports = {
           err: true,
         });
       }
-
+  
       // Retrieve all cart items for the user
-      const cartItems = await userHelper.getCartItemsAll(
-        req.session.isUserAuth
-      );
-
+      const cartItems = await userHelper.getCartItemsAll(req.session.isUserAuth);
+  
       // Check for quantity availability
       let flag = 0;
       cartItems.forEach((element) => {
@@ -211,7 +209,7 @@ module.exports = {
           flag = 1;
         }
       });
-
+  
       if (flag === 1) {
         return res.json({
           url: "/addToCart",
@@ -219,18 +217,16 @@ module.exports = {
           err: true,
         });
       }
-
+  
       // Retrieve coupon details
       const couponDetails = await userHelper.getCoupon(coupon);
-      // console.log('couponDetails:', couponDetails);
-
       if (couponDetails) {
         await userHelper.UpdateCouponCount(couponDetails._id);
       }
-
+  
       // Initialize total coupon discount amount
       let totalCouponDiscountAmount = 0;
-
+  
       // Create order items
       const orderItems = cartItems.map((element) => {
         const orderItem = {
@@ -240,10 +236,7 @@ module.exports = {
           pDescription: element.pDetails[0].pDescription,
           quantity: element.products.quantity,
           offerDiscountAmount: Math.round(
-            (element.pDetails[0].fPrice *
-              element.products.quantity *
-              element.allOffers) /
-              100
+            (element.pDetails[0].fPrice * element.products.quantity * element.allOffers) / 100
           ),
           fPrice: element.pDetails[0].fPrice,
           lPrice: element.pDetails[0].lPrice,
@@ -252,47 +245,41 @@ module.exports = {
           images: element.variations[0].images[0],
           couponDiscountAmount: element.couponDiscountAmount || 0,
         };
-
+  
         // Calculate coupon discount amount if applicable
-        if (
-          couponDetails &&
-          (couponDetails.category === "All" ||
-            couponDetails.category === orderItem.category)
-        ) {
+        if (couponDetails && (couponDetails.category === "All" || couponDetails.category === orderItem.category)) {
           orderItem.couponDiscountAmount = Math.round(
-            (orderItem.fPrice * orderItem.quantity * couponDetails.discount) /
-              100
+            (orderItem.fPrice * orderItem.quantity * couponDetails.discount) / 100
           );
         } else {
           orderItem.couponDiscountAmount = 0;
         }
-
+  
         // Accumulate total coupon discount amount
         totalCouponDiscountAmount += orderItem.couponDiscountAmount;
-
+  
         return orderItem;
       });
-
+  
       // Update product quantities and calculate total price
       let tPrice = 0;
-
+  
       for (const element of orderItems) {
         await ProductVariationdb.updateOne(
           { productId: element.productId },
           { $inc: { quantity: element.quantity * -1 } }
         );
-
-        tPrice +=
-          element.quantity * element.lPrice - element.couponDiscountAmount;
+  
+        tPrice += element.quantity * element.lPrice - element.couponDiscountAmount;
       }
-
+  
       if (Number(offerPrice)) {
         tPrice -= Number(offerPrice);
       }
-
+  
       // Create a new order
       const orderId = uuidv4();
-
+  
       const newOrder = new orderdb({
         userId: req.session.isUserAuth,
         orderId: orderId,
@@ -302,6 +289,7 @@ module.exports = {
         totalPrice: tPrice,
         couponDiscountAmount: totalCouponDiscountAmount,
       });
+  
       // Handle payment methods
       if (paymentMethode === "COD") {
         await newOrder.save();
@@ -320,11 +308,11 @@ module.exports = {
             currency: "INR",
             receipt: "" + newOrder._id,
           };
-
+  
           const order = await instance.orders.create(options);
-
+  
           req.session.newOrder = newOrder;
-
+  
           return res.json({
             order,
             paymentMethode: "razorpay",
@@ -338,26 +326,25 @@ module.exports = {
         try {
           const userId = req.session.isUserAuth;
           const walletBalance = await userHelper.getWalletBalance(userId);
-
-          if (walletBalance < orderTotal) {
-            // Assuming orderTotal is defined elsewhere in your code
+  
+          if (walletBalance < tPrice) {
             return res.status(400).json({
               message: "Insufficient wallet balance",
             });
           }
-
+  
           // Deduct the order amount from the wallet balance
-          await User.updateOne(
+          await UserWalletdb.updateOne(
             { _id: userId },
-            { $inc: { walletBalance: -orderTotal } }
+            { $inc: { walletBalance: -tPrice } }
           );
-
+  
           await newOrder.save();
           await Cartdb.updateOne(
             { userId: userId },
             { $set: { products: [] } }
           ); // empty cart items
-
+  
           return res.json({
             url: "/orderSuccessfull",
             paymentMethode: "wallet",
@@ -372,6 +359,7 @@ module.exports = {
       res.status(500).render("errorPages/500ErrorPage");
     }
   },
+  
   //   ----------------------------------------------------------------------------------------------------------
 
   isCouponValidCart: async (req, res) => {

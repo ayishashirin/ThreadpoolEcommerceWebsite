@@ -152,6 +152,7 @@ router.route('/cartCheckOut')
     router.post('/onlinePaymentSuccessfull', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, razorPayController.onlinePaymentSuccessfull); // online payment callback url for razor pay
 
     router.get('/wallet', authMiddleware.isUserLoggedIn,authMiddleware.isUserBlocked, userRender.userWallet)
+    router.post('/walletOrder', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userCartController.userCartCheckOut);
 
 
 // --------------------------------------------------------------------------------------------------------------------

@@ -207,9 +207,7 @@ module.exports = {
 
  statusUpdate : async (orderId, productId, orderStatus) => {
     try {
-      console.log('Order ID:', orderId);
-      console.log('Product ID:', productId);
-      console.log('Order Status:', orderStatus);
+      
   
       const orderIdObj = new mongoose.Types.ObjectId(orderId);
       const productIdObj = new mongoose.Types.ObjectId(productId);
@@ -225,7 +223,6 @@ module.exports = {
           { "orderItems.$": 1, _id: 0, userId: 1, paymentMethode: 1 }
         );
   
-        console.log('Quantity Info:', qty);
   
         if (qty && qty.paymentMethode === "razorpay") {
           const walletUpdateResult = await UserWalletdb.updateOne(
@@ -601,7 +598,7 @@ module.exports = {
       throw err;
     }
   },
-  getSingleOrder: async (orderId) => {
+  getSingleOrder: async () => {
     try {
       const agg = [
         {
@@ -644,12 +641,10 @@ module.exports = {
       ];
 
       // Perform aggregation and await the result
-      const product = await Orderdb.aggregate(agg);
+      const orderDetails = await Orderdb.aggregate(agg);
 
-      // Find the specific order by orderId
-      // const order = await Orderdb.findOne({ _id: orderId });
 
-      product.forEach((each) => {
+      orderDetails.forEach((each) => {
         each.allOffers = each.allOffers.reduce((total, offer) => {
           if (offer.expiry >= new Date() && offer.discount > total) {
             return (total = offer.discount);
@@ -659,9 +654,56 @@ module.exports = {
         }, 0);
       });
 
-      return product;
+      return orderDetails;
     } catch (err) {
       throw err;
     }
   },
+
+
+  getSalesReport: async (fromDate, toDate, full) => {
+    try {
+        const agg = [
+            {
+              $unwind: {
+                path: "$orderItems",
+              },
+            },
+            {
+              $lookup: {
+                from: "userdbs",
+                localField: "userId",
+                foreignField: "_id",
+                as: "userInfo",
+              },
+            },
+           
+            {
+              $sort: {
+                orderDate: -1,
+              },
+            },
+        ];
+        // get all details of sales report withn the given dates
+
+        if(!full){
+            agg.splice(0, 0, {
+                $match: {
+                    $and: [
+                        {
+                            orderDate: {$gte: new Date(fromDate)}
+                        },
+                        {
+                            orderDate: {$lte: new Date(new Date(toDate).getTime() + 1 * 24 * 60 * 60 * 1000)}
+                        }
+                    ]
+                }
+            });
+        }
+        
+        return await Orderdb.aggregate(agg);
+    } catch (err) {
+        throw err;
+    }
+},
 };

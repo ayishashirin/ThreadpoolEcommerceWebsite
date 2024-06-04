@@ -38,7 +38,8 @@ const userSchema = new mongodb.Schema({
     referralCount: {
         type: Number,
         default: 0
-    }
+    },
+    
     
 });
 

@@ -69,8 +69,7 @@ module.exports = {
       res.status(200).redirect("/adminCouponManagement");
     } catch (err) {
       console.error("coupon controller err in add coupon", err);
-      res.status(500).send("Internal server err");
-    }
+      res.status(500).render("errorPages/500ErrorPage");    }
   },
   adminUpdateCoupon: async (req, res) => {
     try {

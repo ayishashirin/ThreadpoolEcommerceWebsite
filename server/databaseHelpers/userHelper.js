@@ -154,11 +154,11 @@ module.exports = {
         case 'priceDesc':
           sortOrder = { lPrice: -1 };
           break;
-        case 'popularity':
-          sortOrder = { popularity: -1 }; // Assuming there's a popularity field
+        case 'aATozZ':
+          sortOrder = { aATozZ: -1 }; // Assuming there's a popularity field
           break;
-        case 'rating':
-          sortOrder = { rating: -1 }; // Assuming there's a rating field
+        case 'zZToaA':
+          sortOrder = { zZToaA: -1 }; // Assuming there's a rating field
           break;
         case 'latest':
           sortOrder = { date: -1 };
@@ -377,7 +377,6 @@ module.exports = {
 
   isProductCartItem: async (productId, userId) => {
     try {
-      // If user is not logged in, return false
       if (!userId) {
         return false;
       }
@@ -518,7 +517,6 @@ module.exports = {
   },
   isProductWishlistItem: async (productId, userId) => {
     try {
-      // If user is not logged in, return false
       if (!userId) {
         return false;
       }
@@ -536,7 +534,6 @@ module.exports = {
 
   getTheCountOfWhislistCart: async (userId) => {
     try {
-      // if user is not logged in don't need to show the count of the product in cart or whishlist
       if (!userId) {
         return {
           wishlistCount: false,
@@ -875,7 +872,6 @@ module.exports = {
           },
         },
       ]);
-      console.log("orders:", orders);
       return orders;
     } catch (err) {
       throw err;
@@ -1003,7 +999,6 @@ module.exports = {
           },
         }
       );
-      console.log("order:", order);
       return;
     } catch (err) {
       throw err;
@@ -1019,10 +1014,20 @@ module.exports = {
   },
   getWalletBalance: async (userId) => {
     try {
-      const user = await userInfo.findById(userId); // Assuming you have a User model
-      return user.walletBalance; // Assuming the user's wallet balance is stored in this field
+      if (!mongoose.Types.ObjectId.isValid(userId)) {
+        throw new Error("Invalid user ID");
+      }
+  
+      const user = await UserWalletdb.findById(userId); // Ensure you have the correct user model
+      if (!user) {
+        throw new Error("User not found");
+      }
+  
+      return user.walletBalance; // Ensure this field exists in your user schema
     } catch (error) {
+      console.error("Error in getWalletBalance:", error);
       throw new Error("Error fetching wallet balance");
     }
   },
+  
 };

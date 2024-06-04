@@ -21,7 +21,8 @@ module.exports = {
       (err, html) => {
         if (err) {
           console.error("Error rendering view:", err);
-          return res.status(500).send("Internal Server Error");
+          return res.status(500).render("errorPages/500ErrorPage");
+
         }
 
         delete req.session.invalidAdmin;
@@ -42,7 +43,7 @@ module.exports = {
       
     } catch (err) {
       console.log("err", err);
-      res.send("Internal server err");
+      res.status(500).render("errorPages/500ErrorPage");
     }
   },
   adminAddProducts: async (req, res) => {
@@ -84,7 +85,8 @@ module.exports = {
         (err, html) => {
           if (err) {
             console.log("Register Page render Err:", err);
-            return res.status(500).send("Internal Error");
+            return res.status(500).render("errorPages/500ErrorPage");
+
           }
           delete req.session.pName;
           delete req.session.pDescription;
@@ -126,7 +128,8 @@ module.exports = {
         },
         (err, html) => {
           if (err) {
-            return res.status(500).send("Internal Server Error");
+            return res.status(500).render("errorPages/500ErrorPage");
+
           }
 
           delete req.session.productInfo;
@@ -136,7 +139,7 @@ module.exports = {
       );
     } catch (err) {
       console.log("err", err);
-      res.send("Internal server err");
+      res.status(500).render("errorPages/500ErrorPage");
     }
   },
   adminAddCategory: (req, res) => {
@@ -154,7 +157,8 @@ module.exports = {
         (err, html) => {
           if (err) {
             console.log("render Err", err);
-            return res.status(500).send("Internal Server err");
+            return res.status(500).render("errorPages/500ErrorPage");
+
           }
 
           delete req.session.catErr;
@@ -183,7 +187,7 @@ module.exports = {
       });
     } catch (err) {
       console.log("err", err);
-      res.send("Internal server err");
+      res.status(500).render("errorPages/500ErrorPage");
     }
   },
   adminUnlistedCategory: async (req, res) => {
@@ -199,7 +203,7 @@ module.exports = {
         .render("adminSide/adminUnlistedCategory", { filterCat: req.query.Search, category, currentPage: Number(req.query.page), totalCategory});
     } catch (err) {
       console.log("err", err);
-      res.send("Internal server err");
+      res.status(500).render("errorPages/500ErrorPage");
     }
   },
   adminUnlistedProduct: async (req, res) => {
@@ -219,7 +223,7 @@ module.exports = {
       });
     } catch (err) {
       console.log("err", err);
-      res.send("Internal server err");
+      res.status(500).render("errorPages/500ErrorPage");
     }
   },
   adminUpdateProduct: async (req, res) => {
@@ -256,7 +260,8 @@ module.exports = {
         (err, html) => {
           if (err) {
             console.error("Error rendering view:", err);
-            return res.status(500).send("Internal Server Error");
+            return res.status(500).render("errorPages/500ErrorPage");
+
           }
 
           delete req.session.pName;
@@ -275,7 +280,7 @@ module.exports = {
       );
     } catch (err) {
       console.log("err", err);
-      res.send("Internal server err");
+      res.status(500).render("errorPages/500ErrorPage");
     }
   },
   adminUserManagement: async(req, res) => {
@@ -303,7 +308,8 @@ module.exports = {
       }, (err, html) => {
         if(err){
           console.error('Update render err categorg', err);
-          return res.status(500).send('Internal server err');
+          return res.status(500).render("errorPages/500ErrorPage");
+
         }
 
         delete req.session.catErr;
@@ -314,7 +320,7 @@ module.exports = {
       });
     } catch (err) {
       console.error('updatePage get errr', err);
-      res.status(500).send('Internal server err');
+      res.status(500).render("errorPages/500ErrorPage");
     }
   },
  
@@ -329,7 +335,7 @@ module.exports = {
       res.status(200).render("adminSide/adminOrderManagement", {orders, filter: req.query.filter, currentPage: Number(req.query.page), orderLength,});
     } catch (err) {
       console.log("err", err);
-      res.send("Internal server err");
+      res.status(500).render("errorPages/500ErrorPage");
     }
   },
   adminReferralOfferManagement: async (req, res) => {
@@ -340,7 +346,7 @@ module.exports = {
       res.status(200).render('adminSide/adminReferralOfferManagement', {referralOffers, referralErr: req.flash('referralErr')});
     } catch (err) {
       console.error('updatePage get errr', err);
-      res.status(500).send('Internal server err');
+      res.status(500).render("errorPages/500ErrorPage");
     }
   },
   addReferralOffer: async (req, res) => {
@@ -353,7 +359,8 @@ module.exports = {
       }}, (err, html) => {
         if(err){
           console.error('Add referral offer', err);
-          return res.status(500).send('Internal Server Err');
+          return res.status(500).render("errorPages/500ErrorPage");
+
         }
 
         delete req.session.expiry;
@@ -366,7 +373,7 @@ module.exports = {
       });
     } catch (err) {
       console.error('updatePage get errr', err);
-      res.status(500).send('Internal server err');
+      res.status(500).render("errorPages/500ErrorPage");
     }
   },
   updateReferralOffer: async (req, res) => {
@@ -382,7 +389,7 @@ module.exports = {
       }}, (err, html) => {
         if(err){
           console.error('Add referral offer', err);
-          return res.status(500).send('Internal Server Err');
+          return res.status(500).render("errorPages/500ErrorPage");
         }
 
         delete req.session.expiry;
@@ -390,12 +397,12 @@ module.exports = {
         delete req.session.referralRewards;
         delete req.session.referredUserRewards;
         delete req.session.sDetails;
-
+        
         res.status(200).send(html);
       });
     } catch (err) {
       console.error('updatePage get errr', err);
-      res.status(500).send('Internal server err');
+      res.status(500).render("errorPages/500ErrorPage");
     }
   },
 
@@ -405,27 +412,20 @@ module.exports = {
       const orders = await Orderdb.findOne({_id:req.query.id})
 
       const userInfo = await Userdb.findOne()
-      console.log("userInfo:",userInfo);
 
-      const offerDetails = await offerdb.findOne({})
-      console.log("offerDetails:",offerDetails);
 
       const totalPrice = orders?.orderItems.reduce((total, item) => total + (item.fPrice * item.quantity), 0);
 
-      const totalDiscountAmount = orders?.orderItems.reduce((total, item) => total + item.DiscountAmount, 0);
-      console.log("orders.address",orders?.address);
-      const orderAddress = await userVariationdb.find({ address: {
-        $elemMatch: { _id: orders?.address }
-      }})
-
+      // const totalDiscountAmount = orders?.orderItems.reduce((total, item) => total + item.DiscountAmount, 0);
+     
 
       
    
-      res.status(200).render('adminSide/adminOrderDetails',{ userInfo,totalPrice,orders,totalDiscountAmount,orderAddress,offerDetails})
+      res.status(200).render('adminSide/adminOrderDetails',{ userInfo,totalPrice,orders,})
       
     } catch (error) {
       console.error(error);
-      res.status(500).send(error);
+      res.status(500).render("errorPages/500ErrorPage");
     }
   },
 
@@ -438,7 +438,7 @@ module.exports = {
       res.status(200).render('adminSide/adminCouponManagement', { coupons, totalCoupons, currentPage: Number(req.query.page) });
     } catch (err) {
       console.error('updatePage get errr', err);
-      res.status(500).send('Internal server err');
+      res.status(500).render("errorPages/500ErrorPage");
     }
   },
   adminAddCoupon: async (req, res) => {
@@ -460,7 +460,8 @@ module.exports = {
       }, (err, html) => {
         if(err){
           console.error('Add Coupon render err', err);
-          return res.status(500).send('Internal server err');
+          return res.status(500).render("errorPages/500ErrorPage");
+
         }
         delete req.session.userId,
         delete req.session.code;
@@ -475,7 +476,7 @@ module.exports = {
       });
     } catch (err) {
       console.error('updatePage get errr', err);
-      res.status(500).send('Internal server err');
+      res.status(500).render("errorPages/500ErrorPage");
     }
   },
   adminUpdateCoupon: async (req, res) => {
@@ -500,7 +501,8 @@ module.exports = {
         }, singleCoupon, category },(err, html) => {
           if(err){
             console.error('Add Coupon render err', err);
-            return res.status(500).send('Internal server err');
+            return res.status(500).render("errorPages/500ErrorPage");
+
           }
           delete req.session.userId,
           delete req.session.code;
@@ -515,7 +517,8 @@ module.exports = {
         });
     } catch (err) {
       console.error('updatePage get errr', err);
-      res.status(500).send('Internal server err');
+      res.status(500).render("errorPages/500ErrorPage");
+
     }
   },
   adminOfferManagement: async (req, res) => {
@@ -527,7 +530,8 @@ module.exports = {
       res.status(200).render('adminSide/adminOfferManagement', { offers, totalOffers, currentPage: Number(req.query.page) });
     } catch (err) {
       console.error('updatePage get errr', err);
-      res.status(500).send('Internal server err');
+      res.status(500).render("errorPages/500ErrorPage");
+
     }
   },
   adminAddOffer: async (req, res) => {
@@ -546,7 +550,8 @@ module.exports = {
       }, (err, html) => {
         if(err){
           console.error('add offer render err', err);
-          return res.status(500).send('Internal server err');
+          return res.status(500).render("errorPages/500ErrorPage");
+
         }
 
         delete req.session.savedDetails;
@@ -559,7 +564,7 @@ module.exports = {
       });
     } catch (err) {
       console.error('add offer errr', err);
-      res.status(500).send('Internal server err');
+      res.status(500).render("errorPages/500ErrorPage");
     }
   },
   adminUpdateOffer: async (req, res) => {
@@ -585,7 +590,8 @@ module.exports = {
        }, (err, html) => {
         if(err){
           console.error('update offer render err', err);
-          return res.status(500).send('Internal server err');
+          return res.status(500).render("errorPages/500ErrorPage");
+
         }
 
         delete req.session.savedDetails;
@@ -598,10 +604,10 @@ module.exports = {
       });
     } catch (err) {
       console.error('updatePage offer errr', err);
-      res.status(500).send('Internal server err');
+      res.status(500).render("errorPages/500ErrorPage");
     }
   },
-
+  
 
  
 }
