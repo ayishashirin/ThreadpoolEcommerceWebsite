@@ -1,187 +1,139 @@
 <!-- header -->
 <%- include('../includes/userSide/header') %>
-<!-- end of header -->
+  <!-- end of header -->
 
-<div class="page-title-area">
-  <div class="container">
-    <div class="page-title-content">
-      <h2>Wishlist</h2>
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li>Wishlist</li>
-      </ul>
+  <div class="page-title-area">
+    <div class="container">
+      <div class="page-title-content">
+        <h2>Wishlist</h2>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li>Wishlist</li>
+        </ul>
+      </div>
     </div>
   </div>
-</div>
 
 
 
-<% if (wishlistItems.length === 0) { %>
+  <% if (wishlistItems.length===0) { %>
 
-  <div class="my-5">    
- <div class="errNoProduct d-flex justify-content-center" >
-     <img src="/userSide/img/errorPages/cart7.webp" width="500px" alt="No Data">
- </div>
- <div class="errNoProduct d-flex justify-content-center"><h3>Your Wishlist is empty!</h3></div>
- <div class="row align-items-center m-2" >
-   <div class="d-flex justify-content-center">
-     <a href="/category" class="optional-btn">Continue Shopping</a>
-   </div>
-   
- </div></div>
+    <div class="my-5">
+      <div class="errNoProduct d-flex justify-content-center">
+        <img src="/userSide/img/errorPages/cart7.webp" width="500px" alt="No Data">
+      </div>
+      <div class="errNoProduct d-flex justify-content-center">
+        <h3>Your Wishlist is empty!</h3>
+      </div>
+      <div class="row align-items-center m-2">
+        <div class="d-flex justify-content-center">
+          <a href="/category" class="optional-btn">Continue Shopping</a>
+        </div>
 
- <% } else { %>
-<section class="cart-area"  style="padding-bottom: 100px;">
-  <div class="container">
-    <form>
-      <div class="cart-table table-responsive">
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th scope="col">Product</th>
-              <th scope="col">Name</th>
-              <th scope="col">Price</th>
-             
-              <!-- <th scope="col">Total</th> -->
-              
-            </tr>
-          </thead>
-          <tbody>
-            <% for( let i = 0; i < wishlistItems.length; i++ ) { %>
-            <tr>
-              <td
-                class="product-thumbnail"
-                dataProductId="<%= wishlistItems[i].products.productId %>"
-                onclick="location.href='/productDetail/<%= wishlistItems[i].products.productId %>'"
-              >
-                <a href="#">
-                  <img
-                    src="<%= wishlistItems[i].variations[0].images[0] %>"
-                    alt="item"
-                  />
-                </a>
-              </td>
-              <td class="product-name">
-                <a href="#"><%= wishlistItems[i].pDetails[0].pName %></a>
-                <ul>
-                  <li>
-                    Color: <span><%= wishlistItems[i].variations[0].color %></span>
-                  </li>
-                  <li>
-                    Size: <span><%= wishlistItems[i].variations[0].size %></span>
-                  </li>
-                
-                </ul>
-              </td>
-              <td class="product-price">
-                <span class="unit-amount " id="unit_price_<%= i %>"
-                  >$<%=wishlistItems[i].pDetails[0].fPrice %></span
-                >
-              </td>
+      </div>
+    </div>
 
+    <% } else { %>
+      <section class="cart-area" style="padding-bottom: 100px;">
+        <div class="container">
+          <form>
+            <div class="cart-table table-responsive">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col">Product</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Price</th>
 
+                    <!-- <th scope="col">Total</th> -->
 
-              <td class="product-subtotal">
-                
-                <a href="/wishlistDelete/<%= wishlistItems[i].products.productId %>" class="remove"><i class="bx bx-trash" style="padding-left:100px;"></i></a>
-                </td> 
+                  </tr>
+                </thead>
+                <tbody>
+                  <% for( let i=0; i < wishlistItems.length; i++ ) { %>
+                    <tr>
+                      <td class="product-thumbnail" dataProductId="<%= wishlistItems[i].products.productId %>"
+                        onclick="location.href='/productDetail/<%= wishlistItems[i].products.productId %>'">
+                        <a href="#">
+                          <img src="<%= wishlistItems[i].variations[0].images[0] %>" alt="item" />
+                        </a>
+                      </td>
+                      <td class="product-name">
+                        <a href="#">
+                          <%= wishlistItems[i].pDetails[0].pName %>
+                        </a>
+                        <ul>
+                          <li>
+                            Color: <span>
+                              <%= wishlistItems[i].variations[0].color %>
+                            </span>
+                          </li>
+                          <li>
+                            Size: <span>
+                              <%= wishlistItems[i].variations[0].size %>
+                            </span>
+                          </li>
+
+                        </ul>
+                      </td>
+                      <td class="product-price">
+                        <span class="unit-amount " id="unit_price_<%= i %>">$<%=wishlistItems[i].pDetails[0].fPrice %>
+                            </span>
+                      </td>
 
 
-                <!-- <td class="" style="margin-left: 100px; padding-left: 100px;"><div class="addToCart" >
+
+                      <td class="product-subtotal">
+
+                        <a href="/wishlistDelete/<%= wishlistItems[i].products.productId %>" class="remove"><i
+                            class="bx bx-trash" style="padding-left:100px;"></i></a>
+                      </td>
+
+
+                      <!-- <td class="" style="margin-left: 100px; padding-left: 100px;"><div class="addToCart" >
                <a href="" class="default-btn remove">Add To Cart</a> 
                   <a data-productId="<%#= products._id %>" class="add-to-cart default-btn" style="cursor: pointer;">Add to Cart</a>
                 </div></td> -->
 
-            </tr>
-            <% } %>
-          </tbody>
-        </table>
+                    </tr>
+                    <% } %>
+                </tbody>
+              </table>
 
-        <% if (wishlistItems.length === 0) { %>
-        <div
-          class="d-flex justify-content-center align-items-center mb-4 noProduct ptb-100"
-        >
-          <p class="text-center fs-5">\(^Д^)/<br />No Products In Cart</p>
+              <% if (wishlistItems.length===0) { %>
+                <div class="d-flex justify-content-center align-items-center mb-4 noProduct ptb-100">
+                  <p class="text-center fs-5">\(^Д^)/<br />No Products In Cart</p>
+                </div>
+                <% if(wishlistErr) { %>
+                  <p class="err">
+                    <%= wishlistErr %>
+                  </p>
+                  <% } %>
+                    <% } %>
+            </div>
+            <div class="cart-buttons">
+              <div class="row align-items-center">
+                <div class="col-lg-7 col-sm-7 col-md-7">
+                  <a href="/category" class="optional-btn">Continue Shopping</a>
+                </div>
+                <div class="col-lg-5 col-sm-5 col-md-5 text-end">
+                  <a href="/wishlistDeleteAll" class="default-btn remove">Delete Wishlist</a>
+                </div>
+              </div>
+            </div>
+
+
+          </form>
+          </form>
         </div>
-        <% if(wishlistErr) { %>
-        <p class="err"><%= wishlistErr %></p>
-        <% } %> <% } %>
-      </div>
-      <div class="cart-buttons">
-        <div class="row align-items-center">
-          <div class="col-lg-7 col-sm-7 col-md-7">
-            <a href="/category" class="optional-btn">Continue Shopping</a>
-          </div>
-          <div class="col-lg-5 col-sm-5 col-md-5 text-end">
-            <a href="/wishlistDeleteAll" class="default-btn remove">Delete Wishlist</a>
-          </div>
-        </div>
-      </div>
-      
-        
-      </form>
-    </form>
-  </div>
-</section>
+      </section>
 
-<% } %>
+      <% } %>
 
 
 
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
-
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-    const addToCartButtons = document.querySelectorAll(".add-to-cart");
-
-    addToCartButtons.forEach(function(button) {
-      button.addEventListener("click", function(event) {
-        event.stopPropagation();
-        event.preventDefault();
-
-        const productId = button.getAttribute('data-productId');
-
-        axios.get(`/cartNow/${productId}`)
-          .then(res => {
-            console.log(res);
-            if (res.data.success) {
-              // Show success SweetAlert
-              Swal.fire({
-                  icon: 'success',
-                  title: 'Success',
-                  text: res.data.message,
-                  timer: 3000, // Adjust the time (in milliseconds) the alert is displayed
-                  timerProgressBar: true
-                })
-                .then(isTrue => {
-                  console.log(isTrue);
-                  if ((isTrue.isDismissed || isTrue.isConfirmed) && res.data.url) {
-                    location.href = res.data.url;
-                  }
-                })
-            } else {
-              // Show error SweetAlert
-              Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Product already exists in cart!'
-              });
-            }
-          })
-          .catch(error => {
-            console.error("Error adding product to cart:", error);
-            // Show error SweetAlert
-            Swal.fire({
-              icon: 'error',
-              title: 'Error',
-              text: 'Failed to add product to cart'
-            });
-          });
-      });
-    });
-  });
-</script>
-<!-- footer -->
-<%- include('../includes/userSide/footer') %>
-<!-- end of footer -->
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script src="/userSide/js/wishlist.js"></script>
+        <!-- footer -->
+        <%- include('../includes/userSide/footer') %>
+          <!-- end of footer -->

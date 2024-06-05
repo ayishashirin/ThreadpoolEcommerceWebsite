@@ -41,7 +41,6 @@ module.exports = {
 
   updateCategory: async (req, res) => {
     try {
-      console.log("1");
       req.body.description = req.body.description?.trim();
       req.body.name = req.body.name?.trim();
 

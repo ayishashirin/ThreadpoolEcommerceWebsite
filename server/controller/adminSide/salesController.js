@@ -8,7 +8,6 @@ getSalesReport:  async (req,res)=>{
     try {
 
         let { reportType, startDate, endDate } = req.query;
-        console.log(req.query,"queryyyyyy")
 
         const reportTypes = ["All", "Today", "Last Week", "Last Month", "This Year"];
         let currentType = reportType;
@@ -49,7 +48,6 @@ getSalesReport:  async (req,res)=>{
         let salesData;
 
         if (reportType === 'All') {
-            console.log("kiikiiik");
 
             salesData = await Orderdb.aggregate([
                 { $unwind: "$orderItems" },
@@ -88,7 +86,6 @@ getSalesReport:  async (req,res)=>{
                 { $sort: { orderDate: -1 } }
             ]);
         }
-        console.log("sales:",salesData);
         res.status(200).render("adminSide/salesReport", { sales: salesData, currentType, reportTypes, reportType, startDate, endDate });
 
     } catch (error) {

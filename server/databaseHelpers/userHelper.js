@@ -723,23 +723,9 @@ module.exports = {
 
   userGetAllOrder: async (userId, pageNo = 1) => {
     try {
-      const skip = Number(pageNo) ? Number(pageNo) - 1 : 0;
-      const totalOrders = await Orderdb.aggregate([
-        {
-          $match: {
-            userId: new mongoose.Types.ObjectId(userId),
-          },
-        },
-        {
-          $unwind: {
-            path: "$orderItems",
-          },
-        },
-        {
-          $sort: { orderDate: -1 }
-      }
-      ])
-
+      const skip = (Number(pageNo) - 1) * 12;
+      const totalOrders = await Orderdb.countDocuments({ userId: new mongoose.Types.ObjectId(userId) });
+  
       const agg = [
         {
           $match: {
@@ -752,23 +738,18 @@ module.exports = {
           },
         },
         {
-          $unwind: {
-            path: "$orderItems",
-          },
-        },
-        {
-          $skip: 12 * skip,
+          $skip: skip,
         },
         {
           $limit: 12,
         },
-      ]
-
+      ];
+  
       const orders = await Orderdb.aggregate(agg);
-
+  
       return {
         orders,
-        totalOrders: totalOrders.length,
+        totalOrders,
       };
     } catch (err) {
       throw err;

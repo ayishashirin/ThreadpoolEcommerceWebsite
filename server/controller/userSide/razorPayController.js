@@ -11,7 +11,6 @@ const instance = new Razorpay({
 module.exports = {
   onlinePaymentSuccessfull: async (req, res) => {
     try {
-      console.log("Payment Success Callback Invoked");
 
       const hmac = crypto.createHmac("sha256", process.env.key_secret);
       hmac.update(
@@ -19,12 +18,10 @@ module.exports = {
       );
 
       if (hmac.digest("hex") === req.body.razorpay_signature) {
-        console.log("Razorpay Signature Verified");
 
         const newOrder = new orderdb(req.session.newOrder);
 
         await newOrder.save();
-        console.log("Order Saved to Database:", newOrder);
 
         const cartUpdateResult = await Cartdb.updateOne(
           { userId: req.session.isUserAuth },
@@ -43,7 +40,6 @@ module.exports = {
         req.session.orderSucessPage = true;
         return res.status(200).redirect("/orderSuccessfull");
       } else {
-        console.log("Razorpay Signature Verification Failed");
         return res.send("Order Failed");
       }
     } catch (err) {

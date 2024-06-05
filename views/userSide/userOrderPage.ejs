@@ -1,156 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <!-- header -->
-    <%- include('../includes/userSide/header') %>
+
+<head>
+  <!-- header -->
+  <%- include('../includes/userSide/header') %>
     <!-- end of header -->
 
     <link rel="stylesheet" href="/userSide/css/userOrderPage.css" />
     <!-- end of Style css -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-T3c6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-      crossorigin="anonymous"
-    />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-T3c6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
     <!-- end of Bootstrap css cdn link -->
-  </head>
-  <body>
-    <div class="page-title-area">
-      <div class="container">
-        <div class="page-title-content">
-          <h2>Order</h2>
-          <ul>
-            <li><a href="/">Home</a></li>
-            <li>Order</li>
-          </ul>
-        </div>
+</head>
+
+<body>
+  <div class="page-title-area">
+    <div class="container">
+      <div class="page-title-content">
+        <h2>Order</h2>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li>Order</li>
+        </ul>
       </div>
     </div>
+  </div>
 
-    <section class="checkout-area ptb-100">
-      <div class="container">
-        <!-- <div class="user-actions"></div> -->
-        <!-- main -->
-        <main>
-          <div id="confirmation-popup" class="modal">
-            <div class="modal-content">
-              <p>Do you want to cancel the order?</p>
-              <div class="button-container">
-                <button class="close-btn" id="cancel-btn">NO</button>
-                <button id="confirm-btn" class="confirm-btn">YES</button>
-              </div>
+  <section class="checkout-area ptb-100">
+    <div class="container">
+      <!-- <div class="user-actions"></div> -->
+      <!-- main -->
+      <main>
+        <div id="confirmation-popup" class="modal">
+          <div class="modal-content">
+            <p>Do you want to cancel the order?</p>
+            <div class="button-container">
+              <button class="close-btn" id="cancel-btn">NO</button>
+              <button id="confirm-btn" class="confirm-btn">YES</button>
             </div>
           </div>
+        </div>
 
-          <style>
-            /* The Modal (background) */
-            .modal {
-              display: none; /* Hidden by default */
-              position: fixed; /* Stay in place */
-              z-index: 1; /* Sit on top */
-              left: 0;
-              top: 0;
-              width: 100%; /* Full width */
-              height: 100%; /* Full height */
-              overflow: auto; /* Enable scroll if needed */
-              background-color: rgb(0, 0, 0); /* Fallback color */
-              background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
-            }
+        <style>
+          /* The Modal (background) */
+          .modal {
+            display: none;
+            /* Hidden by default */
+            position: fixed;
+            /* Stay in place */
+            z-index: 1;
+            /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%;
+            /* Full width */
+            height: 100%;
+            /* Full height */
+            overflow: auto;
+            /* Enable scroll if needed */
+            background-color: rgb(0, 0, 0);
+            /* Fallback color */
+            background-color: rgba(0, 0, 0, 0.4);
+            /* Black w/ opacity */
+          }
 
-            /* Modal Content/Box */
-            .modal-content {
-              background-color: #fefefe;
-              margin: 15% auto; /* 15% from the top and centered */
-              padding: 20px;
-              border: 1px solid #888;
-              width: 20%; /* Could be more or less, depending on screen size */
-            }
+          /* Modal Content/Box */
+          .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 20%;
+            /* Could be more or less, depending on screen size */
+          }
 
-            /* The Close Button */
-            .close-btn {
-              color: #aaa;
-              font-size: 18px;
-              font-weight: bold;
-            }
+          /* The Close Button */
+          .close-btn {
+            color: #aaa;
+            font-size: 18px;
+            font-weight: bold;
+          }
 
-            .close-btn:hover,
-            .close-btn:focus {
-              color: black;
-              text-decoration: none;
-              cursor: pointer;
-            }
+          .close-btn:hover,
+          .close-btn:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+          }
 
-            /* Show the modal */
-            .modal.show {
-              display: block;
-            }
-          </style>
+          /* Show the modal */
+          .modal.show {
+            display: block;
+          }
+        </style>
 
-          <% for (let i = 0; i < orders.length; i++) { %>
-            <div class="container-fluid main d">
-              <div class="row mainContainer">
-                <div class="col-12">
-                  <div class="cartHead">
-                    <div class="d-flex align-items-center gap-2">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="20"
-                        height="15"
-                        viewBox="0 0 20 15"
-                        fill="none"
-                      >
-                        <path
-                          d="M3 7H17V11C17 12.8856 17 13.8284 16.4142 14.4142C15.8284 15 14.8856 15 13 15H7C5.11438 15 4.17157 15 3.58579 14.4142C3 13.8284 3 12.8856 3 11V7Z"
-                          fill="black"
-                        />
-                        <path
-                          d="M0.815301 3.8153L3 6L7 2L4.58869 0.392459C4.23591 0.157275 3.77317 0.170119 3.43399 0.424509L0.922408 2.30819C0.435568 2.67332 0.384992 3.38499 0.815301 3.8153Z"
-                          fill="black"
-                        />
-                        <path
-                          d="M19.1847 3.8153L17 6L13 2L15.4113 0.392459C15.7641 0.157275 16.2268 0.170119 16.566 0.424509L19.0776 2.30819C19.5644 2.67332 19.615 3.38499 19.1847 3.8153Z"
-                          fill="black"
-                        />
-                        <path
-                          d="M16 6V7H4V6L7 3H13L16 6Z"
-                          fill="black"
-                          stroke="white"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                        />
-                      </svg>
-                      <h2 class="m-0 p-0">Order Id :</h2>
-                      <p><%= orders[i]._id %></p>
-                    </div>
+        <% for (let i=0; i < orders.length; i++) { %>
+          <div class="container-fluid main d">
+            <div class="row mainContainer">
+              <div class="col-12">
+                <div class="cartHead">
+                  <div class="d-flex align-items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="15" viewBox="0 0 20 15" fill="none">
+                      <path
+                        d="M3 7H17V11C17 12.8856 17 13.8284 16.4142 14.4142C15.8284 15 14.8856 15 13 15H7C5.11438 15 4.17157 15 3.58579 14.4142C3 13.8284 3 12.8856 3 11V7Z"
+                        fill="black" />
+                      <path
+                        d="M0.815301 3.8153L3 6L7 2L4.58869 0.392459C4.23591 0.157275 3.77317 0.170119 3.43399 0.424509L0.922408 2.30819C0.435568 2.67332 0.384992 3.38499 0.815301 3.8153Z"
+                        fill="black" />
+                      <path
+                        d="M19.1847 3.8153L17 6L13 2L15.4113 0.392459C15.7641 0.157275 16.2268 0.170119 16.566 0.424509L19.0776 2.30819C19.5644 2.67332 19.615 3.38499 19.1847 3.8153Z"
+                        fill="black" />
+                      <path d="M16 6V7H4V6L7 3H13L16 6Z" fill="black" stroke="white" stroke-width="2"
+                        stroke-linecap="round" />
+                    </svg>
+                    <h2 class="m-0 p-0">Order Id :</h2>
+                    <p>
+                      <%= orders[i]._id %>
+                    </p>
                   </div>
-                  <div class="cartBody">
-                    <% for (let j = 0; j < orders[i].orderItems.length; j++) { %>
-                      <div class="col-12 oneSection">
-                        <div
-                          class="cartItems d-flex w-100 justify-content-between align-items-center cursor"
-                        >
-                          <div class="d-flex align-items-center gap-3">
-                            <a
-                              href="/orderDetails/<%= orders[i]._id %>/<%= orders[i].orderItems[j].productId %>"
-                              ><img
-                                src="<%= orders[i].orderItems[j].images %>"
-                                alt=""
-                            /></a>
-                            <div
-                              class="textOrder d-flex flex-column gap-2"
-                            >
-                              <h2 class="m-0 text-capitalize">
-                                <%= orders[i].orderItems[j].pName %>
-                              </h2>
-                              <p class="m-0">
-                                <span class="text-capitalize">
-                                  <%= orders[i].orderItems[j].pDescription %>
-                                </span>
-                              </p>
-                              <p class="m-0">
-                                Order Placed:
-                                <%= orders[i].orderDate.toString().split(' ').slice(0, 4).join(' ') %>
+                </div>
+                <div class="cartBody">
+                  <% for (let j=0; j < orders[i].orderItems.length; j++) { %>
+                    <div class="col-12 oneSection">
+                      <div class="cartItems d-flex w-100 justify-content-between align-items-center cursor">
+                        <div class="d-flex align-items-center gap-3">
+                          <a href="/orderDetails/<%= orders[i]._id %>/<%= orders[i].orderItems[j].productId %>"><img
+                              src="<%= orders[i].orderItems[j].images %>" alt="" /></a>
+                          <div class="textOrder d-flex flex-column gap-2">
+                            <h2 class="m-0 text-capitalize">
+                              <%= orders[i].orderItems[j].pName %>
+                            </h2>
+                            <p class="m-0">
+                              <span class="text-capitalize">
+                                <%= orders[i].orderItems[j].pDescription %>
+                              </span>
+                            </p>
+                            <p class="m-0">
+                              Order Placed:
+                              <%= orders[i].orderDate.toString().split(' ').slice(0, 4).join(' ') %>
                               </p>
                             </div>
                           </div>
@@ -165,222 +153,158 @@
                               <% if (orders[i].orderItems[j].orderStatus !== "Delivered") { %>
                                 <div class="d-flex align-items-center gap-2">
                                   <div
-                                    class="statusCircle <%= orders[i].orderItems[j].orderStatus === 'Cancelled' ? 'red' : '' %>"
-                                  ></div>
-                                  <p class="statusOrder me-3">
-                                    <%= orders[i].orderItems[j].orderStatus %>
-                                  </p>
-                                </div>
-                                <% if (orders[i].orderItems[j].orderStatus === "Cancelled") { %>
-                                  <button
-                                    class="cancelBtn margin"
-                                  >
-                                    Cancelled
-                                  </button>
-                                <% } else { %>
-                                  <a
-                                    class="aTag"
-                                    data-order-id="<%= orders[i]._id %>"
-                                    data-product-id="<%= orders[i].orderItems[j].productId %>"
-                                  >
-                                    <button
-                                      class="cancelBtn margin"
-                                      id="cancel-btn"
-                                    >
-                                      Cancel
-                                    </button>
-                                  </a>
-                                <% } %>
+                                    class="statusCircle <%= orders[i].orderItems[j].orderStatus === ' Cancelled'
+                                ? 'red' : '' %>"
+                                >
+                          </div>
+                          <p class="statusOrder me-3">
+                            <%= orders[i].orderItems[j].orderStatus %>
+                          </p>
+                        </div>
+                        <% if (orders[i].orderItems[j].orderStatus==="Cancelled" ) { %>
+                          <button class="cancelBtn margin">
+                            Cancelled
+                          </button>
+                          <% } else { %>
+                            <a class="aTag" data-order-id="<%= orders[i]._id %>"
+                              data-product-id="<%= orders[i].orderItems[j].productId %>">
+                              <button class="cancelBtn margin" id="cancel-btn">
+                                Cancel
+                              </button>
+                            </a>
+                            <% } %>
                               <% } else { %>
                                 <div class="d-flex align-items-center gap-2">
-                                  <div
-                                    class="statusCircle statusDeleText"
-                                  ></div>
+                                  <div class="statusCircle statusDeleText"></div>
                                   <p class="statusOrder me-3">Delivered</p>
                                 </div>
-                                <button
-                                  class="cancelBtn statusDele"
-                                  onclick="returnOrder('<%= orders[i].orderItems[j]._id %>')"
-                                >
+                                <button class="cancelBtn statusDele"
+                                  onclick="returnOrder('<%= orders[i].orderItems[j]._id %>')">
                                   Return
                                 </button>
 
                                 <script>
                                   async function returnOrder(orderItemId) {
                                     try {
-                                      const response = await fetch(
-                                        `/userOrderReturn/${orderItemId}`,
-                                        {
-                                          method: "POST",
-                                          headers: {
-                                            "Content-Type":
-                                              "application/json",
-                                          },
-                                        }
-                                      );
+                                      const response = await fetch(`/userOrderReturn/${orderItemId}`, {
+                                        method: "POST",
+                                        headers: {
+                                          "Content-Type": "application/json",
+                                        },
+                                      });
+
                                       if (response.ok) {
-                                        alert(
-                                          "Order item returned successfully"
-                                        );
-                                        // Optionally, update the UI to reflect the return status
+                                        Swal.fire({
+                                          icon: 'success',
+                                          title: 'Success',
+                                          text: 'Order item returned successfully',
+                                        }).then((result) => {
+                                          if (result.isConfirmed) {
+                                            location.reload(); // Reload the page
+                                          }
+                                        });
                                       } else {
-                                        alert(
-                                          "Failed to return order item"
-                                        );
+                                        Swal.fire({
+                                          icon: 'error',
+                                          title: 'Error',
+                                          text: 'Failed to return order item',
+                                        });
                                       }
                                     } catch (error) {
-                                      alert(
-                                        "Error returning order item"
-                                      );
+                                      Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error',
+                                        text: 'Error returning order item',
+                                      });
                                     }
                                   }
                                 </script>
-                              <% } %>
-                            </div>
-                          </div>
-                        </div>
-
-                        <% if (orders.length === 0) { %>
-                          <div class="errNoProduct">
-                            <p>
-                              <span>\(^Д^)/</span>No Orders
-                            </p>
-                          </div>
-                        <% } %>
 
 
-                        
+                                <% } %>
                       </div>
-                    <% } %>
-                  </div>
+                    </div>
                 </div>
-              </div>
-            </div>
-          <% } %>
 
-          <% if (orders.length === 0) { %>
-            <div class="errNoProduct" style="display: flex; justify-content: center; align-items: center;  margin-left: 125px;">
-                <img src="/userSide/img/errorPages/no_data.png" width="300px;" alt="No Data">
+                <% if (orders.length===0) { %>
+                  <div class="errNoProduct">
+                    <p>
+                      <span>\(^Д^)/</span>No Orders
+                    </p>
+                  </div>
+                  <% } %>
+
+
+
+              </div>
+              <% } %>
             </div>
-          
+          </div>
+    </div>
+    </div>
+    <% } %>
+
+      <% if (orders.length===0) { %>
+        <div class="errNoProduct"
+          style="display: flex; justify-content: center; align-items: center;  margin-left: 125px;">
+          <img src="/userSide/img/errorPages/no_data.png" width="300px;" alt="No Data">
+        </div>
+
         <% } %>
 
 
 
-          <% if (totalOrders !== 0) { %>
+          <!-- Pagination -->
+          <% if (totalOrders> 0) { %>
             <div class="row">
               <div class="col-12">
                 <div class="text-center pagenationButton">
                   <nav aria-label="Page navigation example">
                     <ul class="pagination justify-content-center">
-                      <li class="page-item">
-                        <a
-                          class="page-link"
-                          href="/orders?page=<%= curentPage === 1 || !curentPage ? 1 : curentPage - 1 %>"
-                          aria-label="Previous"
-                        >
-                          <span aria-hidden="true">&laquo;</span>
-                        </a>
-                      </li>
-                      <% for (let i = 0; i < Math.ceil(totalOrders / 12); i++) { %>
-                        <li class="page-item">
-                          <a class="page-link" href="/orders?page=<%= i + 1 %>">
-                            <%= i + 1 %>
-                          </a>
-                        </li>
-                      <% } %>
-                      <li class="page-item">
-                        <a
-                          class="page-link"
-                          href="/orders?page=<%= Math.ceil(totalOrders / 12) === curentPage ? curentPage : curentPage === 1 || !curentPage ? 2 : curentPage + 1 %>"
-                          aria-label="Next"
-                        >
-                          <span aria-hidden="true">&raquo;</span>
-                        </a>
-                      </li>
+                      <% const totalPages=Math.ceil(totalOrders / 12); %>
+                        <% const currentPage=curentPage || 1; %>
+                          <li class="page-item <%= currentPage == 1 ? 'disabled' : '' %>">
+                            <a class="page-link" href="/orders?page=<%= currentPage - 1 %>" aria-label="Previous"
+                              tabindex="<%= currentPage == 1 ? -1 : 0 %>">
+                              <span aria-hidden="true">&laquo;</span>
+                            </a>
+                          </li>
+                          <% for (let i=1; i <=totalPages; i++) { %>
+                            <li class="page-item <%= currentPage == i ? 'active' : '' %>">
+                              <a class="page-link" href="/orders?page=<%= i %>">
+                                <%= i %>
+                              </a>
+                            </li>
+                            <% } %>
+                              <li class="page-item <%= currentPage == totalPages ? 'disabled' : '' %>">
+                                <a class="page-link" href="/orders?page=<%= currentPage + 1 %>" aria-label="Next"
+                                  tabindex="<%= currentPage == totalPages ? -1 : 0 %>">
+                                  <span aria-hidden="true">&raquo;</span>
+                                </a>
+                              </li>
                     </ul>
                   </nav>
                 </div>
               </div>
             </div>
-          <% } %>
-        </main>
-        <!-- end of main -->
-      </div>
-    </section>
+            <% } %>
 
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <!-- JavaScript -->
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        let orderId, productId, cancelButton;
 
-        function showPopUp(oid, pid, btn) {
-          console.log('showPopUp called with orderId:', oid, 'productId:', pid);
-          orderId = oid;
-          productId = pid;
-          cancelButton = btn;
-          document.getElementById('confirmation-popup').classList.add('show');
-        }
+              </main>
+              <!-- end of main -->
+              </div>
+  </section>
 
-        function closePopUp() {
-          document.getElementById('confirmation-popup').classList.remove('show');
-        }
-
-        function cancelOrder() {
-          axios.post(`/orderCancel/${orderId}/${productId}`, {
-            orderId: orderId,
-            productId: productId
-          })
-          .then(response => {
-            console.log('Order cancelled:', response.data);
-            if (response.data.success) {
-              cancelButton.innerText = 'Cancelled';
-              cancelButton.disabled = true;
-            }
-            closePopUp();
-            reloadPage(); // Call the reload function after the cancellation process is complete
-          })
-          .catch(error => {
-            console.error('There was an error cancelling the order:', error);
-          });
-        }
-
-        function reloadPage() {
-          window.location.reload(); // Reload the page
-        }
-
-        document.getElementById('confirm-btn').addEventListener('click', cancelOrder);
-        document.getElementById('cancel-btn').addEventListener('click', closePopUp);
-
-        const aTags = document.querySelectorAll('.aTag');
-        aTags.forEach(element => {
-          element.addEventListener('click', function(e) {
-            e.preventDefault();
-            const orderId = this.getAttribute('data-order-id');
-            const productId = this.getAttribute('data-product-id');
-            showPopUp(orderId, productId, this);
-          });
-        });
-      });
-    </script>
-
-    <!-- footer -->
-    <%- include('../includes/userSide/footer') %>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+   <script src="/userSide/js/orderpage.js"></script>
+  <!-- footer -->
+  <%- include('../includes/userSide/footer') %>
     <!-- end of footer -->
-    
-    <!-- fontawesome -->
-    <script
-      src="https://kit.fontawesome.com/23d1247997.js"
-      crossorigin="anonymous"
-    ></script>
-    <!-- end of fontawesome -->
-    <!-- Bootstrap script file -->
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    <script src="https://kit.fontawesome.com/23d1247997.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-      crossorigin="anonymous"
-    ></script>
-    <!-- end of Bootstrap script file -->
-  </body>
+      crossorigin="anonymous"></script>
+   
+</body>
+
 </html>

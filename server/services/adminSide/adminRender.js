@@ -48,18 +48,7 @@ module.exports = {
   },
 
 
-  // getSalesReport:  async (req, res) => {
-  // try {
-  //   let order = await adminHelper.getSalesReport()
-
-  //   res.status(200).render("adminSide/salesReport",{order})
-    
-  // } catch (error) {
-  //   console.log("err", err);
-  //   res.status(500).render("errorPages/500ErrorPage"); 
-  // }
-  // },
-
+  
 
   adminAddProducts: async (req, res) => {
     try {

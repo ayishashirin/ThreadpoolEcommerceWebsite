@@ -36,13 +36,11 @@ document.querySelector('.mainImg').addEventListener('mouseover', () => {
 });
 
 document.querySelector('.mainFistImg').addEventListener('mouseout', () => {
-  console.log('hhh');
     document.querySelector('.detail').style.display = 'none';
     document.querySelector('.detail').style.background = 'transparent';
 });
 
 document.querySelector('.mainImg').addEventListener('mouseout', () => {
-  console.log('hhh');
     document.querySelector('.detail').style.display = 'none';
     document.querySelector('.detail').style.background = 'transparent';
 });

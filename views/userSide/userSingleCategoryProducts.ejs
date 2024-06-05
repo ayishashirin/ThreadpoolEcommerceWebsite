@@ -319,14 +319,14 @@
                   const priceRange = document.querySelector("#priceRange");
                   const priceValue = document.querySelector(".priceValue");
               
-                  // Function to update URL query parameters
+                  
                   function updateQueryParams(param, value) {
                     const urlParams = new URLSearchParams(window.location.search);
                     urlParams.set(param, value);
                     window.location.search = urlParams.toString();
                   }
               
-                  // Set initial min and max price values
+                 
                   function setPrices(minPrice, maxPrice) {
                     priceRange.min = minPrice;
                     priceRange.max = maxPrice;
@@ -339,9 +339,9 @@
                     });
                   }
               
-                  // Example values for min and max prices
-                  const minPrice = 1;  // Replace with actual minimum price from your data
-                  const maxPrice = 1000; // Replace with actual maximum price from your data
+                
+                  const minPrice = 1; 
+                  const maxPrice = 1000; 
                   setPrices(minPrice, maxPrice);
                 });
               </script>
@@ -539,7 +539,7 @@
                     }
                   });
               } else {
-                // Show error SweetAlert for other cases
+               
                 Swal.fire({
                   icon: 'error',
                   title: 'Error',
@@ -557,7 +557,7 @@
                   text: 'User not logged in. Please log in to add products to your wishlist.'
                 });
               } else {
-                // Show general error SweetAlert
+                
                 Swal.fire({
                   icon: 'error',
                   title: 'Error',

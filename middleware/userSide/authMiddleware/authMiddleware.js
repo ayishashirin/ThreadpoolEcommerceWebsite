@@ -106,22 +106,7 @@ module.exports = {
             res.status(500).render("errorPages/500ErrorPage");
         }
     },
-    // isAuthOrder: (req, res, next) => {
-    // try {
-    // // this session is to identify which side is the get err
-    // req.session.adminPageErr = false;
-    // console.log(req.session.orderSucessPage,'jhdsgfhjgsdgf');
-
-    // if(req.session.orderSucessPage){
-    // next();
-    // }else{
-    // res.status(401).redirect('/');
-    // }
-    // } catch (err) {
-    // console.error("Middleware err:", err);
-    // res.status(500).render("errorPages/500ErrorPage");
-    // }
-    // },
+   
     isDelivered: async (req, res, next) => {
         try {
             req.session.adminPageErr = false;

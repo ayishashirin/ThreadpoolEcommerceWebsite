@@ -165,42 +165,30 @@
                         </td>
 
 
-                       <!-- Include SweetAlert2 library -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<script>
-  function handleChange(orderId, productId) {
-    var dropdown = document.getElementById("orderStatus");
-    if (dropdown) {
-      var selectedStatus = dropdown.value;
-      // Send data to backend using Axios
-      axios.post(`/statusUpdate/${orderId}/${productId}`, {
-        status: selectedStatus
-      })
-      .then(function (response) {
-        console.log(response);
-        Swal.fire({
-          icon: 'success',
-          title: 'Status Updation',
-          text: 'Status updated successfully!',
-          confirmButtonText: 'OK'
-        });
-      })
-      .catch(function (error) {
-        console.error(error);
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Error updating status!',
-          confirmButtonText: 'OK'
-        });
-      });
-    } else {
-      console.error('Dropdown with id "orderStatus" not found.');
-    }
-  }
-</script>
-
+                        <script>
+                          function handleChange(orderId, productId) {
+                            var dropdown = document.getElementById("orderStatus");
+                            if (dropdown) {
+                              var selectedStatus = dropdown.value;
+                              axios.post(`/statusUpdate/${orderId}/${productId}`, {
+                                  status: selectedStatus
+                                })
+                                .then(function(response) {
+                                  console.log(response);
+                                  alert('Status updated successfully!');
+                                  window.location.reload(); 
+                                })
+                                .catch(function(error) {
+                                  console.error(error);
+                                  alert('Error updating status!');
+                                });
+                            } else {
+                              console.error('Dropdown with id "statusDropdown" not found.');
+                            }
+                          }
+                        </script>
+                        
+                        
                       </tr>
             </div>
         

@@ -51,51 +51,47 @@ module.exports = {
         try {
           //userHelper fn to get all listed category
           const category = await userHelper.getAllListedCategory();
-    
+      
           //userHelper fn to get counts of product in cart and wishlist
           const counts = await userHelper.getTheCountOfWhislistCart(
             req.session.isUserAuth
           );
-    
+      
           const wishlistItems = await userHelper.getWishlistItemsAll(
             req.session.isUserAuth
           );
           
           //userHelper fn to get all details of user
           const userInfo = await userHelper.userInfo(req.session.isUserAuth);
-    
+      
           const cartItems = await userHelper.getCartItemsAll(
             req.session.isUserAuth
           );
-    
-          //userHelper fn to get all order history
-          const orderItems = await userHelper.userGetAllOrder(
+      
+          // userHelper fn to get all order history with pagination
+          const { orders, totalOrders } = await userHelper.userGetAllOrder(
             req.session.isUserAuth,
             req.query.page
           );
-
-          const allOrderItems = await userHelper.getAllOrdersOfUser(req.session.isUserAuth)
-
-
+      
           res.status(200).render("userSide/userOrderPage", {
             category,
-            // orders: orderItems.orders,
-            orders: allOrderItems,
+            orders,
             counts,
-            curentPage: Number(req.query.page),
-            totalOrders: orderItems.totalOrders,
+            curentPage: Number(req.query.page) || 1,
+            totalOrders,
             user: req.session.isUserAuth,
             userInfo,
             cartItems,
             wishlistItems,
-            totalOrders: orderItems.totalOrders,
           });
         } catch (err) {
           console.log("Update query err:", err);
           res.status(500).render("errorPages/500ErrorPage");
         }
       },
-    
+
+      
       orderDetails: async (req, res) => {
         try {
             // userHelper fn to get all listed category

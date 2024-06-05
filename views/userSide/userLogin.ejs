@@ -1,68 +1,69 @@
-
-   <!-- header -->
-   <%- include('../includes/userSide/header') %>
-   <!-- end of header -->
-
-
-  
-
-<div class="page-title-area">
-<div class="container">
-<div class="page-title-content">
-<h2>My Account</h2>
-<ul>
-<li><a href="/">Home</a></li>
-<li>Login</li>
-</ul>
-</div>
-</div>
-</div>
+<!-- header -->
+<%- include('../includes/userSide/header') %>
+  <!-- end of header -->
 
 
-<section class="login-area ptb-100">
-<div class="container">
-<div class="row">
-<div class="col-lg-6 col-md-6">
-<div class="login-content">
-<h2>Login</h2>
 
-<% if (isBlock) { %>
-    <div class="error p-0 d-inline-block">
-      <p>
-        <i
-          class="fa-solid fa-circle-exclamation"
-          style="color: #ff0000"
-        ></i>
-        This Account Is Blocked
-      </p>
+
+  <div class="page-title-area">
+    <div class="container">
+      <div class="page-title-content">
+        <h2>My Account</h2>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li>Login</li>
+        </ul>
+      </div>
     </div>
-  <% } %>
-<form class="login-form" action="/login" method="post">
-<div class="form-group">
-<input type="email" placeholder="email address" class="form-control  <%= (errMesg?.email || invalid)?'errDiv':'' %>"  name="email" value="<%= errMesg?.userInfo?errMesg.userInfo:'' %> ayishashirin@gmail.com" >
-</div>
-<p class="err <%= !errMesg?.email?'d-none':'' %>"><%= errMesg?.email %></p>
+  </div>
 
-<div class="form-group">
-<input type="password" class="form-control <%= (errMesg?.password || errMesg?.email || invalid)?'errDiv':'' %>" placeholder="Password"   name="password" value="Ayisha!2">
-</div>
-<p class="err <%= !errMesg?.password?'d-none':'' %>"><%= errMesg?.password %></p>
 
-<% if (invalid) { %>
-    <div class="error p-0 d-inline-block invalid">
-      <p>
-        <i
-          class="fa-solid fa-circle-exclamation"
-          style="color: #ff0000"
-        ></i>
-        <%= invalid %>
-      </p>
-    </div>
-  <% } %>
+  <section class="login-area ptb-100">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 col-md-6">
+          <div class="login-content">
+            <h2>Login</h2>
 
-<button type="submit" class="default-btn">Login</button>
-<!-- <p class="text-center small text-muted mb-15">or sign up with</p> -->
-                        <!-- <div class="d-grid gap-3 mb-4">
+            <% if (isBlock) { %>
+              <div class="error p-0 d-inline-block">
+                <p>
+                  <i class="fa-solid fa-circle-exclamation" style="color: #ff0000"></i>
+                  This Account Is Blocked
+                </p>
+              </div>
+              <% } %>
+                <form class="login-form" action="/login" method="post">
+                  <div class="form-group">
+                    <input type="email" placeholder="email address"
+                      class="form-control  <%= (errMesg?.email || invalid)?'errDiv':'' %>" name="email"
+                      value="<%= errMesg?.userInfo?errMesg.userInfo:'' %> ayishashirin@gmail.com">
+                  </div>
+                  <p class="err <%= !errMesg?.email?'d-none':'' %>">
+                    <%= errMesg?.email %>
+                  </p>
+
+                  <div class="form-group">
+                    <input type="password"
+                      class="form-control <%= (errMesg?.password || errMesg?.email || invalid)?'errDiv':'' %>"
+                      placeholder="Password" name="password" value="Ayisha!2">
+                  </div>
+                  <p class="err <%= !errMesg?.password?'d-none':'' %>">
+                    <%= errMesg?.password %>
+                  </p>
+
+                  <% if (invalid) { %>
+                    <div class="error p-0 d-inline-block invalid">
+                      <p>
+                        <i class="fa-solid fa-circle-exclamation" style="color: #ff0000"></i>
+                        <%= invalid %>
+                      </p>
+                    </div>
+                    <% } %>
+
+                      <button type="submit" class="default-btn">Login</button>
+                      <!-- <p class="text-center small text-muted mb-15">or sign up with</p> -->
+                      <!-- <div class="d-grid gap-3 mb-4">
                             <a href="/googleController/google" class="btn w-100 btn-light font-sm">
                                 <svg aria-hidden="true" class="icon-svg" width="20" height="20" viewBox="0 0 20 20">
                                     <path d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 002.38-5.88c0-.57-.05-.66-.15-1.18z" fill="#4285F4"></path>
@@ -79,27 +80,25 @@
                                 Sign  in  using Facebook
                             </a> 
                         </div> -->
-<a href="/forgotPassword" class="forgot-password">Lost your password?</a>
-</form>
-</div>
-</div>
-<div class="col-lg-6 col-md-6">
-<div class="new-customer-content">
-<h2>New Customer</h2>
-<span>Create A Account</span>
-<p>Sign up for a free account at our store. Registration is quick and easy. It allows you to be able to order from our shop. To start shopping click register.</p>
-<a href="/register" class="optional-btn">Create A Account</a>
-</div>
-</div>
-</div>
-</div>
-</section>
+                      <a href="/forgotPassword" class="forgot-password">Lost your password?</a>
+                </form>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6">
+          <div class="new-customer-content">
+            <h2>New Customer</h2>
+            <span>Create A Account</span>
+            <p>Sign up for a free account at our store. Registration is quick and easy. It allows you to be able to
+              order from our shop. To start shopping click register.</p>
+            <a href="/register" class="optional-btn">Create A Account</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
 
 
   <!-- footer -->
   <%- include('../includes/userSide/footer') %>
-  <!-- end of footer -->
-  
-  
- 
+    <!-- end of footer -->

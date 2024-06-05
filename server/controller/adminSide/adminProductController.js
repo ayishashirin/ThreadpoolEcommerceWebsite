@@ -146,7 +146,6 @@ adminAddProduct : async (req, res) => {
 
   adminUpdateProduct: async (req, res) => {
     try {
-      console.log(req.query, "ayshaaaaa");
 
       req.body.pName = req.body.pName?.trim();
       req.body.category = req.body.category?.trim();
