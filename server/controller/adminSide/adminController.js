@@ -41,6 +41,7 @@ module.exports = {
     }
   },
 
+
   downloadSalesReport: async (req, res) => {
     try {
       // const browser = await puppeteer.launch({ 
@@ -59,32 +60,42 @@ module.exports = {
         // );
 
         const data={
-          order, fromDate: req.body.fromDate, toDate: req.body.toDate, total: req.body.full
+          order, fromDate: req.body.fromDate, toDate: req.body.toDate, total: 1000
         }
 
-        const ejsTemplate=path.resolve(__dirname,"../../../views/adminSide/salesPDF.ejs")
+        console.log(data, 'pdf data is here');
 
-        const ejsData=await ejs.renderFile(ejsTemplate,data)
+        const ejsTemplate = fs.readFileSync(
+          path.join(__dirname, "../../../views/adminSide/salesPDF.ejs"),
+          "utf-8"
+        );
 
-        const browser=await puppeteer.launch({headless:'new'})
+        const ejsData = ejs.render(ejsTemplate,{data})
 
-        const page = await browser.newPage();
+        const browser = await puppeteer.launch({headless: true});
 
-        await page.setContent(ejsData,{waitUntil:'networkidle0'});
+        try {
+          const page = await browser.newPage();
+  
+          await page.setContent(ejsData);
+  
+          const pdfBuffer = await page.pdf({
+            format: 'A4',
+          });
+          console.log(pdfBuffer,'pdf buffer is here');
 
-        const pdfBuffer = await page.pdf({
-          format: 'A4',
-        });
-        await browser.close();
+          res.setHeader("Content-Type", "application/pdf");
+          res.setHeader("Content-Disposition", "attachment; filename=salesReport.pdf");
 
-
-        res.setHeader("Content-Type", "application/pdf");
-        res.setHeader("Content-Disposition", "attachment; filename=salesReport.pdf");
-
-        res.end(pdfBuffer);
-
-        // return;
-        res.render('adminSide/salesPDF',{ order, fromDate: req.body.fromDate, toDate: req.body.toDate, total: req.body.full })
+          res.status(200).send(pdfBuffer);
+        } catch (err) {
+          console.log(err);
+          res.status(500).send("Internal server err");
+        } finally {
+          await browser.close();
+        }
+        return;
+        // res.render('adminSide/salesPDF',{ order, fromDate: req.body.fromDate, toDate: req.body.toDate, total: req.body.full })
       }
 
       const users = [];
@@ -629,7 +640,6 @@ module.exports = {
         req.body.status // Adjust to match your actual request payload
       );
   
-      console.log('Update Result:', updateResult);
       return res.status(200).redirect("/adminOrderDetails");
     } catch (error) {
       console.log('Error in Controller:', error);

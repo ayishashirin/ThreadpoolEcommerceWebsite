@@ -1,7 +1,7 @@
    <!-- header -->
    <%- include('../includes/userSide/header') %>
    <!-- end of header -->
-   <% if (toast) { %>
+   <% if (toast && toast[0]) { %>
     <div class="toast-message" id="toast-message">
       <span class="toast-icon">&#10003;</span>
       <%= toast %>

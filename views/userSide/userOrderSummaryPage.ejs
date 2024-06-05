@@ -247,13 +247,13 @@
                               </tr>
                               <tr>
                                 <td>Discount:</td>
-                                <td id="dPrice">-$<%= (orderDetails.orderItems.fPrice-orderDetails.orderItems.lPrice) %>
+                                <td id="dPrice">-$ <%= (orderDetails.orderItems.fPrice-orderDetails.orderItems.lPrice) %>
                                 </td>
                               </tr>
 
                               <tr>
                                 <td>Offer:</td>
-                                <td id="offerPrice">- <%=offerDetails[0].discount %> %OFF </td>
+                                <td id="offerPrice">-$ <%=orderDetails.orderItems.offerDiscountAmount%> OFF </td>
                               </tr>
                               <!-- <tr>
                                 <td>Coupon Discount:</td>
@@ -267,8 +267,8 @@
                               </tr>
                               <tr>
                                 <td>Total:</td>
-                                <td id="tPrice">$<%= Math.round((orderDetails.orderItems.lPrice *
-                                orderDetails.orderItems.quantity)-((orderDetails.orderItems.fPrice)*(offerDetails[0].discount))/100)
+                                <td id="tPrice">$ <%= Math.round((orderDetails.orderItems.lPrice *
+                                orderDetails.orderItems.quantity)-((orderDetails.orderItems.offerDiscountAmount)))
                                 %>
                                 </td>
                               </tr>

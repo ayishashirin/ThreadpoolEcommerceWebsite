@@ -970,18 +970,19 @@ module.exports = {
           order.paymentMethode === "razorpay") &&
         userId
       ) {
+
         await UserWalletdb.updateOne(
           { userId: userId },
           {
             $inc: {
               walletBalance: Math.round(
-                qty.quantity * qty.fPrice - (qty.fPrice - qty.lPrice)
+                (qty.quantity * qty.fPrice) - (qty.fPrice - qty.lPrice)
               ),
             },
             $push: {
               transactions: {
                 amount: Math.round(
-                  qty.quantity * qty.fPrice - (qty.fPrice - qty.lPrice)
+                 ( qty.quantity * qty.fPrice) - (qty.fPrice - qty.lPrice)
                 ),
               },
             },
@@ -1018,7 +1019,7 @@ module.exports = {
         throw new Error("Invalid user ID");
       }
   
-      const user = await UserWalletdb.findById(userId); // Ensure you have the correct user model
+      const user = await UserWalletdb.findOne({userId}); // Ensure you have the correct user model
       if (!user) {
         throw new Error("User not found");
       }

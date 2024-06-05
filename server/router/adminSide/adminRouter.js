@@ -9,8 +9,23 @@ const store = require('../../controller/adminSide/multer');
 const referralOfferController = require('../../controller/adminSide/adminReferralOfferController');
 const adminOfferController = require('../../controller/adminSide/adminOfferController');
 const adminCouponController = require('../../controller/adminSide/adminCouponController');
+const { default: puppeteer } = require('puppeteer');
+const ejs = require('ejs');
+const salesController = require('../../controller/adminSide/salesController');
 
 
+// test
+
+router.get('/testpdf', async (req, res) => {
+    const browser = await puppeteer.launch({headless: true});
+    const renderedTemplate = ejs.render(`<h1><%= name %></h1>`, { name: "Hello" });
+    const page = await browser.newPage();
+    page.setDefaultNavigationTimeout(0);
+    await page.setContent(renderedTemplate);
+    const pdfBuffer = await page.pdf({});
+    console.log(pdfBuffer);
+    res.send('Hello');
+});
 
 // Admin Login Routes
 router.route('/adminLogin')
@@ -31,6 +46,15 @@ router.get('/adminHome' , adminAuthMiddleware.isAdminAuth, adminRender.adminHome
 router.post('/downloadSalesReport', adminAuthMiddleware.isAdminAuth, adminController.downloadSalesReport); // Option to download sales report
 
 router.post('/api/getDetailsChart', adminAuthMiddleware.isAdminAuth, adminController.getDetailsChart);// Option to get chart details
+
+
+// router.get('/getSalesReport', adminAuthMiddleware.isAdminAuth, adminRender.getSalesReport);// Option to get chart details
+router.get('/getSalesReport', adminAuthMiddleware.isAdminAuth, salesController.getSalesReport); // Option to download sales report
+
+
+
+
+
 
 // Admin Product Management Routes
 router.get('/adminProductManagement',adminAuthMiddleware.isAdminAuth, adminRender.adminProductManagement); // Product is listed in Page to manage

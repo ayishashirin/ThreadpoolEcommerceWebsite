@@ -31,7 +31,6 @@ module.exports = {
           { $set: { products: [] } }
         );
 
-        console.log("Cart Update Result:", cartUpdateResult);
 
         if (cartUpdateResult.nModified > 0) {
           console.log("Cart items cleared successfully.");

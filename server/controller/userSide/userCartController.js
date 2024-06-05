@@ -9,6 +9,8 @@ const instance = new Razorpay({
   key_id: process.env.key_id,
   key_secret: process.env.key_secret,
 });
+
+const UserWalletdb = require('../../model/userSide/walletModel');
 // -----------------------------------------------------------------------------------------------------
 module.exports = {
   userCartNow: async (req, res) => {
@@ -335,8 +337,14 @@ module.exports = {
   
           // Deduct the order amount from the wallet balance
           await UserWalletdb.updateOne(
-            { _id: userId },
-            { $inc: { walletBalance: -tPrice } }
+            { userId: userId },
+            { $inc: { walletBalance: (-1 * tPrice) },
+            $push: {
+              transactions: {
+                amount: (-1 * tPrice),
+              },
+            }
+           }
           );
   
           await newOrder.save();

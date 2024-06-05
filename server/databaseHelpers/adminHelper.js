@@ -19,7 +19,6 @@ module.exports = {
     categoryId = null
   ) => {
     try {
-      //for single category for updation
       if (categoryId) {
         return await Categorydb.findOne({ _id: categoryId });
       }
@@ -43,79 +42,74 @@ module.exports = {
   },
   getAllDashCount: async () => {
     try {
+      const userCount = await Userdb.countDocuments();
 
-        //returns total user count
-        const userCount = await Userdb.countDocuments();
+      const [orders] = await Orderdb.aggregate([
+        {
+          $unwind: {
+            path: "$orderItems",
+          },
+        },
+        {
+          $match: {
+            "orderItems.orderStatus": "Ordered",
+          },
+        },
+        {
+          $count: "newOrders",
+        },
+      ]);
 
-        // retuns count of orders in newOrders Field
-        const [ orders ] = await Orderdb.aggregate([
-            {
-                $unwind: {
-                  path: "$orderItems",
-                },
+      const [totalSales] = await Orderdb.aggregate([
+        {
+          $unwind: {
+            path: "$orderItems",
+          },
+        },
+        {
+          $match: {
+            $or: [
+              {
+                $and: [
+                  { paymentMethode: "COD" },
+                  { "orderItems.orderStatus": "Delivered" },
+                ],
               },
               {
-                $match: {
-                  "orderItems.orderStatus": "Ordered",
-                },
+                $and: [
+                  { paymentMethode: "razorpay" },
+                  { "orderItems.orderStatus": { $ne: "Cancelled" } },
+                ],
               },
-              {
-                $count: "newOrders",
+            ],
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            tSalary: {
+              $sum: {
+                $multiply: ["$orderItems.lPrice", "$orderItems.quantity"],
               },
-        ]);
+            },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+          },
+        },
+      ]);
 
-        //return total Sales amount
-        const [ totalSales ] = await Orderdb.aggregate([
-            {
-                $unwind: {
-                  path: "$orderItems",
-                },
-            },
-            {
-                $match: {
-                    $or: [
-                        {
-                            $and: [
-                                { paymentMethode: "COD" },
-                                { "orderItems.orderStatus": "Delivered" }
-                            ]
-                        },
-                        {
-                            $and: [
-                                { paymentMethode: "razorpay" },
-                                { "orderItems.orderStatus": {$ne: "Cancelled"} }
-                            ]
-                        }
-                    ],
-                },
-            },
-            {
-                $group: {
-                    _id: null,
-                    tSalary: {
-                        $sum: {
-                            $multiply: ["$orderItems.lPrice", "$orderItems.quantity"],
-                        },
-                    },
-                },
-            },
-            {
-                $project: {
-                    _id: 0,
-                },
-            },
-        ]);
-
-        // return an object with all counts for admin dashboard
-        return {
-            userCount,
-            newOrders: orders?.newOrders,
-            tSalary: totalSales?.tSalary,
-        }
+      return {
+        userCount,
+        newOrders: orders?.newOrders,
+        tSalary: totalSales?.tSalary,
+      };
     } catch (err) {
-        throw err;
+      throw err;
     }
-},
+  },
   adminGetAllUsers: async (search, page = 1) => {
     try {
       const skip = Number(page) ? Number(page) - 1 : 0;
@@ -128,7 +122,6 @@ module.exports = {
         },
       ];
 
-      //if there is search filtered users
       if (search) {
         agg.splice(0, 0, {
           $match: {
@@ -148,7 +141,6 @@ module.exports = {
   getProductList: async (status = false, page = 1) => {
     try {
       const skip = Number(page) ? Number(page) - 1 : 0;
-      // flase to return all listed product and true to return all unlisted product
       const agg = [
         {
           $match: {
@@ -177,7 +169,6 @@ module.exports = {
   },
   adminGetSingleProduct: async (productId) => {
     try {
-      // querying to get full details of the selected product
       const details = await Productdb.aggregate([
         {
           $match: {
@@ -205,25 +196,19 @@ module.exports = {
     }
   },
 
- statusUpdate : async (orderId, productId, orderStatus) => {
+  statusUpdate: async (orderId, productId, orderStatus) => {
     try {
-      
-  
       const orderIdObj = new mongoose.Types.ObjectId(orderId);
       const productIdObj = new mongoose.Types.ObjectId(productId);
-  
+
       if (orderStatus === "Cancelled") {
         const qty = await Orderdb.findOne(
           {
-            $and: [
-              { _id: orderIdObj },
-              { "orderItems.productId": productId },
-            ],
+            $and: [{ _id: orderIdObj }, { "orderItems.productId": productId }],
           },
           { "orderItems.$": 1, _id: 0, userId: 1, paymentMethode: 1 }
         );
-  
-  
+
         if (qty && qty.paymentMethode === "razorpay") {
           const walletUpdateResult = await UserWalletdb.updateOne(
             { userId: qty.userId },
@@ -243,32 +228,24 @@ module.exports = {
             },
             { upsert: true }
           );
-  
-          console.log('Wallet Update Result:', walletUpdateResult);
         }
-  
+
         const productUpdateResult = await ProductVariationdb.updateOne(
           { productId: productIdObj },
           { $inc: { quantity: qty.orderItems[0].quantity } }
         );
-  
-        console.log('Product Update Result:', productUpdateResult);
       }
-  
+
       const updateResult = await Orderdb.updateOne(
         {
-          $and: [
-            { _id: orderIdObj },
-            { "orderItems.productId": productIdObj },
-          ],
+          $and: [{ _id: orderIdObj }, { "orderItems.productId": productIdObj }],
         },
         { $set: { "orderItems.$.orderStatus": orderStatus } }
       );
-  
-      console.log('Update Result:', updateResult);
+
       return updateResult;
     } catch (err) {
-      console.log('Error:', err);
+      console.log("Error:", err);
       throw err;
     }
   },
@@ -299,7 +276,6 @@ module.exports = {
         },
       ];
 
-      //if there is filter it will add another stage in aggregation match
       if (filter && filter !== "All") {
         agg.splice(1, 0, {
           $match: {
@@ -319,7 +295,6 @@ module.exports = {
         );
       }
 
-      // return all documents after aggregating
       return await Orderdb.aggregate(agg);
     } catch (err) {
       throw err;
@@ -346,7 +321,6 @@ module.exports = {
 
   admintDeleteReferralOffer: async (referralOfferId) => {
     try {
-      //to delete offer
       return await ReferralOfferdb.deleteOne({ _id: referralOfferId });
     } catch (err) {
       throw err;
@@ -354,7 +328,6 @@ module.exports = {
   },
   updateReferralOffer: async (referralOfferId, body) => {
     try {
-      //to delete offer
       return await ReferralOfferdb.updateOne(
         { _id: referralOfferId },
         { $set: body }
@@ -375,7 +348,6 @@ module.exports = {
   getAllCoupon: async (couponId = null, page = null) => {
     try {
       const skip = Number(page) ? Number(page) - 1 : 0;
-      // for updation of coupon we need details of the perticular coupon
       if (couponId) {
         if (!isObjectIdOrHexString(couponId)) {
           return null;
@@ -391,7 +363,6 @@ module.exports = {
   },
   adminUpdateCoupon: async (couponId, body) => {
     try {
-      // for updation of coupon we need details of the perticular coupon
       return await Coupondb.updateOne({ _id: couponId }, body);
     } catch (err) {
       throw err;
@@ -399,7 +370,6 @@ module.exports = {
   },
   adminDeleteCoupon: async (couponId) => {
     try {
-      // delete coupon form admin side
       return await Coupondb.deleteOne({ _id: couponId });
     } catch (err) {
       throw err;
@@ -407,7 +377,6 @@ module.exports = {
   },
   adminCheckIfCouponExist: async (code, couponId = false) => {
     try {
-      // to check if the given code is already existing or not if the id is eq then it's same coupon
       if (couponId) {
         return await Coupondb.findOne({ _id: { $ne: couponId }, code });
       }
@@ -431,17 +400,14 @@ module.exports = {
         const newOffer = new Offerdb(body);
 
         let query = {};
-        //query for finding and updating only produts with this name
         if (newOffer.productName && !newOffer.category) {
           query = { pName: { $regex: newOffer.productName, $options: "i" } };
         }
 
-        //query for finding and updating only produts with this category name
         if (!newOffer.productName && newOffer.category) {
           query = { category: { $regex: newOffer.category, $options: "i" } };
         }
 
-        //query for finding and updating only produts with both name and category
         if (newOffer.productName && newOffer.category) {
           query = {
             $or: [
@@ -540,7 +506,6 @@ module.exports = {
   },
   adminDeleteOffer: async (offerId) => {
     try {
-      //to delete offer
       await Productdb.updateMany(
         {},
         { $pull: { offers: new mongoose.Types.ObjectId(offerId) } }
@@ -552,7 +517,6 @@ module.exports = {
   },
   adminPageNation: async (management, status = true) => {
     try {
-      // to get total order number
       if (management === "OM") {
         const tOrdersNo = await Orderdb.aggregate([
           {
@@ -565,32 +529,26 @@ module.exports = {
         return tOrdersNo.length;
       }
 
-      // to get total number of users
       if (management === "UM") {
         return await Userdb.countDocuments();
       }
 
-      // to get count of category
       if (management === "CM") {
         return (await Categorydb.find({ status })).length;
       }
 
-      // to get count of listed or unlisted product
       if (management === "PM") {
         return (await Productdb.find({ unlistedProduct: status })).length;
       }
 
-      // to get count of listed or unlisted banner
       if (management === "BM") {
         return (await bannerdb.find({ status })).length;
       }
 
-      // to get count of listed coupon
       if (management === "CouponM") {
         return (await Coupondb.find()).length;
       }
 
-      // to get count of listed offer
       if (management === "OfferM") {
         return (await Offerdb.find()).length;
       }
@@ -640,9 +598,7 @@ module.exports = {
         },
       ];
 
-      // Perform aggregation and await the result
       const orderDetails = await Orderdb.aggregate(agg);
-
 
       orderDetails.forEach((each) => {
         each.allOffers = each.allOffers.reduce((total, offer) => {
@@ -660,50 +616,52 @@ module.exports = {
     }
   },
 
-
   getSalesReport: async (fromDate, toDate, full) => {
     try {
-        const agg = [
-            {
-              $unwind: {
-                path: "$orderItems",
-              },
-            },
-            {
-              $lookup: {
-                from: "userdbs",
-                localField: "userId",
-                foreignField: "_id",
-                as: "userInfo",
-              },
-            },
-           
-            {
-              $sort: {
-                orderDate: -1,
-              },
-            },
-        ];
-        // get all details of sales report withn the given dates
+      const agg = [
+        {
+          $unwind: {
+            path: "$orderItems",
+          },
+        },
+        {
+          $lookup: {
+            from: "userdbs",
+            localField: "userId",
+            foreignField: "_id",
+            as: "userInfo",
+          },
+        },
 
-        if(!full){
-            agg.splice(0, 0, {
-                $match: {
-                    $and: [
-                        {
-                            orderDate: {$gte: new Date(fromDate)}
-                        },
-                        {
-                            orderDate: {$lte: new Date(new Date(toDate).getTime() + 1 * 24 * 60 * 60 * 1000)}
-                        }
-                    ]
-                }
-            });
-        }
-        
-        return await Orderdb.aggregate(agg);
+        {
+          $sort: {
+            orderDate: -1,
+          },
+        },
+      ];
+
+      if (!full) {
+        agg.splice(0, 0, {
+          $match: {
+            $and: [
+              {
+                orderDate: { $gte: new Date(fromDate) },
+              },
+              {
+                orderDate: {
+                  $lte: new Date(
+                    new Date(toDate).getTime() + 1 * 24 * 60 * 60 * 1000
+                  ),
+                },
+              },
+            ],
+          },
+        });
+      }
+
+      return await Orderdb.aggregate(agg);
     } catch (err) {
-        throw err;
+      throw err;
     }
-},
+  },
 };

@@ -46,6 +46,21 @@ module.exports = {
       res.status(500).render("errorPages/500ErrorPage");
     }
   },
+
+
+  // getSalesReport:  async (req, res) => {
+  // try {
+  //   let order = await adminHelper.getSalesReport()
+
+  //   res.status(200).render("adminSide/salesReport",{order})
+    
+  // } catch (error) {
+  //   console.log("err", err);
+  //   res.status(500).render("errorPages/500ErrorPage"); 
+  // }
+  // },
+
+
   adminAddProducts: async (req, res) => {
     try {
       //adminHelper fn to get listed category
@@ -327,7 +342,6 @@ module.exports = {
   adminOrderManagement: async (req, res) => {
     try {
       const orders = await adminHelper.getAllOrders(req.query.filter, req.query.page);
-      console.log("orders:",orders);
       //adminHelper fn to get total number of orders
       const orderLength = await adminHelper.adminPageNation('OM'); // OM for orders management
       
