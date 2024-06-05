@@ -226,28 +226,11 @@
                             
                             <div class="products-color-switch">
                                 <h4>Color:<%= products[i].variations[0].color %></h4>
-                                <!-- <ul>
-                                    <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="Black"
-                                        class="color-black"></a></li>
-                                    <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="White"
-                                        class="color-white"></a></li>
-                                    <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="Green"
-                                        class="color-green"></a></li>
-                                    <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="Yellow Green"
-                                        class="color-yellowgreen"></a></li>
-                                    <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="Teal"
-                                        class="color-teal"></a></li>
-                                </ul> -->
+                               
                             </div>
                             <div class="products-size-wrapper">
                                 <h4>Size:<%= products[i].variations[0].size %></h4>
-                                <!-- <ul>
-                                    <li><a href="#">XS</a></li>
-                                    <li class="active"><a href="#">S</a></li>
-                                    <li><a href="#">M</a></li>
-                                    <li><a href="#">XL</a></li>
-                                    <li><a href="#">XXL</a></li>
-                                </ul> -->
+                               
                             </div>
                             <div class="products-add-to-cart">
                                 <div class="input-counter">
@@ -280,18 +263,7 @@
         </button>
         <div class="modal-body">
           <div class="woocommerce-widget-area">
-            <!-- <div class="woocommerce-widget filter-list-widget">
-<h3 class="woocommerce-widget-title">Current Selection</h3>
-<div class="selected-filters-wrap-list">
-<ul>
-<li><a href="#"><i class="bx bx-x"></i> 44</a></li>
-<li><a href="#"><i class="bx bx-x"></i> XI</a></li>
-<li><a href="#"><i class="bx bx-x"></i> Clothing</a></li>
-<li><a href="#"><i class="bx bx-x"></i> Shoes</a></li>
-</ul>
-<a href="#" class="delete-selected-filters"><i class="bx bx-trash"></i> <span>Clear All</span></a>
-</div>
-</div> -->
+           
 <div class="woocommerce-widget collections-list-widget">
   <h3 class="woocommerce-widget-title">Search</h3>
   <input type="text" id="txtSearch" placeholder="Search Product..." />
@@ -424,7 +396,7 @@
                   var currentColor = '<%= color %>';
 
                   if (currentColor === color) {
-                    link.style.border = '1px solid black'; // You can adjust the border style here
+                    link.style.border = '1px solid black'; 
                   }
                 });
               });
@@ -437,7 +409,6 @@
                 window.location.search = urlParams.toString();
               }
 
-              // Attach event listeners to color and size options
               document.querySelectorAll('.color-list-row a').forEach(anchor => {
                 anchor.addEventListener('click', event => {
                   event.preventDefault();
@@ -504,7 +475,7 @@
           axios.get(`/cartNow/${productId}`)
             .then(res => {
               console.log(res);
-              if (res.data.success) {
+              if (res.status) {
                 Swal.fire({
                   icon: 'success',
                   title: 'Success',

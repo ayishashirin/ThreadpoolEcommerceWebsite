@@ -202,10 +202,8 @@
                                                     (value.pDetails[0].fPrice * value.products.quantity); }, 0); %></span>
                                             </div>
                                             <div class="products-cart-btn">
-                                                <% if (cartItems.length===0) { %>
-                                                
+                                              
                                                 <a href="/cartCheckOut" class="default-btn">Proceed to Checkout</a>
-                                                <% } %>
                                                 <a href="/addToCart" class="optional-btn">View Shopping Cart</a>
                                             </div>
                                         </div>
@@ -618,7 +616,7 @@
                             </footer>
 
                             <div class="go-top"><i class="bx bx-up-arrow-alt"></i></div>
-                            
+                            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
                             <script data-cfasync="false" src="../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
                             <script src="/userSide/js/jquery.min.js"></script>
                             <script src="/userSide/js/bootstrap.bundle.min.js"></script>

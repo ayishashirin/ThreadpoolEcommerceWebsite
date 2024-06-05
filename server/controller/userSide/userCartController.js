@@ -35,7 +35,7 @@ module.exports = {
         });
       }
     } catch (err) {
-      console.error(err);
+      console.error(err,"rerre");
       res.status(500).json({
         success: false,
         err,
@@ -169,6 +169,7 @@ module.exports = {
   userCartCheckOut: async (req, res) => {
     try {
       const { paymentMethode, adId, coupon, offerPrice } = req.body;
+
   
       // Validate payment method
       if (!paymentMethode) {
@@ -213,12 +214,17 @@ module.exports = {
       });
   
       if (flag === 1) {
+        console.log(paymentMethode);
+
         return res.json({
           url: "/addToCart",
           paymentMethode: "COD",
           err: true,
         });
       }
+
+      console.log("DD", paymentMethode);
+
   
       // Retrieve coupon details
       const couponDetails = await userHelper.getCoupon(coupon);
@@ -294,6 +300,7 @@ module.exports = {
   
       // Handle payment methods
       if (paymentMethode === "COD") {
+        console.log("cod");
         await newOrder.save();
         await Cartdb.updateOne(
           { userId: req.session.isUserAuth },
@@ -304,6 +311,8 @@ module.exports = {
           paymentMethode: "COD",
         });
       } else if (paymentMethode === "razorpay") {
+        console.log("rAZOR");
+
         try {
           const options = {
             amount: tPrice * 100,

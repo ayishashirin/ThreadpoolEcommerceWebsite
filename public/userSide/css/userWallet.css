@@ -240,7 +240,7 @@ a {
   width: 15px;
 }
 .mobilenavigationList ul::-webkit-scrollbar-thumb {
-  background-color: #0f0;
+  background-color: #f53f85;
   border-radius: 10px;
 }
 .mobilenavigationList ul::-webkit-scrollbar-track {
@@ -553,7 +553,7 @@ table .tBody{
   height: 5px;
 }
 #tBody::-webkit-scrollbar-thumb {
-  background-color: #0f0;
+  background-color: #f53f85;
   border-radius: 10px;
 }
 #tBody::-webkit-scrollbar-track {
