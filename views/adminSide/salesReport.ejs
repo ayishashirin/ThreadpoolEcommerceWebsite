@@ -49,7 +49,7 @@
                         <% }) %>
                 </select>
 
-
+                
 
                 <div>
                   <button type="button" class="btn btn-success btn-fw mx-2 px-3 py-2"
@@ -99,7 +99,7 @@
                       <%= sale.orderDate.toISOString().split('T')[0].split('-').reverse().join('-') %>
                     </td>
                     <td>
-                      <%= (((sale.orderItems.lPrice * sale.orderItems.quantity) - (sale.orderItems.offerDiscountAmount +
+                      $ <%= (((sale.orderItems.lPrice * sale.orderItems.quantity) - (sale.orderItems.offerDiscountAmount +
                         sale.orderItems.couponDiscountAmount)) / sale.orderItems.quantity) %>
                     </td>
                     <td>
@@ -109,7 +109,7 @@
                       <%= sale.paymentMethode %>
                     </td>
                     <td>
-                      <%= ((sale.orderItems.quantity * sale.orderItems.lPrice) - (sale.orderItems.offerDiscountAmount +
+                      $ <%= ((sale.orderItems.quantity * sale.orderItems.lPrice) - (sale.orderItems.offerDiscountAmount +
                         sale.orderItems.couponDiscountAmount)) %>
                     </td>
 
@@ -197,41 +197,19 @@
 
   <!-- footer -->
   <%- include('../includes/adminSide/footer') %>
-    <script>
-      document.addEventListener('DOMContentLoaded', function () {
+  <script>
+  
+  function generateReport() {
+    console.log("helooooooooooooo")
+    const reportType = document.getElementById('reportType').value;
 
-        const reportTypeSelect = document.getElementById('reportType');
-        const dateFields = document.querySelector('.date-fields');
-
-        // Event listener for select element
-        reportTypeSelect.addEventListener('change', function () {
-          if (this.value === 'Custom Date Range') {
-            // Show the date fields
-            dateFields.classList.remove('d-none');
-            dateFields.classList.add('d-flex');
-
-          } else {
-            dateFields.classList.remove('d-flex');
-            dateFields.classList.add('d-none');
-          }
-        });
-      });
+      let queryParams = `?reportType=${reportType}`;
+      console.log(queryParams, "dfhjhjhkj");
+    window.location.href = `/adminSide/getSalesReport${queryParams}`
+  }
 
 
-      function generateReport() {
-        const reportType = document.getElementById('reportType').value;
-        let queryParams = '';
 
-        if (reportType === 'Custom Date Range') {
-          const startDate = document.getElementById('startDate').value;
-          const endDate = document.getElementById('endDate').value;
-          queryParams = `?reportType=${reportType}&startDate=${startDate}&endDate=${endDate}`;
-        } else {
-          queryParams = `?reportType=${reportType}`;
-        }
-
-        window.location.href = `/adminSide/getSalesReport${queryParams}`
-      }
 
 
       document.getElementById("dwnld-pdf-btn").addEventListener("click", function () {

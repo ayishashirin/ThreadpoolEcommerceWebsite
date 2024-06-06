@@ -528,7 +528,24 @@ module.exports = {
     }
   },
 
-
+  searchProductsByName : async (req, res) => {
+    try {
+    
+      const searchQuery = req.query.name;
+    
+          const products = await productdb.find({ pName: { $regex: searchQuery, $options: 'i' } });
+    
+         
+                
+                res.render('userSide/userSingleCategoryProducts', { products });
+           
+        
+      
+    } catch (error) {
+    console.log(error)
+    }
+          
+    }
   
 
 }

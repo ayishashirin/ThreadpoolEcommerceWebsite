@@ -17,7 +17,7 @@ const salesController = require('../../controller/adminSide/salesController');
 // test
 
 router.get('/testpdf', async (req, res) => {
-    const browser = await puppeteer.launch({headless: true});
+    const browser = await puppeteer.launch({ headless: true });
     const renderedTemplate = ejs.render(`<h1><%= name %></h1>`, { name: "Hello" });
     const page = await browser.newPage();
     page.setDefaultNavigationTimeout(0);
@@ -38,26 +38,18 @@ router.route('/adminLogin')
         adminController.adminLogin
     );
 
-    
-    
+
+
 // Admin Dashboard Route
-router.get('/adminHome' , adminAuthMiddleware.isAdminAuth, adminRender.adminHome); // get the page of dashboard
-
-router.post('/downloadSalesReport', adminAuthMiddleware.isAdminAuth, adminController.downloadSalesReport); // Option to download sales report
-
-router.post('/api/getDetailsChart', adminAuthMiddleware.isAdminAuth, adminController.getDetailsChart);// Option to get chart details
+router.get('/adminHome', adminAuthMiddleware.isAdminAuth, adminRender.adminHome); // get the page of dashboard
 
 
-// router.get('/getSalesReport', adminAuthMiddleware.isAdminAuth, adminRender.getSalesReport);// Option to get chart details
 router.get('/getSalesReport', adminAuthMiddleware.isAdminAuth, salesController.getSalesReport); // Option to download sales report
 
 
 
-
-
-
 // Admin Product Management Routes
-router.get('/adminProductManagement',adminAuthMiddleware.isAdminAuth, adminRender.adminProductManagement); // Product is listed in Page to manage
+router.get('/adminProductManagement', adminAuthMiddleware.isAdminAuth, adminRender.adminProductManagement); // Product is listed in Page to manage
 
 router.get('/adminUnlistedProduct', adminAuthMiddleware.isAdminAuth, adminRender.adminUnlistedProduct); // To manage unlisted product
 
@@ -74,7 +66,7 @@ router.route('/adminAddProduct')
 
 router.get('/adminSoftDeleteProduct/:id', adminAuthMiddleware.isAdminAuth, adminProductController.adminSoftDeleteProduct);// Option to make product unlisted 
 
-router.get('/adminRestoreProduct/:id',adminAuthMiddleware.isAdminAuth, adminProductController.adminRestoreProduct);// Option to make product listed
+router.get('/adminRestoreProduct/:id', adminAuthMiddleware.isAdminAuth, adminProductController.adminRestoreProduct);// Option to make product listed
 
 router.get('/adminUpdateProduct/:id', adminAuthMiddleware.isAdminAuth, adminRender.adminUpdateProduct); // Update product page
 
@@ -102,7 +94,7 @@ router.route('/adminAddCategory')
 router.route('/adminUpdateCategory/:categoryId')
     .get(
         adminAuthMiddleware.isAdminAuth,
-        adminRender.updateCategory 
+        adminRender.updateCategory
     )
     .post(
         adminAuthMiddleware.isAdminAuth,
@@ -126,12 +118,12 @@ router.get('/adminUserDelete/:id', adminAuthMiddleware.isAdminAuth, adminControl
 // Admin Order Management Routes
 router.get('/adminOrderManagement', adminAuthMiddleware.isAdminAuth, adminRender.adminOrderManagement); // All order are listed and can be managed
 
-// router.post('/adminChangeOrderStatus/:orderId/:productId', adminAuthMiddleware.isAdminAuth, adminController.adminChangeOrderStatus); // Option to change order status
+
 
 
 router.post('/statusUpdate/:orderId/:productId', adminAuthMiddleware.isAdminAuth, adminController.statusUpdate);
 
-router.get('/adminOrderDetails',adminAuthMiddleware.isAdminAuth, adminRender.adminOrderDetails)
+router.get('/adminOrderDetails', adminAuthMiddleware.isAdminAuth, adminRender.adminOrderDetails)
 
 
 //Admin Referral offer
@@ -139,27 +131,27 @@ router.get('/adminOrderDetails',adminAuthMiddleware.isAdminAuth, adminRender.adm
 router.get('/adminReferralOfferManagement', adminAuthMiddleware.isAdminAuth, adminRender.adminReferralOfferManagement);
 
 router.route('/addReferralOffer')
-        .get(
-            adminAuthMiddleware.isAdminAuth,
-            adminAuthMiddleware.onlyOneReferal,
-            adminRender.addReferralOffer
-            )
-        .post(
-            adminAuthMiddleware.isAdminAuth,
-            adminAuthMiddleware.onlyOneReferal,
-            referralOfferController.addReferralOffer
-        );
+    .get(
+        adminAuthMiddleware.isAdminAuth,
+        adminAuthMiddleware.onlyOneReferal,
+        adminRender.addReferralOffer
+    )
+    .post(
+        adminAuthMiddleware.isAdminAuth,
+        adminAuthMiddleware.onlyOneReferal,
+        referralOfferController.addReferralOffer
+    );
 
 router.route('/adminUpdateReferralOffer/:referralOfferId')
-        .get(
-            adminAuthMiddleware.isAdminAuth,
-            adminRender.updateReferralOffer
-        )
-        .put(
-            adminAuthMiddleware.isAdminAuth,
-            referralOfferController.updateReferralOffer
-        )
-        
+    .get(
+        adminAuthMiddleware.isAdminAuth,
+        adminRender.updateReferralOffer
+    )
+    .put(
+        adminAuthMiddleware.isAdminAuth,
+        referralOfferController.updateReferralOffer
+    )
+
 router.delete('/admintDeleteReferralOffer/:referralOfferId', adminAuthMiddleware.isAdminAuth, referralOfferController.admintDeleteReferralOffer);
 
 
@@ -168,24 +160,24 @@ router.delete('/admintDeleteReferralOffer/:referralOfferId', adminAuthMiddleware
 router.get('/adminCouponManagement', adminAuthMiddleware.isAdminAuth, adminRender.adminCouponManagement);
 
 router.route('/adminAddCoupon')
-        .get(
-            adminAuthMiddleware.isAdminAuth,
-            adminRender.adminAddCoupon
-        )
-        .post(
-            adminAuthMiddleware.isAdminAuth,
-            adminCouponController.adminAddCoupon
-        );
+    .get(
+        adminAuthMiddleware.isAdminAuth,
+        adminRender.adminAddCoupon
+    )
+    .post(
+        adminAuthMiddleware.isAdminAuth,
+        adminCouponController.adminAddCoupon
+    );
 
 router.route('/adminUpdateCoupon/:couponId')
-        .get(
-            adminAuthMiddleware.isAdminAuth,
-            adminRender.adminUpdateCoupon
-        )
-        .put(
-            adminAuthMiddleware.isAdminAuth,
-            adminCouponController.adminUpdateCoupon
-        );
+    .get(
+        adminAuthMiddleware.isAdminAuth,
+        adminRender.adminUpdateCoupon
+    )
+    .put(
+        adminAuthMiddleware.isAdminAuth,
+        adminCouponController.adminUpdateCoupon
+    );
 
 router.delete('/adminDeleteCoupon/:couponId', adminAuthMiddleware.isAdminAuth, adminCouponController.adminDeleteCoupon);
 
@@ -196,24 +188,24 @@ router.delete('/adminDeleteCoupon/:couponId', adminAuthMiddleware.isAdminAuth, a
 router.get('/adminOfferManagement', adminAuthMiddleware.isAdminAuth, adminRender.adminOfferManagement);
 
 router.route('/adminAddOffer')
-        .get(
-            adminAuthMiddleware.isAdminAuth,
-            adminRender.adminAddOffer
-        )
-        .post(
-            adminAuthMiddleware.isAdminAuth,
-            adminOfferController.adminAddOffer
-        );
+    .get(
+        adminAuthMiddleware.isAdminAuth,
+        adminRender.adminAddOffer
+    )
+    .post(
+        adminAuthMiddleware.isAdminAuth,
+        adminOfferController.adminAddOffer
+    );
 
 router.route('/adminUpdateOffer/:offerId')
-        .get(
-            adminAuthMiddleware.isAdminAuth,
-            adminRender.adminUpdateOffer
-        )
-        .put(
-            adminAuthMiddleware.isAdminAuth,
-            adminOfferController.adminUpdateOffer
-        );
+    .get(
+        adminAuthMiddleware.isAdminAuth,
+        adminRender.adminUpdateOffer
+    )
+    .put(
+        adminAuthMiddleware.isAdminAuth,
+        adminOfferController.adminUpdateOffer
+    );
 
 router.delete('/adminDeleteOffer/:offerId', adminAuthMiddleware.isAdminAuth, adminOfferController.adminDeleteOffer);
 

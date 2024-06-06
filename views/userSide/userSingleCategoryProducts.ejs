@@ -266,27 +266,20 @@
            
 <div class="woocommerce-widget collections-list-widget">
   <h3 class="woocommerce-widget-title">Search</h3>
-  <input type="text" id="txtSearch" placeholder="Search Product..." />
+  <input type="search" class="form-control rounded" id="searchInput"
+  placeholder="Search Name" aria-label="Search" aria-describedby="search-addon" />
+  <button type="button" class="btn btn-outline-primary" id="searchButton">🔍</button>
 </div>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const txtSearch = document.querySelector("#txtSearch");
+  $(document).ready(function () {
+      $('#searchButton').click(function () {
+          var searchValue = $('#searchInput').val().trim();
+          if (searchValue !== '') {
 
-    function updateQueryParams(param, value) {
-      const urlParams = new URLSearchParams(window.location.search);
-      if (value) {
-        urlParams.set(param, value);
-      } else {
-        urlParams.delete(param);
-      }
-      window.location.search = urlParams.toString();
-    }
-
-    txtSearch.addEventListener("input", function () {
-      const searchQuery = txtSearch.value;
-      updateQueryParams('search', searchQuery);
-    });
+              window.location.href = '/user/products/search?name=' + encodeURIComponent(searchValue);
+          }
+      });
   });
 </script>
 

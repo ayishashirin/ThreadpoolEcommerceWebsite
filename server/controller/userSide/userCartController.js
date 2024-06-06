@@ -166,212 +166,206 @@ module.exports = {
 
   // ----------------------------------------------------------------------------------------------------------
 
-  userCartCheckOut: async (req, res) => {
+   userCartCheckOut : async (req, res) => {
     try {
-      const { paymentMethode, adId, coupon, offerPrice } = req.body;
+        const { paymentMethode, adId, coupon, offerPrice } = req.body;
+        const userId = req.session.isUserAuth;
 
-  
-      // Validate payment method
-      if (!paymentMethode) {
-        req.session.payErr = "Choose a payment Methode";
-      }
-  
-      // Validate address
-      if (!adId) {
-        req.session.adErr = "Choose an Address";
-      }
-  
-      // Retrieve address details
-      const address = adId
-        ? await userVariationdb.findOne(
-            { userId: req.session.isUserAuth, "address._id": adId },
-            { "address.$": 1, _id: 0 }
-          )
-        : null;
-  
-      if (!address) {
-        req.session.adErr = "Invalid address. Choose an Address";
-      }
-  
-      // If there are errors, respond with the appropriate URL and error flag
-      if (req.session.payErr || req.session.adErr) {
-        return res.json({
-          url: "/cartCheckOut",
-          paymentMethode: "COD",
-          err: true,
-        });
-      }
-  
-      // Retrieve all cart items for the user
-      const cartItems = await userHelper.getCartItemsAll(req.session.isUserAuth);
-  
-      // Check for quantity availability
-      let flag = 0;
-      cartItems.forEach((element) => {
-        if (element.products.quantity > element.variations[0].quantity) {
-          flag = 1;
+        // Validate payment method
+        if (!paymentMethode) {
+            req.session.payErr = "Choose a payment method";
         }
-      });
-  
-      if (flag === 1) {
 
-        return res.json({
-          url: "/addToCart",
-          paymentMethode: "COD",
-          err: true,
-        });
-      }
-
-
-  
-      // Retrieve coupon details
-      const couponDetails = await userHelper.getCoupon(coupon);
-      if (couponDetails) {
-        await userHelper.UpdateCouponCount(couponDetails._id);
-      }
-  
-      // Initialize total coupon discount amount
-      let totalCouponDiscountAmount = 0;
-  
-      // Create order items
-      const orderItems = cartItems.map((element) => {
-        const orderItem = {
-          productId: element.products.productId,
-          pName: element.pDetails[0].pName,
-          category: element.pDetails[0].category,
-          pDescription: element.pDetails[0].pDescription,
-          quantity: element.products.quantity,
-          offerDiscountAmount: Math.round(
-            (element.pDetails[0].fPrice * element.products.quantity * element.allOffers) / 100
-          ),
-          fPrice: element.pDetails[0].fPrice,
-          lPrice: element.pDetails[0].lPrice,
-          color: element.variations[0].color,
-          size: element.variations[0].size,
-          images: element.variations[0].images[0],
-          couponDiscountAmount: element.couponDiscountAmount || 0,
-        };
-  
-        // Calculate coupon discount amount if applicable
-        if (couponDetails && (couponDetails.category === "All" || couponDetails.category === orderItem.category)) {
-          orderItem.couponDiscountAmount = Math.round(
-            (orderItem.fPrice * orderItem.quantity * couponDetails.discount) / 100
-          );
-        } else {
-          orderItem.couponDiscountAmount = 0;
+        // Validate address
+        if (!adId) {
+            req.session.adErr = "Choose an Address";
         }
-  
-        // Accumulate total coupon discount amount
-        totalCouponDiscountAmount += orderItem.couponDiscountAmount;
-  
-        return orderItem;
-      });
-  
-      // Update product quantities and calculate total price
-      let tPrice = 0;
-  
-      for (const element of orderItems) {
-        await ProductVariationdb.updateOne(
-          { productId: element.productId },
-          { $inc: { quantity: element.quantity * -1 } }
-        );
-  
-        tPrice += element.quantity * element.lPrice - element.couponDiscountAmount;
-      }
-  
-      if (Number(offerPrice)) {
-        tPrice -= Number(offerPrice);
-      }
-  
-      // Create a new order
-      const orderId = uuidv4();
-  
-      const newOrder = new orderdb({
-        userId: req.session.isUserAuth,
-        orderId: orderId,
-        orderItems: orderItems,
-        paymentMethode: paymentMethode,
-        address: address.address,
-        totalPrice: tPrice,
-        couponDiscountAmount: totalCouponDiscountAmount,
-      });
-  
-      // Handle payment methods
-      if (paymentMethode === "COD") {
-        await newOrder.save();
-        await Cartdb.updateOne(
-          { userId: req.session.isUserAuth },
-          { $set: { products: [] } }
-        ); // empty cart items
-        return res.json({
-          url: "/userOrderSuccessfull",
-          paymentMethode: "COD",
-        });
-      } else if (paymentMethode === "razorpay") {
 
-        try {
-          const options = {
-            amount: tPrice * 100,
-            currency: "INR",
-            receipt: "" + newOrder._id,
-          };
-  
-          const order = await instance.orders.create(options);
-  
-          req.session.newOrder = newOrder;
-  
-          return res.json({
-            order,
-            paymentMethode: "razorpay",
-            keyId: process.env.key_id,
-          });
-        } catch (err) {
-          console.error("Razorpay err", err);
-          return res.status(500).render("errorPages/500ErrorPage");
+        // Retrieve address details
+        const address = adId
+            ? await userVariationdb.findOne(
+                { userId: userId, "address._id": adId },
+                { "address.$": 1, _id: 0 }
+            )
+            : null;
+
+        if (!address) {
+            req.session.adErr = "Invalid address. Choose an Address";
         }
-      } else if (paymentMethode === "wallet") {
-        try {
-          const userId = req.session.isUserAuth;
-          const walletBalance = await userHelper.getWalletBalance(userId);
-  
-          if (walletBalance < tPrice) {
-            return res.status(400).json({
-              message: "Insufficient wallet balance",
+
+        if (req.session.payErr || req.session.adErr) {
+            return res.json({
+                url: "/cartCheckOut",
+                paymentMethode: "COD",
+                err: true,
             });
-          }
-  
-          // Deduct the order amount from the wallet balance
-          await UserWalletdb.updateOne(
-            { userId: userId },
-            { $inc: { walletBalance: (-1 * tPrice) },
-            $push: {
-              transactions: {
-                amount: (-1 * tPrice),
-              },
-            }
-           }
-          );
-  
-          await newOrder.save();
-          await Cartdb.updateOne(
-            { userId: userId },
-            { $set: { products: [] } }
-          ); // empty cart items
-  
-          return res.json({
-            url: "/orderSuccessfull",
-            paymentMethode: "wallet",
-          });
-        } catch (error) {
-          console.error("wallet err", error);
-          return res.status(500).render("errorPages/500ErrorPage");
         }
-      }
+
+        const cartItems = await userHelper.getCartItemsAll(userId);
+
+        let flag = 0;
+        cartItems.forEach((element) => {
+            if (element.products.quantity > element.variations[0].quantity) {
+                flag = 1;
+            }
+        });
+
+        if (flag === 1) {
+            return res.json({
+                url: "/addToCart",
+                paymentMethode: "COD",
+                err: true,
+            });
+        }
+
+        const couponDetails = await userHelper.getCoupon(coupon);
+        if (couponDetails) {
+            await userHelper.UpdateCouponCount(couponDetails._id);
+        }
+
+        let totalCouponDiscountAmount = 0;
+
+        const orderItems = cartItems.map((element) => {
+            const orderItem = {
+                productId: element.products.productId,
+                pName: element.pDetails[0].pName,
+                category: element.pDetails[0].category,
+                pDescription: element.pDetails[0].pDescription,
+                quantity: element.products.quantity,
+                offerDiscountAmount: Math.round(
+                    (element.pDetails[0].fPrice * element.products.quantity * element.allOffers) / 100
+                ),
+                fPrice: element.pDetails[0].fPrice,
+                lPrice: element.pDetails[0].lPrice,
+                color: element.variations[0].color,
+                size: element.variations[0].size,
+                images: element.variations[0].images[0],
+                couponDiscountAmount: element.couponDiscountAmount || 0,
+            };
+
+            if (couponDetails && (couponDetails.category === "All" || couponDetails.category === orderItem.category)) {
+                orderItem.couponDiscountAmount = Math.round(
+                    (orderItem.fPrice * orderItem.quantity * couponDetails.discount) / 100
+                );
+            } else {
+                orderItem.couponDiscountAmount = 0;
+            }
+
+            totalCouponDiscountAmount += orderItem.couponDiscountAmount;
+
+            return orderItem;
+        });
+
+        let tPrice = 0;
+
+        for (const element of orderItems) {
+            await ProductVariationdb.updateOne(
+                { productId: element.productId, "variations.color": element.color, "variations.size": element.size },
+                { $inc: { "variations.$.quantity": -element.quantity } }
+            );
+
+            tPrice += element.quantity * element.lPrice - element.couponDiscountAmount;
+        }
+
+        if (Number(offerPrice)) {
+            tPrice -= Number(offerPrice);
+        }
+
+        const orderId = uuidv4();
+
+        const newOrder = new orderdb({
+            userId: userId,
+            orderId: orderId,
+            orderItems: orderItems,
+            paymentMethode: paymentMethode,
+            address: address.address,
+            totalPrice: tPrice,
+            couponDiscountAmount: totalCouponDiscountAmount,
+        });
+
+        // Handle payment methods
+        if (paymentMethode === "COD") {
+            if (tPrice > 1000) {
+                return res.status(400).json({
+                    message: "Order above Rs 1000 is not allowed for COD",
+                    err: true
+                });
+            }
+            await newOrder.save();
+            await Cartdb.updateOne(
+                { userId: userId },
+                { $set: { products: [] } }
+            ); // empty cart items
+            return res.json({
+                url: "/userOrderSuccessfull",
+                paymentMethode: "COD",
+            });
+        } else if (paymentMethode === "razorpay") {
+            try {
+                const options = {
+                    amount: tPrice * 100,
+                    currency: "INR",
+                    receipt: "" + newOrder._id,
+                };
+
+                const order = await instance.orders.create(options);
+
+                req.session.newOrder = newOrder;
+
+                return res.json({
+                    order,
+                    paymentMethode: "razorpay",
+                    keyId: process.env.key_id,
+                });
+            } catch (err) {
+                console.error("Razorpay error", err);
+                return res.status(500).render("errorPages/500ErrorPage");
+            }
+        } else if (paymentMethode === "wallet") {
+            try {
+                const walletBalance = await userHelper.getWalletBalance(userId);
+
+                if (walletBalance < tPrice) {
+                    return res.status(400).json({
+                        message: "Insufficient wallet balance",
+                        err: true
+                    });
+                }
+
+                // Deduct the order amount from the wallet balance
+                await UserWalletdb.updateOne(
+                    { userId: userId },
+                    { $inc: { walletBalance: -tPrice },
+                      $push: {
+                          transactions: {
+                              amount: -tPrice,
+                          },
+                      }
+                    }
+                );
+
+                await newOrder.save();
+                await Cartdb.updateOne(
+                    { userId: userId },
+                    { $set: { products: [] } }
+                ); // empty cart items
+
+                return res.json({
+                    url: "/orderSuccessfull",
+                    paymentMethode: "wallet",
+                });
+            } catch (error) {
+                console.error("Wallet error", error);
+                return res.status(500).render("errorPages/500ErrorPage");
+            }
+        }
     } catch (err) {
-      console.error("Main err in user cart checkout", err);
-      res.status(500).render("errorPages/500ErrorPage");
+        console.error("Main error in user cart checkout", err);
+        res.status(500).render("errorPages/500ErrorPage");
     }
-  },
+},
+
+  
   
   //   ----------------------------------------------------------------------------------------------------------
 

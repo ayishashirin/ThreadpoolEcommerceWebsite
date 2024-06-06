@@ -238,11 +238,11 @@ module.exports = {
 
       const updateResult = await Orderdb.updateOne(
         {
-          $and: [{ _id: orderIdObj }, { "orderItems.productId": productIdObj }],
+          $and: [{ _id: orderId }, { "orderItems.productId": productId }],
         },
         { $set: { "orderItems.$.orderStatus": orderStatus } }
       );
-
+console.log("updateResult:",updateResult,orderStatus);
       return updateResult;
     } catch (err) {
       console.log("Error:", err);

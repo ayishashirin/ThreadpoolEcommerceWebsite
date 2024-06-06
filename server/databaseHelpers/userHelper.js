@@ -106,25 +106,25 @@ module.exports = {
     }
   },
 
-   userSingleProductCategory : async (search = {}) => {
+  userSingleProductCategory: async (search = {}) => {
     try {
       let filterConditions = { unlistedProduct: false };
-  
+
       // Adding category filter if genderCat is provided
       if (search.genderCat) {
         filterConditions.category = search.genderCat;
       }
-  
+
       // Text search stage
       if (search.search) {
         filterConditions.$text = { $search: search.search };
       }
-  
+
       // Adding price filter if maxPrice is provided
       if (search.maxPrice) {
         filterConditions.fPrice = { $lte: parseFloat(search.maxPrice) };
       }
-  
+
       // Valid sizes and colors arrays
       const validSizes = ["XS", "S", "M", "L", "XL", "XXL"];
       const validColors = [
@@ -137,37 +137,37 @@ module.exports = {
         "Pink",
         "BlueViolet",
       ];
-  
+
       // Creating the filter match stage for aggregation
       let filter = { $match: filterConditions };
-  
+
       // Calculating the skip value for pagination
       const page = Number(search.page);
       const skip = page && page > 0 ? (page - 1) * 12 : 0;
-  
+
       // Determine the sort order
       let sortOrder = {};
       switch (search.sortOrder) {
-        case 'priceAsc':
+        case "priceAsc":
           sortOrder = { lPrice: 1 };
           break;
-        case 'priceDesc':
+        case "priceDesc":
           sortOrder = { lPrice: -1 };
           break;
-        case 'aATozZ':
+        case "aATozZ":
           sortOrder = { aATozZ: -1 }; // Assuming there's a popularity field
           break;
-        case 'zZToaA':
+        case "zZToaA":
           sortOrder = { zZToaA: -1 }; // Assuming there's a rating field
           break;
-        case 'latest':
+        case "latest":
           sortOrder = { date: -1 };
           break;
         default:
           sortOrder = { _id: 1 }; // Default sorting
           break;
       }
-  
+
       // Building the aggregation pipeline
       const agg = [
         filter,
@@ -218,10 +218,10 @@ module.exports = {
           },
         },
       ];
-  
+
       // Aggregating to get all product details of the selected category
       const products = await Productdb.aggregate(agg);
-  
+
       // Processing offers to find the maximum valid discount
       products.forEach((each) => {
         each.allOffers = each.allOffers.reduce((maxDiscount, offer) => {
@@ -231,14 +231,12 @@ module.exports = {
           return maxDiscount;
         }, 0);
       });
-  
+
       return products;
     } catch (err) {
       throw err;
     }
   },
-  
-  
 
   getProductDetails: async (productId, newlyLauched = false) => {
     try {
@@ -717,15 +715,17 @@ module.exports = {
   },
 
   getAllOrdersOfUser: async (userId) => {
-    const totalOrders = await Orderdb.find({ userId }).sort({orderDate:-1})
+    const totalOrders = await Orderdb.find({ userId }).sort({ orderDate: -1 });
     return totalOrders;
   },
 
   userGetAllOrder: async (userId, pageNo = 1) => {
     try {
       const skip = (Number(pageNo) - 1) * 12;
-      const totalOrders = await Orderdb.countDocuments({ userId: new mongoose.Types.ObjectId(userId) });
-  
+      const totalOrders = await Orderdb.countDocuments({
+        userId: new mongoose.Types.ObjectId(userId),
+      });
+
       const agg = [
         {
           $match: {
@@ -744,9 +744,9 @@ module.exports = {
           $limit: 12,
         },
       ];
-  
+
       const orders = await Orderdb.aggregate(agg);
-  
+
       return {
         orders,
         totalOrders,
@@ -801,9 +801,9 @@ module.exports = {
           },
         },
         {
-          $sort: { orderDate: -1 }
-      }
-      ]
+          $sort: { orderDate: -1 },
+        },
+      ];
 
       //to get all product in cart with all details of product
       const products = await Cartdb.aggregate(agg);
@@ -951,19 +951,18 @@ module.exports = {
           order.paymentMethode === "razorpay") &&
         userId
       ) {
-
         await UserWalletdb.updateOne(
           { userId: userId },
           {
             $inc: {
               walletBalance: Math.round(
-                (qty.quantity * qty.fPrice) - (qty.fPrice - qty.lPrice)
+                qty.quantity * qty.fPrice - (qty.fPrice - qty.lPrice)
               ),
             },
             $push: {
               transactions: {
                 amount: Math.round(
-                 ( qty.quantity * qty.fPrice) - (qty.fPrice - qty.lPrice)
+                  qty.quantity * qty.fPrice - (qty.fPrice - qty.lPrice)
                 ),
               },
             },
@@ -999,17 +998,16 @@ module.exports = {
       if (!mongoose.Types.ObjectId.isValid(userId)) {
         throw new Error("Invalid user ID");
       }
-  
-      const user = await UserWalletdb.findOne({userId}); // Ensure you have the correct user model
+
+      const user = await UserWalletdb.findOne({ userId }); // Ensure you have the correct user model
       if (!user) {
         throw new Error("User not found");
       }
-  
+
       return user.walletBalance; // Ensure this field exists in your user schema
     } catch (error) {
       console.error("Error in getWalletBalance:", error);
       throw new Error("Error fetching wallet balance");
     }
   },
-  
 };

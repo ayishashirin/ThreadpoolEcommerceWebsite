@@ -219,9 +219,8 @@ router.post('/api/changeAddressPayment', authMiddleware.isUserLoggedIn, authMidd
 
 
 router.get('/aboutUs',userRender.userAboutUs)
-// router.get('/api/search',userRender.search)
 
-// router.post('/filterByPrice',userController.filterByPrice)
+router.get('/products/search', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked,userRender.searchProductsByName);
 
 // logOut
 

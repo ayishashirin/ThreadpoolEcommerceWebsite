@@ -215,7 +215,8 @@ adminAddProduct : async (req, res) => {
         };
         req.flash("userUpdateProductFormData", userUpdateProductFormData);
         console.log(errors, "Validation errors occurred");
-        return res.redirect(`/adminUpdateProduct/${req.query.id}`);
+        const refferer = req.get('Referer')
+        return res.redirect(refferer);
       }
 
       // Update product information in the database
@@ -261,6 +262,7 @@ adminAddProduct : async (req, res) => {
       }
 
       // Redirect to admin product management page after successful update
+    
       return res.status(200).json(true);
     } catch (error) {
       // Handle any errors
