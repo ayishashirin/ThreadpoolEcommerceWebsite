@@ -329,11 +329,9 @@ a {
   padding-top: 3%;
 }
 
-.row.mainContainer {
-  margin-left: 8%;
-}
+
 .mainContainer {
-  width: 85%;
+  width: 100%;
   margin: 0 auto;
   border: 1px solid #e0e0e0;
   background: #fff;

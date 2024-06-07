@@ -73,7 +73,7 @@
         </ul>
         <div class="products-color-switch">
             <span>Color: <%= products.variations[0].color %></span>
-            <ul>
+            <ul id="colorList">
                 <li><a href="#" title="Black" class="color-black"></a></li>
                 <li><a href="#" title="White" class="color-white"></a></li>
                 <li><a href="#" title="Red" class="color-red"></a></li>
@@ -81,9 +81,27 @@
                 <li><a href="#" title="Blue" class="color-blue"></a></li>
             </ul>
         </div>
+        
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var currentColor = '<%= products.variations[0].color %>';
+                
+                // Get the list of colors
+                var colorList = document.getElementById('colorList');
+                var colorItems = colorList.getElementsByTagName('li');
+                
+                for (var i = 0; i < colorItems.length; i++) {
+                    var colorAnchor = colorItems[i].getElementsByTagName('a')[0];
+                    if (colorAnchor.title.toLowerCase() !== currentColor.toLowerCase()) {
+                        colorItems[i].style.display = 'none';
+                    }
+                }
+            });
+        </script>
+        
         <div class="products-size-wrapper">
             <span>Size: <%= products.variations[0].size %></span>
-            <ul>
+            <ul id="sizeList">
                 <li><a href="#" id="sizeXS">XS</a></li>
                 <li><a href="#" id="sizeS">S</a></li>
                 <li><a href="#" id="sizeM">M</a></li>
@@ -92,6 +110,28 @@
                 <li><a href="#" id="sizeXXL">XXL</a></li>
             </ul>
         </div>
+        
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Assuming products.variations[0].size contains the current size
+                var currentSize = '<%= products.variations[0].size %>';
+                
+                // Get the list of sizes
+                var sizeList = document.getElementById('sizeList');
+                var sizeItems = sizeList.getElementsByTagName('li');
+                
+                // Loop through the size items and hide the ones that do not match the current size
+                for (var i = 0; i < sizeItems.length; i++) {
+                    var sizeAnchor = sizeItems[i].getElementsByTagName('a')[0];
+                    if (sizeAnchor.textContent !== currentSize) {
+                        sizeItems[i].style.display = 'none';
+                    }
+                }
+            });
+        </script>
+       
+        
+        
         
         <!-- <div class="products-add-to-cart">
         <div class="input-counter">

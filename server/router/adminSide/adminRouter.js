@@ -45,8 +45,9 @@ router.get('/adminHome', adminAuthMiddleware.isAdminAuth, adminRender.adminHome)
 
 
 router.get('/getSalesReport', adminAuthMiddleware.isAdminAuth, salesController.getSalesReport); // Option to download sales report
+router.get('/getSalesReportfilter', adminAuthMiddleware.isAdminAuth, adminRender.getSalesReportfilter);
 
-
+router.post('/api/getDetailsChart', adminAuthMiddleware.isAdminAuth, adminController.getDetailsChart);// Option to get chart details
 
 // Admin Product Management Routes
 router.get('/adminProductManagement', adminAuthMiddleware.isAdminAuth, adminRender.adminProductManagement); // Product is listed in Page to manage

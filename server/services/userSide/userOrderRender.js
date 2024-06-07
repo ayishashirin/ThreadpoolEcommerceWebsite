@@ -68,12 +68,15 @@ module.exports = {
             req.session.isUserAuth
           );
       
+
+
+         
           // userHelper fn to get all order history with pagination
           const { orders, totalOrders } = await userHelper.userGetAllOrder(
             req.session.isUserAuth,
             req.query.page
           );
-      
+      console.log("orders:",orders);
           res.status(200).render("userSide/userOrderPage", {
             category,
             orders,
@@ -84,6 +87,8 @@ module.exports = {
             userInfo,
             cartItems,
             wishlistItems,
+            
+            
           });
         } catch (err) {
           console.log("Update query err:", err);
