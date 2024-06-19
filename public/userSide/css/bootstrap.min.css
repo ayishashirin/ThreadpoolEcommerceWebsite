@@ -686,7 +686,7 @@ progress {
 }
 .col-6 {
   flex: 0 0 auto;
-  width: 50%;
+  width: 65%;
 }
 .col-7 {
   flex: 0 0 auto;
@@ -7128,7 +7128,7 @@ fieldset:disabled .btn {
 }
 .text-primary {
   --bs-text-opacity: 1;
-  color: rgba(var(--bs-primary-rgb), var(--bs-text-opacity)) !important;
+	color: #000;
 }
 .text-secondary {
   --bs-text-opacity: 1;

@@ -609,7 +609,7 @@ input::-webkit-inner-spin-button {
 	border: transparent;
 	background-color: #000;
 	color: #FFF;
-	font-family: Ubuntu;
+	font-family: sans-serif;
 	font-size: 0.875rem;
 	font-weight: 700;
 	text-transform: capitalize;

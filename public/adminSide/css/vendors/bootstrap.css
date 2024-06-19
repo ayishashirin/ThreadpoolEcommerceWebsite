@@ -8518,11 +8518,11 @@ fieldset:disabled .btn {
 }
 
 .text-primary {
-  color: #3167EB !important;
+	color: #000;
 }
 
 .text-primary-light {
-  color: rgba(49, 103, 235, 0.2) !important;
+	color: #000;
 }
 
 .text-secondary {

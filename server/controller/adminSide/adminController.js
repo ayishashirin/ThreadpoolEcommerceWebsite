@@ -230,8 +230,7 @@ module.exports = {
       const updateResult = await adminHelper.statusUpdate(
         req.params.orderId,
         req.params.productId,
-        req.body.status // Adjust to match your actual request payload
-      );
+        req.body.status )
   
       return res.status(200).redirect("/adminOrderDetails");
     } catch (error) {

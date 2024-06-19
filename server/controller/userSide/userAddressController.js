@@ -38,6 +38,17 @@ module.exports = {
       if (!req.body.phoneNo) {
         req.session.phoneNo = `This Field is required`;
       }
+
+      if (req.body.phoneNo && String(req.body.phoneNo).length !== 10) {
+       
+         req.session.phoneNo = `Invalid Phone Number`
+      }
+
+      if (req.body.phoneNo && !/^[6-9]\d{9}$/.test(req.body.phoneNo)) {
+        req.session.phoneNo = `Invalid Phone Number`
+      }
+
+
       if (!req.body.houseName) {
         req.session.houseName = `This Field is required`;
       }

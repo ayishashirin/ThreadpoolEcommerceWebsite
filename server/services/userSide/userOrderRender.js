@@ -45,6 +45,45 @@ module.exports = {
           res.status(500).render("errorPages/500ErrorPage");
         }
       },
+      userOrderFailed: async (req, res) => {
+        try {
+          //userHelper fn to get all listed category
+          const category = await userHelper.getAllListedCategory();
+    
+          //userHelper fn to get counts of product in cart and wishlist
+          const counts = await userHelper.getTheCountOfWhislistCart(
+            req.session.isUserAuth
+          );
+          const wishlistItems = await userHelper.getWishlistItemsAll(
+            req.session.isUserAuth
+          );
+          const cartItems = await userHelper.getCartItemsAll(
+            req.session.isUserAuth
+          );
+    
+          res
+            .status(200)
+            .render(
+              "userSide/orderFailed",
+              { category, counts, user: req.session.isUserAuth, cartItems,
+                wishlistItems
+               },
+              (err, html) => {
+                if (err) {
+                  console.log(err);
+                  return res.status(500).render("errorPages/500ErrorPage");
+                }
+    
+                delete req.session.orderSuccessPage;
+    
+                res.send(html);
+              }
+            );
+        } catch (err) {
+          console.log("Update query err:", err);
+          res.status(500).render("errorPages/500ErrorPage");
+        }
+      },
     
 
       userOrders: async (req, res) => {
@@ -61,7 +100,6 @@ module.exports = {
             req.session.isUserAuth
           );
           
-          //userHelper fn to get all details of user
           const userInfo = await userHelper.userInfo(req.session.isUserAuth);
       
           const cartItems = await userHelper.getCartItemsAll(
@@ -71,12 +109,10 @@ module.exports = {
 
 
          
-          // userHelper fn to get all order history with pagination
           const { orders, totalOrders } = await userHelper.userGetAllOrder(
             req.session.isUserAuth,
             req.query.page
           );
-      console.log("orders:",orders);
           res.status(200).render("userSide/userOrderPage", {
             category,
             orders,

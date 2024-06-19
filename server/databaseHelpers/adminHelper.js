@@ -59,7 +59,6 @@ module.exports = {
           $count: "newOrders",
         },
       ]);
-
       const [totalSales] = await Orderdb.aggregate([
         {
           $unwind: {
@@ -100,7 +99,6 @@ module.exports = {
           },
         },
       ]);
-
       return {
         userCount,
         newOrders: orders?.newOrders,

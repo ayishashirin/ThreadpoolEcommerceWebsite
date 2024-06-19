@@ -73,7 +73,7 @@
                                 <p class="err <%= errMesg?.houseName?'':'d-none' %>"><%= errMesg?.houseName %></p>
                                 <label for="phoneNo">Phone No</label>
                                 <input name="phoneNo" class="d-block <%= errMesg?.phoneNo?'errDiv':'' %>" type="number" value="<%= sInfo?.phoneNo?sInfo.phoneNo:'' %>">
-                                <p class="err <%= errMesg?.hNo?'':'d-none' %>"><%= errMesg?.hNo %></p>
+                                <p class="err <%= errMesg?.phoneNo?'':'d-none' %>"><%= errMesg?.phoneNo %></p>
                                 <label for="pin">PIN Code</label>
                                 <input name="pin" class="d-block <%= errMesg?.pin?'errDiv':'' %>" type="number" value="<%= sInfo?.pin?sInfo.pin:'' %>">
                                 <p class="err <%= errMesg?.pin?'':'d-none' %>"><%= errMesg?.pin %></p>

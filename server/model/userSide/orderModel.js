@@ -62,10 +62,15 @@ const orderSchema = new mongodb.Schema({
                 type: Number,
                 default: 0,
             },
-
+           totalAmount:{
+            type: Number
+           }
           
         }
     ],
+    totalPrice:{
+        type:Number
+    },
     paymentMethode: {
         type: String,
         required: true 

@@ -79,7 +79,16 @@
                                 <i class="bx bxs-star"></i>
                                 <i class="bx bxs-star"></i>
                             </div>
-                            <a href="#" class="add-to-cart">Add to Cart</a>
+                            <% if (newProducts[i].variations[0].quantity===0) { %>
+                                <button class="buyBtn">Out Of Stock</button>
+                                <% } else { %>
+                                <% if (isCartItem) { %>
+                                <a href="/addToCart" class="add-to-cart" style="cursor: pointer;">Go to Cart</a>
+                                <% } else { %>
+                                <a data-productId="<%= newProducts[i]._id %>" class="add-to-cart" style="cursor: pointer;">Add to
+                                  Cart</a>
+                                <% } %>
+                                <% } %>
                         </div>
                     </div>
                     </div>
@@ -93,3 +102,4 @@
     </div>
 </section>
 
+<script src="/userSide/js/shop.js"></script>

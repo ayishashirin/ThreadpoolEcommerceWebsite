@@ -21,7 +21,7 @@ p {
   margin: 0;
 }
 .row > * {
-  padding: 0;
+  padding: 10 px;
   margin: 0;
 }
 a {
@@ -505,7 +505,7 @@ a {
   height: 24px;
 }
 .orderSummary {
-  width: 80%;
+  width: 90%;
   border: 1px solid #e0e0e0;
   background: #fff;
   margin-bottom: 2rem;

@@ -28,7 +28,15 @@ $(".addProductForm").submit(function(event) {
 	contentType: false,
 	processData: false,
 	success: function(response) {
-		window.location.href = '/adminProductManagement';
+		console.log('myrespon',response);
+		if(response?.errors){
+			console.log(response?.errors);
+			for (const [key, value] of Object.entries(response?.errors)) {
+				$(`#${key}Error`).text(value);
+			}
+		}else{
+			window.location.href = '/adminProductManagement';
+		}
 	},
 	error: function(error) {
 		console.log('Error: '+ JSON.stringify(error));

@@ -18,6 +18,13 @@ const userWalletSchema = new mongoose.Schema({
                 type: Date,
                 default: Date.now(),
             },
+            status:{
+                type: String,
+                 
+            },
+            details:{
+                type: String, 
+            }
         }
     ]
 });

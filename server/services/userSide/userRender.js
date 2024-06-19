@@ -1,5 +1,6 @@
 const userHelper = require("../../databaseHelpers/userHelper");
 const adminHelper = require("../../databaseHelpers/adminHelper");
+const { Productdb } = require("../../model/adminSide/productModel");
 
 
 // ----------------------------------------------------------------------------------------------------
@@ -12,6 +13,8 @@ module.exports = {
       const wishlistItems = await userHelper.getWishlistItemsAll(req.session.isUserAuth);
       const products = await userHelper.getProductDetails(null, true);
       const cartItems = await userHelper.getCartItemsAll(req.session.isUserAuth);
+      const isCartItem = await userHelper.isProductCartItem(req.params.id, req.session.isUserAuth);
+
 
       res.status(200).render("userSide/userHome", {
         category,
@@ -20,7 +23,8 @@ module.exports = {
         counts: counts,
         toast: req.flash('toastMessage'),
         cartItems,
-        wishlistItems
+        wishlistItems,
+        isCartItem
       });
     } catch (err) {
       console.error("Home page err:", err);
@@ -495,10 +499,8 @@ module.exports = {
   },
   userAboutUs: async (req, res) => {
     try {
-      // User Helper function to get all listed categories
       const category = await userHelper.getAllListedCategory();
 
-      // User Helper function to get the count of products in the cart
       const counts = await userHelper.getTheCountOfWhislistCart(
         req.session.isUserAuth
       );
@@ -507,7 +509,6 @@ module.exports = {
         req.session.isUserAuth
       );
 
-      // User Helper function to get newly launched products on the homepage
       const products = await userHelper.getProductDetails(null, true);
 
       const cartItems = await userHelper.getCartItemsAll(
@@ -528,24 +529,42 @@ module.exports = {
     }
   },
 
-  searchProductsByName : async (req, res) => {
+  searchProducts : async (req, res) => {
     try {
-    
-      const searchQuery = req.query.name;
-    
-          const products = await productdb.find({ pName: { $regex: searchQuery, $options: 'i' } });
-    
-         
-                
-                res.render('userSide/userSingleCategoryProducts', { products });
-           
-        
       
-    } catch (error) {
-    console.log(error)
-    }
-          
-    }
-  
+      const query = req.query.query;
+      
+const regex = new RegExp('^' + query, 'i');  
+const ProductSearch = await userHelper.userSingleProductCategory(req.query) 
+const filteredProducts = ProductSearch.filter(product => regex.test(product.pName));
+const Products = [...filteredProducts];  
 
+res.render('userSide/userSingleCategoryProducts',{
+   products: Products,
+        category:null,
+        curentPage:null,
+        currentCategory:null,
+        user: req.session.isUserAuth,
+        counts:null,
+        cartItems:null,
+        isCartItem:null,
+        totalProducts:null,
+        singleProduct:null,
+        product: null,
+        wishlistItems:null,
+        iswishlistItem:null,
+        size: null,
+        collection: null,
+        color:null,
+        maxPrice:null,
+        sortOrder:null,  // Ensure sortOrder is passed here
+        search:null,
+})
+      
+    } catch (err) {
+      console.error('Error fetching products:', err);
+      res.status(500).json({ error: 'Failed to fetch products' });
+    }
+
+},
 }

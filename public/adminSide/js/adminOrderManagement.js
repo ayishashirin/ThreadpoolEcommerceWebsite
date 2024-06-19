@@ -108,38 +108,4 @@ switchMode.addEventListener('change', function () {
 
 
 
-async function returnOrder(orderItemId) {
-  try {
-	const response = await fetch(`/userOrderReturn/${orderItemId}`, {
-	  method: "POST",
-	  headers: {
-		"Content-Type": "application/json",
-	  },
-	});
-
-	if (response.ok) {
-	  Swal.fire({
-		icon: 'success',
-		title: 'Success',
-		text: 'Order item returned successfully',
-	  }).then((result) => {
-		if (result.isConfirmed) {
-		  location.reload(); 
-		}
-	  });
-	} else {
-	  Swal.fire({
-		icon: 'error',
-		title: 'Error',
-		text: 'Failed to return order item',
-	  });
-	}
-  } catch (error) {
-	Swal.fire({
-	  icon: 'error',
-	  title: 'Error',
-	  text: 'Error returning order item',
-	});
-  }
-}
 

@@ -110,22 +110,16 @@ module.exports = {
     try {
       let filterConditions = { unlistedProduct: false };
 
-      // Adding category filter if genderCat is provided
+     
       if (search.genderCat) {
         filterConditions.category = search.genderCat;
       }
 
-      // Text search stage
-      if (search.search) {
-        filterConditions.$text = { $search: search.search };
-      }
-
-      // Adding price filter if maxPrice is provided
+      
       if (search.maxPrice) {
         filterConditions.fPrice = { $lte: parseFloat(search.maxPrice) };
       }
 
-      // Valid sizes and colors arrays
       const validSizes = ["XS", "S", "M", "L", "XL", "XXL"];
       const validColors = [
         "Black",
@@ -138,14 +132,11 @@ module.exports = {
         "BlueViolet",
       ];
 
-      // Creating the filter match stage for aggregation
       let filter = { $match: filterConditions };
 
-      // Calculating the skip value for pagination
       const page = Number(search.page);
       const skip = page && page > 0 ? (page - 1) * 12 : 0;
 
-      // Determine the sort order
       let sortOrder = {};
       switch (search.sortOrder) {
         case "priceAsc":
@@ -155,20 +146,20 @@ module.exports = {
           sortOrder = { lPrice: -1 };
           break;
         case "aATozZ":
-          sortOrder = { aATozZ: -1 }; // Assuming there's a popularity field
+          sortOrder = { aATozZ: -1 }; 
           break;
         case "zZToaA":
-          sortOrder = { zZToaA: -1 }; // Assuming there's a rating field
+          sortOrder = { zZToaA: -1 };
           break;
         case "latest":
           sortOrder = { date: -1 };
           break;
         default:
-          sortOrder = { _id: 1 }; // Default sorting
+          sortOrder = { _id: 1 }; 
           break;
       }
 
-      // Building the aggregation pipeline
+      
       const agg = [
         filter,
         {
@@ -182,11 +173,11 @@ module.exports = {
         {
           $unwind: "$variations",
         },
-        // Adding size filter if a valid size is provided
+        
         ...(validSizes.includes(search.size)
           ? [{ $match: { "variations.size": search.size } }]
           : []),
-        // Adding color filter if a valid color is provided
+       
         ...(validColors.includes(search.color)
           ? [{ $match: { "variations.color": search.color } }]
           : []),
@@ -219,10 +210,8 @@ module.exports = {
         },
       ];
 
-      // Aggregating to get all product details of the selected category
       const products = await Productdb.aggregate(agg);
 
-      // Processing offers to find the maximum valid discount
       products.forEach((each) => {
         each.allOffers = each.allOffers.reduce((maxDiscount, offer) => {
           if (offer.expiry >= new Date() && offer.discount > maxDiscount) {
@@ -240,7 +229,6 @@ module.exports = {
 
   getProductDetails: async (productId, newlyLauched = false) => {
     try {
-      //for geting newly launched product in home page
       if (newlyLauched) {
         const products = await Productdb.aggregate([
           {
@@ -280,12 +268,10 @@ module.exports = {
         return products;
       }
 
-      //check if the given id is object id in order to prevent err
       if (!isObjectIdOrHexString(productId)) {
         return [null];
       }
 
-      //aggregating to get the details of a single product
       const products = await Productdb.aggregate([
         {
           $match: {
@@ -328,7 +314,6 @@ module.exports = {
 
   getAllListedCategory: async () => {
     try {
-      //return all listed category
       return await Categorydb.find({ status: true });
     } catch (err) {
       throw err;
@@ -379,7 +364,6 @@ module.exports = {
         return false;
       }
 
-      // Check if the product exists in user's cart
       const isCartItem = await Cartdb.findOne({
         userId: userId,
         "products.productId": productId,
@@ -434,7 +418,6 @@ module.exports = {
         },
       ];
 
-      //to get all product in cart with all details of produt
       const products = await Cartdb.aggregate(agg);
 
       products.forEach((each) => {
@@ -496,7 +479,6 @@ module.exports = {
         },
       ];
 
-      //to get all product in wishlist with all details of product
       const products = await Wishlistdb.aggregate(agg);
 
       products.forEach((each) => {
@@ -519,7 +501,6 @@ module.exports = {
         return false;
       }
 
-      // Check if the product exists in user's cart
       const isWishlistItem = await Wishlistdb.findOne({
         userId: userId,
         "products.productId": productId,
@@ -539,7 +520,6 @@ module.exports = {
         };
       }
 
-      // querying to find user whislist doc
       const whislistCount = await Wishlistdb.aggregate([
         {
           $match: {
@@ -566,7 +546,6 @@ module.exports = {
         },
       ]);
 
-      // querying to find user cart doc
       const cartCount = await Cartdb.aggregate([
         {
           $match: {
@@ -593,7 +572,6 @@ module.exports = {
         },
       ]);
 
-      //return as objects with how many products are there
       return {
         whislistCount: whislistCount.length,
         cartCount: cartCount.length,
@@ -805,7 +783,6 @@ module.exports = {
         },
       ];
 
-      //to get all product in cart with all details of product
       const products = await Cartdb.aggregate(agg);
 
       products.forEach((each) => {
@@ -904,11 +881,18 @@ module.exports = {
       if (couponId && isObjectIdOrHexString(couponId)) {
         return await coupondb.findOne({ _id: couponId });
       }
-      return await coupondb.findOne({ code });
+  
+      code = code.toString().trim();  
+      const coupon = await coupondb.findOne({ code: code });
+  
+  
+      return coupon;
     } catch (err) {
+      console.error("Error in getCoupon:", err);  
       throw err;
     }
   },
+  
   UpdateCouponCount: async (couponId) => {
     try {
       if (couponId && !isObjectIdOrHexString(couponId)) {
@@ -926,65 +910,69 @@ module.exports = {
 
   userOrderCancel: async (orderId, productId, userId = null) => {
     try {
-      //updating orderStatus to cancelled
-      const order = await Orderdb.findOneAndUpdate(
-        {
-          $and: [{ _id: orderId }, { "orderItems.productId": productId }],
-        },
-        {
-          $set: {
-            "orderItems.$.orderStatus": "Cancelled",
-          },
-        }
-      );
-
-      // find the product doc to get the qty ordered
-      const qty = order.orderItems.find((value) => {
-        if (String(value.productId) === productId) {
-          return value.quantity;
-        }
-      });
-
-      //after cancelling a order if its cod and delivered or onlinepayment we have to refund the amount to user
-      if (
-        (qty.orderStatus === "Cancelled" ||
-          order.paymentMethode === "razorpay") &&
-        userId
-      ) {
-        await UserWalletdb.updateOne(
-          { userId: userId },
-          {
-            $inc: {
-              walletBalance: Math.round(
-                qty.quantity * qty.fPrice - (qty.fPrice - qty.lPrice)
-              ),
+        const order = await Orderdb.findOneAndUpdate(
+            {
+                $and: [{ _id: orderId }, { "orderItems.productId": productId }],
             },
-            $push: {
-              transactions: {
-                amount: Math.round(
-                  qty.quantity * qty.fPrice - (qty.fPrice - qty.lPrice)
-                ),
-              },
-            },
-          },
-          { upsert: true }
+            {
+                $set: {
+                    "orderItems.$.orderStatus": "Cancelled",
+                },
+            }
         );
-      }
 
-      // updating product quantity
-      await ProductVariationdb.updateOne(
-        { productId: productId },
-        {
-          $inc: {
-            quantity: qty.quantity,
-          },
+        // Find the product to get the qty ordered
+        const qty = order.orderItems.find((value) => {
+            if (String(value.productId) === productId) {
+                return value.quantity;
+            }
+        });
+
+        // After cancelling, refund the amount to the user if applicable
+        if (
+            (qty.orderStatus === "Cancelled" || 
+             order.paymentMethode === "razorpay" || 
+             order.paymentMethode === "wallet") &&
+            userId
+        ) {
+            const refundAmount = Math.round(
+                qty.quantity * qty.fPrice - (qty.fPrice - qty.lPrice)
+            );
+
+            await UserWalletdb.updateOne(
+                { userId: userId },
+                {
+                    $inc: {
+                        walletBalance: refundAmount,
+                    },
+                    $push: {
+                        transactions: {
+                            amount: refundAmount,
+                            status: "Order Cancelled",
+                            details: orderId
+
+                        },
+                    },
+                },
+                { upsert: true }
+            );
         }
-      );
-      return;
+
+        // Updating product quantity
+        await ProductVariationdb.updateOne(
+            { productId: productId },
+            {
+                $inc: {
+                    quantity: qty.quantity,
+                },
+            }
+        );
+        return;
     } catch (err) {
-      throw err;
+        throw err;
     }
-  },
+},
+
   userTotalProductNumber: async (category) => {
     try {
       return (await Productdb.find({ category, unlistedProduct: false }))
@@ -999,12 +987,12 @@ module.exports = {
         throw new Error("Invalid user ID");
       }
 
-      const user = await UserWalletdb.findOne({ userId }); // Ensure you have the correct user model
+      const user = await UserWalletdb.findOne({ userId });
       if (!user) {
         throw new Error("User not found");
       }
 
-      return user.walletBalance; // Ensure this field exists in your user schema
+      return user.walletBalance; 
     } catch (error) {
       console.error("Error in getWalletBalance:", error);
       throw new Error("Error fetching wallet balance");

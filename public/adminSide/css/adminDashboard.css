@@ -542,7 +542,7 @@ input[type=date]{
 }
 
 .select-selected {
-  background-color: DodgerBlue;
+  background-color: #000;
 }
 
 /*style the arrow inside the select element:*/
@@ -578,7 +578,7 @@ input[type=date]{
 /*style items (options):*/
 .select-items {
   position: absolute;
-  background-color: DodgerBlue;
+  background-color: #000;
   top: 100%;
   left: 0;
   right: 0;

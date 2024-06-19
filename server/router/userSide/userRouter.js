@@ -151,6 +151,11 @@ router.route('/cartCheckOut')
 
     router.post('/onlinePaymentSuccessfull', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, razorPayController.onlinePaymentSuccessfull); // online payment callback url for razor pay
 
+    router.post('/onlinePaymentFailed', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, razorPayController.onlinePaymentFailed); // online payment callback url for razor pay
+
+    
+    router.post('/payAgain', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, razorPayController.payAgain);
+
     router.get('/wallet', authMiddleware.isUserLoggedIn,authMiddleware.isUserBlocked, userRender.userWallet)
     router.post('/walletOrder', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userCartController.userCartCheckOut);
 
@@ -162,6 +167,8 @@ router.route('/cartCheckOut')
 // User Order Routes (view orders, cancel orders, invoice download and order summary)
 
 router.get('/orderSuccessfull', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked,userOrderRender.userOrderSuccessfull); // order successful page when a order is placed
+
+router.get('/orderFailed', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked,userOrderRender.userOrderFailed)
 
 router.get('/orders', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userOrderRender.userOrders);// User order history listing page
 
@@ -220,7 +227,7 @@ router.post('/api/changeAddressPayment', authMiddleware.isUserLoggedIn, authMidd
 
 router.get('/aboutUs',userRender.userAboutUs)
 
-router.get('/products/search', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked,userRender.searchProductsByName);
+router.get('/search', userRender.searchProducts);
 
 // logOut
 

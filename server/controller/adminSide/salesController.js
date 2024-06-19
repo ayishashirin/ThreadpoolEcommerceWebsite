@@ -95,7 +95,6 @@ module.exports = {
                     { $sort: { orderDate: -1 } }
                 ]);
             }
-            console.log("hijnkjlkjugtdtfh");
             res.status(200).render("adminSide/salesReport", { sales: salesData, currentType, reportTypes, reportType, startDate, endDate });
 
         } catch (error) {

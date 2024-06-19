@@ -44,9 +44,7 @@
                 <div class="<%= errMesg?.pName?'errDiv':'' %>">
                   <label for="pName" class="d-block">Product Name</label>
                   <input type="text" name="pName" value="<%= product.pName?product.pName:'' %>">
-                  <p class="err">
-                    <%= errMesg?.pName %>
-                  </p>
+                  <p class="error text-danger" id="pNameError"></p>
                 </div>
                 <div>
                   <label for="Category" class="d-block">Category</label>
@@ -66,9 +64,7 @@
                 <div class="<%= errMesg?.pDes?'errDiv':'' %>">
                   <label for="pDescription" class="d-block">Product Description</label>
                   <input type="text" name="pDescription" value="<%= product.pDescription?product.pDescription:'' %>">
-                  <p class="err">
-                    <%= errMesg?.pDes %>
-                  </p>
+                  <p class="error text-danger" id="pDescriptionError"></p>
                 </div>
               </div>
 
@@ -76,24 +72,18 @@
                 <div class="position-relative <%= errMesg?.fPrice?'errDiv':'' %>">
                   <label for="fPrice" class="d-block">First Price</label>
                   <input class="fPrice" type="number" name="fPrice" value="<%= product.fPrice?product.fPrice:'' %>">
-                  <p class="err errMesg position-absolute">
-                    <%= errMesg?.fPrice %>
-                  </p>
+                  <p class="error text-danger" id="fPriceError" ></p>
                 </div>
                 <div class="dheading <%= errMesg?.lPrice?'errDiv':'' %>">
                   <label for="lPrice" class="d-block">Last Price</label>
                   <input class="lPrice" type="number" name="lPrice" value="<%= product.lPrice?product.lPrice:'' %>">
-                  <p class="err lErr">
-                    <%= errMesg?.lPrice %>
-                  </p>
+                  <p class="error text-danger" id="lPriceError"></p>
                 </div>
                 <div class="dheading <%= errMesg?.discount?'errDiv':'' %>">
                   <label for="discount" class="d-block">Discount (%)</label>
                   <input class="discount" type="text" name="discount"
                     value="<%= (((product.fPrice - product.lPrice) / product.fPrice) * 100).toFixed(2) %>">
-                  <p class="err">
-                    <%= errMesg?.discount %>
-                  </p>
+                    <p class="error text-danger" id="discountError"></p>
                 </div>
               </div>
 
@@ -102,24 +92,18 @@
                   <label for="color" class="d-block">Color</label>
                   <input type="text" name="color"
                     value="<%= product.variations[0].color?product.variations[0].color:'' %>">
-                  <p class="err">
-                    <%= errMesg?.color %>
-                  </p>
+                    <p class="error text-danger" id="colorError"></p>  
                 </div>
                 <div class="<%= errMesg?.qty?'errDiv':'' %>">
                   <label for="quantity" class="d-block">Quantity</label>
                   <input type="number" name="quantity"
                     value="<%= (product.variations[0].quantity || product.variations[0].quantity === 0)?product.variations[0].quantity:'' %>">
-                  <p class="err">
-                    <%= errMesg?.qty %>
-                  </p>
+                    <p class="error text-danger" id="quantityError"></p>
                 </div>
                 <div class="<%= errMesg?.size?'errDiv':'' %>">
                   <label for="size" class="d-block">size</label>
                   <input type="string" name="size" value="<%= product.variations[0].size?product.variations[0].size:'' %>">
-                  <p class="err">
-                    <%= errMesg?.size %>
-                  </p>
+                  <p class="error text-danger" id="sizeError"></p>
                 </div>
 
 
@@ -129,7 +113,8 @@
                 <div class="<%= errMesg?.date?'errDiv':'' %>">
                   <label for="date" class="d-block">Date</label>
                   <input type="date" name="date" value="<%= (product.date || product.date === 0)?product.date?.toISOString().split('T')[0]:'' %>">
-                  <p class="err"><%= errMesg?.date %></p>
+                  <p class="error text-danger" id="dateError"></p>
+
               </div>
             </div>
 
@@ -137,10 +122,8 @@
                 <div class="<%= errMesg?.file?'errDiv':'' %>">
                   <label for="image" class=" d-block">Image</label>
                   <input class="p-1 imgFile" type="file" value="<%= product.variations[0].images?product.variations[0].images :'' %>" name="image" accept="image/jpeg, image/jpg, image/png, image/svg+xml, image/webp" id="imageFile"  multiple>
-
-                  <p class="err errImgOne">
-                    <%= errMesg?.file %>
-                  </p>
+                  <p class="error" id="filesError" color="text-danger"></p>
+                  <p class="error text-danger" id="filesError"></p>
                 </div>
                 <div class="newlyLauch d-flex align-items-center gap-2">
                   <input type="checkbox" value="true" name="newlyLanch" <%=product.newlyLauch?'checked':'' %>>
@@ -168,7 +151,7 @@
 
                   </div>
             </div>
-
+           
             <div class="d-flex justify-content-center">
               <button type="submit" class="addBtn">Update Product</button>
             </div>
@@ -181,8 +164,9 @@
   <!-- CONTENT -->
 
 
-
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <!-- footer -->
   <%- include('../includes/adminSide/footer') %>
   <script src="/adminSide/js/adminUpdateProduct.js"></script>
+
     <!-- end of footer -->

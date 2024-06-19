@@ -1,35 +1,35 @@
-  <!-- header -->
+ 
   <%- include('../includes/adminSide/header') %>
-  <!-- end of header -->
-  <!-- Template CSS -->
   <link href="assets/css/main.css?v=1.1" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
+
+  
   <section class="content-main" style="padding-left: 400px;">
     <div class="content-header">
       <div class="head-title">
-          <div class="left">
-            <h1>Order Details</h1>
-            <ul class="breadcrumb">
-              <li>
-                <a href="#">Dashboard</a>
-              </li>
-              <li><i class="bx bx-chevron-right"></i></li>
-              <li>
-                <a class="active" 
-                  >Order Details</a
-                >
-              </li>
-            </ul>
-          </div>
+        <div class="left">
+          <h1>Order Details</h1>
+          <ul class="breadcrumb">
+            <li>
+              <a href="#">Dashboard</a>
+            </li>
+            <li><i class="bx bx-chevron-right"></i></li>
+            <li>
+              <a class="active">Order Details</a>
+            </li>
+          </ul>
         </div>
-  
-        <div class="manageOptions">
-          
-          <a href="/adminOrderManagement">
-            <button>Go To Orders</button>
-          </a>
-        </div>
-  </div>
+      </div>
+
+      <div class="manageOptions">
+
+        <a href="/adminOrderManagement">
+          <button>Go To Orders</button>
+        </a>
+      </div>
+    </div>
     <div class="card">
       <header class="card-header">
         <div class="row align-items-center">
@@ -72,7 +72,7 @@
                   Threadpool pvt ltd ,<br>
                   KINFRA Techno Industrial Park,<br>
                   Payment Methode :<%= orders?.paymentMethode %> <br />
-                
+
                 </p>
               </div>
             </article>
@@ -96,8 +96,8 @@
                     <br>
                     PinCode:<%=orders?.address[0]?.pin %>
                     <br>
-                    PhoneNo:  <%=orders?.address[0]?.phoneNo %>
-                   
+                    PhoneNo: <%=orders?.address[0]?.phoneNo %>
+
                   </td>
                 </p>
 
@@ -135,77 +135,91 @@
                     </td>
                     <td><%= item.fPrice %></td>
                     <td><%= item.quantity %></td>
-                    <td> <% if (["Delivered", "Cancelled", "Ordered", "Shipped"].includes(item.orderStatus)) { %>
+                    <td> <% if (["Delivered", "Cancelled", "Ordered", "Shipped","Pending"].includes(item.orderStatus)) { %>
                       <p id="statusBadge-<%= item.productId %>" class="badge rounded-pill <%= (item.orderStatus === 'Cancelled') ? 'alert-danger text-danger' : 'alert-success text-success' %>">
                         <%= item.orderStatus %>
                       </p>
-                    <% } else { %>
+                      <% } else { %>
                       <select name="orderStatus" id="filler" class="bg-white border-1 border-black">
                         <option value="Ordered" <%= (item.orderStatus === "Ordered") ? "selected" : "" %>>Ordered</option>
                         <option value="Shipped" <%= (item.orderStatus === "Shipped") ? "selected" : "" %>>Shipped</option>
                         <option value="Delivered" <%= (item.orderStatus === "Delivered") ? "selected" : "" %>>Delivered</option>
                         <option value="Cancelled" <%= (item.orderStatus === "Cancelled") ? "selected" : "" %>>Cancelled</option>
+                        <option value="Pending" <%= (item.orderStatus === "Pending") ? "selected" : "" %>>Pending</option>
                       </select>
-                    <% } %></td>
-
-                    
-                         <td>
-                          <div class="d-flex" p-5 m-5 style="padding-left:10px">
-                            <select id="orderStatus<%= i %>" name="orderStatus">
-                              <option value="Ordered">Ordered</option>
-                              <option value="Shipped">Shipped</option>
-                              <option value="Delivered">Delivered</option>
-                              <option value="Cancelled">Cancelled</option>
-                            </select>
-
-                            <td>   
-                              <button class="" onclick="handleChange('<%= orders._id %>', '<%= item.productId %>', 'orderStatus<%= i %>')">Change</button>
-                            </td>
-                            
-                          </div>
-                        </td>
+                      <% } %>
+                    </td>
 
 
-                        <script>
-                          function handleChange(orderId, productId, id) {
-                            var dropdown = document.getElementById(id);
-                            if (dropdown) {
-                              var selectedStatus = dropdown.value;
-                              console.log(selectedStatus);
-                              axios.post(`/statusUpdate/${orderId}/${productId}`, {
-                                  status: selectedStatus
-                                })
-                                .then(function(response) {
-                                  console.log(response);
-                                  alert('Status updated successfully!');
-                                  window.location.reload(); 
-                                })
-                                .catch(function(error) {
-                                  console.error(error);
-                                  alert('Error updating status!');
-                                });
-                            } else {
-                              console.error('Dropdown with id "statusDropdown" not found.');
-                            }
-                          }
-                        </script>
-                        
-                        
-                      </tr>
+                    <td>
+                      <div class="d-flex" p-5 m-5 style="padding-left:10px">
+                        <select id="orderStatus<%= i %>" name="orderStatus">
+                          <option value="Ordered">Ordered</option>
+                          <option value="Shipped">Shipped</option>
+                          <option value="Delivered">Delivered</option>
+                          <option value="Cancelled">Cancelled</option>
+                          <option value="Pending">Pending</option>
+
+                        </select>
+
+                    <td>
+                      <button class="" onclick="handleChange('<%= orders._id %>', '<%= item.productId %>', 'orderStatus<%= i %>')">Change</button>
+                    </td>
+
             </div>
-        
+            </td>
 
-            
-            <% }); %>
 
-            </tbody>
-            </table>
+            <script>
+              function handleChange(orderId, productId, id) {
+                var dropdown = document.getElementById(id);
+                if (dropdown) {
+                  var selectedStatus = dropdown.value;
+                  console.log(selectedStatus);
+                  axios.post(`/statusUpdate/${orderId}/${productId}`, {
+                      status: selectedStatus
+                    })
+                    .then(function(response) {
+                      console.log(response);
+                      Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Status updated successfully!',
+                      }).then(() => {
+                        window.location.reload();
+                      });
+                    })
+                    .catch(function(error) {
+                      console.error(error);
+                      Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'Error updating status!',
+                        footer: '<a href>Why do I have this issue?</a>'
+                      });
+                    });
+                } else {
+                  console.error('Dropdown with id "statusDropdown" not found.');
+                }
+              }
+            </script>
+
+
+            </tr>
           </div>
-          <!-- table-responsive// -->
-        </div>
 
+
+
+          <% }); %>
+
+          </tbody>
+          </table>
+        </div>
+        <!-- table-responsive// -->
       </div>
-      <!-- card-body end// -->
+
+    </div>
+    <!-- card-body end// -->
     </div>
     <!-- card end// -->
   </section>
@@ -225,7 +239,7 @@
   </footer>
   </main>
   <!-- <script src="/adminSide/js/adminOrderManagement.js"></script> -->
- 
+
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
   <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>

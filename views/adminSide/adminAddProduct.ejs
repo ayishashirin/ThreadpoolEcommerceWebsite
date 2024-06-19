@@ -90,10 +90,10 @@
                       <input type="text" name="color" value="<%= savedDetails?.color?savedDetails?.color:'' %>">
                       <p class="err"><%= errMesg?.color %></p>
                   </div>
-                  <div class="<%= errMesg?.qty?'errDiv':'' %>">
+                  <div class="<%= errMesg?.quantity?'errDiv':'' %>">
                       <label for="quantity" class="d-block">Quantity</label>
                       <input type="number" name="quantity" value="<%= savedDetails?.quantity?savedDetails?.quantity:'' %>">
-                      <p class="err"><%= errMesg?.qty %></p>
+                      <p class="err"><%= errMesg?.quantity %></p>
                   </div>
                   <div class="<%= errMesg?.size?'errDiv':'' %>">
                     <label for="size" class="d-block">size</label>

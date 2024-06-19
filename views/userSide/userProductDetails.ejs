@@ -54,7 +54,7 @@
         <span class="offer" style="color:#866528;">(<%= products.allOffers%>% OFF)</span>
         </div>
         
-        <div class="products-review">
+        <!-- <div class="products-review">
         <div class="rating">
         <i class="bx bx-star"></i>
         <i class="bx bx-star"></i>
@@ -63,7 +63,7 @@
         <i class="bx bx-star"></i>
         </div>
         <a href="#" class="rating-count">3 reviews</a>
-        </div>
+        </div> -->
         <ul class="products-info">
         <li><span>Availability:<p
             class="stock <%= products.variations[0].quantity > 0?'text-success':'text-danger' %>">
@@ -150,18 +150,12 @@
                     </a>
                     <% } %>
                         <% } %>
-        <div class="buy-checkbox-btn">
-        <div class="item">
-        <input class="inp-cbx" id="cbx" type="checkbox">
-        <label class="cbx" for="cbx">
-        <span>
-        <svg width="12px" height="10px" viewbox="0 0 12 10">
-        <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
-        </svg>
-        </span>
-        <span>I agree with the terms and conditions</span>
-        </label>
-        </div>
+   <div class=" pt-3">
+        <img src="/userSide/img/errorPages/freedelivery.svg" width="30px" alt="No Data">
+        <span>FREE delivery on orders dispatched by Threadpool over $1000.</span>
+      </div>  
+      
+      
 
         <div class="item">
             <% if (products.variations[0].quantity=== 0) { %>
@@ -270,8 +264,9 @@
         <tr>
         <td>Delivery</td>
         <td>
-        Estimated between Wednesday 07/31/2021 and Monday 08/05/2021 <br>
-        Will usually ship within 1 bussiness day.
+            Estimated between <%= new Date().toString().split(' ').splice(0, 4).join(' - ') %> and <%= new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toString().split(' ').splice(0, 4).join(' - ') %>
+            <br>
+            Will usually ship within 1 business day.
         </td>
         </tr>
         </tbody>
@@ -283,11 +278,13 @@
         <div class="products-details-tab-content">
         <p>Here are 5 more great reasons to buy from us:</p>
         <ol>
-        <li>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.</li>
-        <li> Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.</li>
-        <li>When an unknown printer took a galley of type and scrambled it to make a type specimen book.</li>
-        <li>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</li>
-        <li>When an unknown printer took a galley of type and scrambled it to make a type specimen book.</li>
+            <li>Wide Selection of Trendy Products: Explore an extensive range of fashionable clothing, accessories, and footwear curated to keep you in style all year round.</li>
+            <li>Exceptional Customer Service: Our dedicated team is committed to providing personalized assistance, answering queries, and resolving any concerns promptly to guarantee a seamless shopping experience.</li>
+            <li>Fast and Reliable Shipping: Experience swift and reliable delivery services to your doorstep, ensuring your fashion essentials reach you in no time, wherever you are.
+            </li>
+            <li>Satisfaction Guaranteed: Your satisfaction is our top priority. Shop with confidence knowing that we offer hassle-free returns and exchanges, ensuring you find the perfect fit and style every time.</li>
+            <li>Quality Assurance: We prioritize quality, offering products crafted from premium materials to ensure durability and comfort without compromising on style.
+            </li>
         </ol>
         </div>
         </div>

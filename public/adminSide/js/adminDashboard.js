@@ -59,7 +59,7 @@ try {
     errP[2].innerHTML = "";
     showErr[2].classList.remove("errDiv");
     showErr[3].classList.remove("errDiv");
-    if(checkBox.checked){
+    if (checkBox.checked) {
       formVal[2].value = '';
       formVal[3].value = '';
     }
@@ -114,13 +114,13 @@ try {
       err = true;
     }
 
-    if(!data?.full && data?.toDate && (new Date(data.toDate) > new Date())){
+    if (!data?.full && data?.toDate && (new Date(data.toDate) > new Date())) {
       showErr[3].classList.add("errDiv");
       errP[2].innerHTML = `Today is ${new Date().toISOString().split('T')[0].split('-').reverse().join('-')} choose date less than or equal to this`;
       err = true;
     }
 
-    if(!data?.full && data?.fromDate && (new Date(data.fromDate) > new Date())){
+    if (!data?.full && data?.fromDate && (new Date(data.fromDate) > new Date())) {
       showErr[2].classList.add("errDiv");
       errP[1].innerHTML = `Today is ${new Date().toISOString().split('T')[0].split('-').reverse().join('-')} choose date less than or equal`;
       err = true;
@@ -131,7 +131,7 @@ try {
     }
   });
 } catch (err) {
-  console.error('sales report err',err);
+  console.error('sales report err', err);
 }
 
 const formSelect = document.getElementById("filterSales");

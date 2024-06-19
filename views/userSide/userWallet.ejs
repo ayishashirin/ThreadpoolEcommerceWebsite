@@ -67,6 +67,12 @@
                           <th scope="col">#</th>
                           <th scope="col">Date</th>
                           <th scope="col">Amount</th>
+                          <th scope="col">Payment Status</th>
+                          <th scope="col">Details</th>
+
+
+
+
                         </tr>
                       </thead>
                       <tbody class="tBody">
@@ -75,10 +81,13 @@
                             <th scope="row"><%= (i + 1) %></th>
                             <td><%= userWallet.transactions[i].transactionDate.toISOString().split("T")[0].split("-").reverse().join("-") %></td>
                             <% if (userWallet.transactions[i].amount > 0) { %>
-                                <td class="text-success">₹<%= userWallet.transactions[i].amount %> <i class="fa-solid fa-arrow-trend-up" style="color: #37ff00;"></i></td>
+                                <td class="text-success">+ $<%= userWallet.transactions[i].amount %> <i class="fa-solid fa-arrow-trend-up" style="color: #37ff00;"></i></td>
                             <% } else { %>
-                                <td class="text-danger">₹<%= userWallet.transactions[i].amount %> <i class="fa-solid fa-arrow-trend-down" style="color: #ff0000;"></i></td>
+                                <td class="text-danger">- $<%= userWallet.transactions[i].amount %> <i class="fa-solid fa-arrow-trend-down" style="color: #ff0000;"></i></td>
                             <% } %>
+                            <td><%= userWallet.transactions[i].status %></td>
+                            <td>Order Id:<%= String(userWallet.transactions[i].details).slice(0, 8) %></td>
+
                           </tr>
                         <% } %>
                       

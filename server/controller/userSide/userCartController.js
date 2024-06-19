@@ -171,17 +171,14 @@ module.exports = {
         const { paymentMethode, adId, coupon, offerPrice } = req.body;
         const userId = req.session.isUserAuth;
 
-        // Validate payment method
         if (!paymentMethode) {
             req.session.payErr = "Choose a payment method";
         }
 
-        // Validate address
         if (!adId) {
             req.session.adErr = "Choose an Address";
         }
 
-        // Retrieve address details
         const address = adId
             ? await userVariationdb.findOne(
                 { userId: userId, "address._id": adId },
@@ -194,6 +191,7 @@ module.exports = {
         }
 
         if (req.session.payErr || req.session.adErr) {
+          console.log("session error//////////////////////");
             return res.json({
                 url: "/cartCheckOut",
                 paymentMethode: "COD",
@@ -225,6 +223,7 @@ module.exports = {
 
         let totalCouponDiscountAmount = 0;
 
+
         const orderItems = cartItems.map((element) => {
             const orderItem = {
                 productId: element.products.productId,
@@ -232,15 +231,14 @@ module.exports = {
                 category: element.pDetails[0].category,
                 pDescription: element.pDetails[0].pDescription,
                 quantity: element.products.quantity,
-                offerDiscountAmount: Math.round(
-                    (element.pDetails[0].fPrice * element.products.quantity * element.allOffers) / 100
-                ),
+                offerDiscountAmount: Math.round((element.pDetails[0].fPrice * element.products.quantity * element.allOffers) / 100),
                 fPrice: element.pDetails[0].fPrice,
                 lPrice: element.pDetails[0].lPrice,
                 color: element.variations[0].color,
                 size: element.variations[0].size,
                 images: element.variations[0].images[0],
                 couponDiscountAmount: element.couponDiscountAmount || 0,
+                totalAmount:(element.pDetails[0].lPrice * element.products.quantity) - (Math.round((element.pDetails[0].fPrice * element.products.quantity * element.allOffers) / 100))
             };
 
             if (couponDetails && (couponDetails.category === "All" || couponDetails.category === orderItem.category)) {
@@ -282,6 +280,7 @@ module.exports = {
             totalPrice: tPrice,
             couponDiscountAmount: totalCouponDiscountAmount,
         });
+        console.log(newOrder,"newOrder");
 
         // Handle payment methods
         if (paymentMethode === "COD") {
@@ -295,7 +294,7 @@ module.exports = {
             await Cartdb.updateOne(
                 { userId: userId },
                 { $set: { products: [] } }
-            ); // empty cart items
+            ); 
             return res.json({
                 url: "/userOrderSuccessfull",
                 paymentMethode: "COD",
@@ -332,14 +331,16 @@ module.exports = {
                     });
                 }
 
-                // Deduct the order amount from the wallet balance
                 await UserWalletdb.updateOne(
                     { userId: userId },
                     { $inc: { walletBalance: -tPrice },
                       $push: {
                           transactions: {
                               amount: -tPrice,
+                              status: "Purchased",
+                              details: orderId
                           },
+                          
                       }
                     }
                 );
@@ -348,7 +349,7 @@ module.exports = {
                 await Cartdb.updateOne(
                     { userId: userId },
                     { $set: { products: [] } }
-                ); // empty cart items
+                ); 
 
                 return res.json({
                     url: "/orderSuccessfull",
@@ -366,13 +367,13 @@ module.exports = {
 },
 
   
-  
   //   ----------------------------------------------------------------------------------------------------------
 
   isCouponValidCart: async (req, res) => {
     try {
+  
       const coupon = await userHelper.getCoupon(req.body.code);
-
+  
       if (!coupon) {
         return res.status(401).json({
           err: true,
@@ -380,7 +381,7 @@ module.exports = {
           message: "Invalid coupon code",
         });
       }
-
+  
       if (new Date(coupon.expiry) < new Date()) {
         return res.status(401).json({
           err: true,
@@ -388,64 +389,45 @@ module.exports = {
           message: "Coupon expired",
         });
       }
-
+  
       if (coupon.count <= 0) {
         return res.status(401).json({
           err: true,
           reload: false,
-          message: `This coupon is Expired`,
+          message: "This coupon is expired",
         });
       }
-
-      //user Helper fn to get product all product in cart
-      const cartItems = await userHelper.getCartItemsAll(
-        req.session.isUserAuth
-      );
+  
+      const cartItems = await userHelper.getCartItemsAll(req.session.isUserAuth);
       let minPriceErr = false;
       const total = cartItems.reduce((total, value) => {
-        return (total += Math.round(
-          value.pDetails[0].fPrice * value.products.quantity
-        ));
+        return total + Math.round(value.pDetails[0].fPrice * value.products.quantity);
       }, 0);
-
-      const totalDiscount = cartItems.reduce((total, value, i) => {
-        if (
-          (value.pDetails[0].category === coupon.category ||
-            coupon.category === "All") &&
-          total >= coupon.minPrice
-        ) {
-          return (total += Math.round((total * coupon.discount) / 100));
+  
+      let totalDiscount = 0;
+      cartItems.forEach((item) => {
+        if ((item.pDetails[0].category === coupon.category || coupon.category === "All") && total >= coupon.minPrice) {
+          totalDiscount += Math.round((item.pDetails[0].fPrice * item.products.quantity * coupon.discount) / 100);
         }
-
-        if (total < coupon.minPrice) {
-          minPriceErr = true;
-        }
-
-        return total;
-      }, 0);
-
-      // if(!totalDiscount && minPriceErr){
-      //   return res.status(401).json({
-      //     err: true,
-      //     reload: false,
-      //     message: `This coupon is for products greater than or equal to ₹${coupon.minPrice}`
-      //   });
-      // }
-
-      // if(!totalDiscount){
-      //   return res.status(401).json({
-      //     err: true,
-      //     reload: false,
-      //     message: `This coupon is for ${coupon.category} category`
-      //   });
-      // }
-
+      });
+  
+      if (!totalDiscount && total < coupon.minPrice) {
+        minPriceErr = true;
+      }
+  
+      if (minPriceErr) {
+        return res.status(401).json({
+          err: true,
+          reload: false,
+          message: `This coupon is for products greater than or equal to ₹${coupon.minPrice}`,
+        });
+      }
+  
       res.status(200).json({
         status: true,
         message: `Coupon code ${coupon.code} applied successfully!`,
         totalDiscount,
         coupon,
-        minPriceErr,
         total,
       });
     } catch (err) {
@@ -457,6 +439,6 @@ module.exports = {
       });
     }
   },
-
+  
   // --------------------------------------------------------------------------------------------------------------------
 };

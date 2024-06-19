@@ -60,7 +60,6 @@ adminAddProduct : async (req, res) => {
         return res.status(401).redirect("/adminAddProduct");
       }
   
-      // Handle newlyLaunched and unlistedProduct fields
       const newlyLaunched = req.body.newlyLaunched === 'on';
       const unlistedProduct = req.body.unlistedProduct === 'on';
   
@@ -158,7 +157,6 @@ adminAddProduct : async (req, res) => {
       req.body.quantity = req.body.quantity?.trim();
       req.body.date = req.body.date?.trim();
 
-      // Validate form inputs
       const errors = {};
 
       const existingUpdateProduct = await Productdb.findOne({
@@ -168,17 +166,18 @@ adminAddProduct : async (req, res) => {
         productId: existingUpdateProduct._id,
       });
 
-      // Check for required fields
       if (!req.body.pName) errors.pName = "This Field is required";
       if (!req.body.pName) errors.pName = "This Field is required";
       if (!req.body.pDescription) errors.pDescription = "This Field is required";
       if (!req.body.fPrice) errors.fPrice = "This Field is required";
+      if (req.body.fPrice <= 0) errors.fPrice = "Quantity must be greater than zero";
       if (!req.body.lPrice) errors.lPrice = "This Field is required";
+      if (req.body.quantity <= 0) errors.quantity = "Quantity must be greater than zero";
       if (!req.body.discount) errors.discount = "This Field is required";
       if (!req.body.color) errors.color = "This Field is required";
       if (!req.body.size) errors.size = "This Field is required";
       if (!req.body.quantity) errors.quantity = "This Field is required";
-      if (req.body.quantity <= 0) errors.quantity = "Quantity must be greater than zero";
+      if (req.body.quantity < 0) errors.quantity = "Quantity must be greater than zero";
       if (!req.body.date) {
         errors.date = "This field is required";
       } else {
@@ -190,7 +189,6 @@ adminAddProduct : async (req, res) => {
       if (!existingUpdateProductVariation.images.length && !req.files.length)
         errors.files = "This Field is required";
 
-      // Check for existing product with the same name
       if (
         existingUpdateProduct &&
         existingUpdateProduct._id.toString() !== req.query.id
@@ -198,7 +196,6 @@ adminAddProduct : async (req, res) => {
         errors.pName = "Product Name already exists";
       }
 
-      // If there are validation errors, redirect back to the form with error messages
       if (Object.keys(errors).length > 0) {
         req.flash("userUpdateProductErrors", errors);
         const userUpdateProductFormData = {
@@ -213,13 +210,11 @@ adminAddProduct : async (req, res) => {
           quantity: req.body.quantity,
           date: req.body.date,
         };
-        req.flash("userUpdateProductFormData", userUpdateProductFormData);
         console.log(errors, "Validation errors occurred");
         const refferer = req.get('Referer')
-        return res.redirect(refferer);
+        return res.json({errors})
       }
 
-      // Update product information in the database
       const updateProduct = {
         pName: req.body.pName,
         category: req.body.category,
@@ -233,15 +228,13 @@ adminAddProduct : async (req, res) => {
         date: req.body.date,
       };
 
-      // Correctly update the product document
       await Productdb.updateOne({ _id: req.query.id }, { $set: updateProduct });
 
       const files = req.files;
       const uploadImg = files.map(
-        (value) => `/uploadedImages/${value.filename}`
+        (value) => `uploadedImages/${value.filename}`
       );
 
-      // Update product variation information in the database
       const updateProductVariation = {
         color: req.body.color,
         size: req.body.size,
@@ -253,7 +246,6 @@ adminAddProduct : async (req, res) => {
         { $set: updateProductVariation }
       );
 
-      // Push uploaded images to the product variation
       if (uploadImg.length > 0) {
         await ProductVariationdb.updateOne(
           { productId: req.query.id },
@@ -261,13 +253,10 @@ adminAddProduct : async (req, res) => {
         );
       }
 
-      // Redirect to admin product management page after successful update
     
       return res.status(200).json(true);
     } catch (error) {
-      // Handle any errors
       console.error("Error occurred:", error);
-      // Redirect to an error page or send an error response as necessary
       res.status(500).send("Internal Server Error");
     }
   },

@@ -74,7 +74,7 @@
                             <div class="price">
                               <span class="new-price">$<%= orderDetails.orderItems.lPrice%>.00</span>
                               <span class="old-price">$<%= orderDetails.orderItems.fPrice%>.00</span>
-                              <p>-<%=offerDetails[0].discount %> %OFF</p>
+                              
                             </div>
                             <div class="products-review">
                               <div class="rating">
@@ -106,101 +106,7 @@
                               <li><span>Order Placed: <%=
                                       orderDetails.orderDate.toString().split(' ').slice(0, 4).join(' ') %></span></li>
                               
-                              <li>   <% if (orderDetails.orderItems.orderStatus!=="Cancelled") {%>
-
-                                <input type="hidden" id="product-id" value="<%=orderDetails.orderItems.productId%>">
-
                             
-                                
-                                     <div class="col-lg-12" id="dwnld-invoice" >
-                                         <span class="text-info ">Invoice</span>
-                                     </div>
-                                
-
-                             <table class="invoice-table d-none" id="invoice-table-<%=orderDetails.orderItems.productId%>">
-
-                                 
-                                     <tr>
-                                         <th colspan="2">Sold by :</th>
-         
-                                         <th colspan="3">Billing Address:</th>
-                                     </tr>
-         
-                                 
-                                 <tbody >
-                                     <tr>
-                                     <td colspan="2">
-                                         Thredpool pvt ltd ,<br>
-                                         KINFRA Techno Industrial Park,<br>
-                                         National Highway 66 <br>
-                                         near Calicut University <br>
-                                         Kakkanchery Chelembra PO,<br>
-                                         Dt, Thenhipalam, Kerala 673634
-                                     </td>
-         
-                                     <td colspan="3">
-                                       <%=orderAddress[0].address[0].name %> <br>
-                                       <%=orderAddress[0].address[0].country %> <br>
-                                       <%=orderAddress[0].address[0].state %> <br>
-                                       <%=orderAddress[0].address[0].district %> <br>
-                                       <%=orderAddress[0].address[0].city %> <br>
-                                       <%=orderAddress[0].address[0].pin %> <br>
-                                       <%=orderAddress[0].address[0].houseName %> <br>
-                                       <%=orderAddress[0].address[0].phoneNo %> <br>
-                                     </td>
-                                 </tr>
-                                     <td>
-                                         Order ID : <%= orderDetails._id %> <br>
-                                        Order Date : <%=orderDetails.orderDate.toLocaleDateString('en-US',{day: 'numeric' , month: 'short' ,
-                                        year: 'numeric' })%>
-                                      </td>
-                                 </tbody>
-                                 
-         
-                                
-                                     <tr style="font-weight: bold;" class="mt-5" >
-                                         <th>No.</th>
-                                         <th>Product</th>
-                                         <th>Price</th>
-                                         <th>Qty</th>
-                                         <th>Total</th>
-                                     </tr>
-                                     <tr>
-                                         
-                                     </tr>
-                                      
-                                
-                                
-
-                                 <%let count=0;%>
-                                         <% count++ %>
-                                             <tbody>
-                                                 <tr>
-                                                     <td>
-                                                         <%= count %>.
-                                                     </td>
-                                                     <td>
-                                                         <%= orderDetails.orderItems.pName %>
-                                                     </td>
-                                                     <td>₹<%= orderDetails.orderItems.fPrice %>
-                                                     </td>
-                                                     <td>
-                                                         <%= orderDetails.orderItems.quantity %>
-                                                     </td>
-                                                     <td>₹<%= orderDetails.orderItems.quantity*orderDetails.orderItems.fPrice %>
-                                                     </td>
-         
-                                                 </tr>
-                                             </tbody>
-                                             <tr>
-                                                 <td colspan="4">Total</td>
-                                                 <td colspan="1">$ <%= Math.round((orderDetails.orderItems.lPrice *
-                                                   orderDetails.orderItems.quantity)-((orderDetails.orderItems.offerDiscountAmount)))
-                                                   %></td>
-                                             </tr>
-                                            
-                             </table>
-                             <% }%></li>
 
                             </ul>
 
@@ -299,7 +205,17 @@
                                       <div class="line position-relative <%= (orderDetails.orderItems.orderStatus === 'Cancelled')?'notDoneLine':((orderDetails.orderItems.orderStatus === 'Shipped' ) || (orderDetails.orderItems.orderStatus === 'Delivered'))?'doneLine':'' %>"></div>
                                     </div>
                                   
-                                    <% if (orderDetails.orderItems.orderStatus !== 'Cancelled') { %>
+                                    <% if (orderDetails.orderItems.orderStatus === 'Returned') { %>
+                                      <div class="d-flex gap-3 align-items-center">
+                                        <p class="dot notDone"></p>
+                                        <p id="oText">Returned</p>
+                                      </div>
+                                    <% } else if (orderDetails.orderItems.orderStatus === 'Cancelled') { %>
+                                      <div class="d-flex gap-3 align-items-center">
+                                        <p class="dot notDone"></p>
+                                        <p id="oText">Cancelled</p>
+                                      </div>
+                                    <% } else { %>
                                       <div class="d-flex gap-3 align-items-center">
                                         <p class="dot <%= ((orderDetails.orderItems.orderStatus === 'Shipped') || (orderDetails.orderItems.orderStatus === 'Delivered')) ? 'done' : '' %>"></p>
                                         <p id="oText">Shipped</p>
@@ -311,22 +227,9 @@
                                         <p class="dot <%= (orderDetails.orderItems.orderStatus === 'Delivered') ? 'done' : '' %>"></p>
                                         <p id="oText">Delivered</p>
                                       </div>
-                                      <div class="lineParent position-relative">
-                                        <div class="line position-relative returnedLine <%= (orderDetails.orderItems.orderStatus === 'Returned') ? 'doneLine' : '' %>"></div>
-                                      </div>
-                                      <div class="d-flex gap-3 align-items-center returnedDot <%= (orderDetails.orderItems.orderStatus === 'Returned') ? 'show' : 'hide' %>">
-                                        <p class="dot <%= (orderDetails.orderItems.orderStatus === 'Returned') ? 'done' : '' %>"></p>
-                                        <p id="oText">Returned</p>
-                                      </div>
-                                    <% } else { %>
-                                      <div class="d-flex gap-3 align-items-center">
-                                        <p class="dot notDone"></p>
-                                        <p id="oText">Cancelled</p>
-                                      </div>
                                     <% } %>
+                                    
                                   </div>
-                                  
-                                  
                                 </td>
 
                               </tr>
@@ -357,15 +260,40 @@
                               </tr>
                               <tr>
                                 <td>Shipping:</td>
-                                <td id="free">Free</td>
-                              </tr>
-                              <tr>
-                                <td>Total:</td>
-                                <td id="tPrice">$ <%= Math.round((orderDetails.orderItems.lPrice *
-                                orderDetails.orderItems.quantity)-((orderDetails.orderItems.offerDiscountAmount)))
-                                %>
-                                </td>
-                              </tr>
+                                <td id="shippingFee">$<span id="shippingAmount">40.00</span></td>
+                            </tr>
+                           
+                          <tr>
+                            <td>Total:</td>
+                            <td id="tPrice">$<%= Math.round((orderDetails.orderItems.lPrice * orderDetails.orderItems.quantity) - (orderDetails.orderItems.offerDiscountAmount)) %></td>
+                        </tr>
+                        <script>
+                          document.addEventListener("DOMContentLoaded", function() {
+                              // Get subtotal from the server-rendered value
+                              var subtotalElement = document.getElementById('sTotal');
+                              var subtotalText = subtotalElement.textContent.replace('$', '');
+                              var subtotal = parseFloat(subtotalText);
+                      
+                              // Determine shipping fee based on subtotal
+                              var shippingFee = subtotal < 1000 ? 40 : 0;
+                      
+                              // Update subtotal with shipping fee if applicable
+                              subtotal += shippingFee;
+                              subtotalElement.textContent = '$' + subtotal.toFixed(2);
+                      
+                              // Calculate total based on order details
+                              var totalElement = document.getElementById('tPrice');
+                              var total = Math.round((orderDetails.orderItems.lPrice * orderDetails.orderItems.quantity) - (orderDetails.orderItems.offerDiscountAmount));
+                      
+                              // Add shipping fee to total if it applies
+                              total += shippingFee;
+                      
+                              // Update total in the DOM
+                              totalElement.textContent = '$' + total.toFixed(2);
+                          });
+                      </script>
+                      
+                      
                             </tbody>
                           </table>
                         </div>

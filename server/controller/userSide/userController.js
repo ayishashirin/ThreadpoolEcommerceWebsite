@@ -254,7 +254,7 @@ module.exports = {
         return res.status(401).redirect("/register");
       }
       if (req.body.password === req.body.confirmPassword) {
-        // Hash password
+
         const hashedPass = await bcrypt.hash(req.body.password, saltRounds);
 
         try {
@@ -268,7 +268,6 @@ module.exports = {
               .redirect(`/register?referralCode=${req.query.referralCode}`);
           }
 
-          // Create new user
           const newUser = new Userdb({
             fullName: req.body.fullName,
             email: req.body.email,
@@ -285,7 +284,6 @@ module.exports = {
           if (isReferr && isReferr.referralCodeStatus === true) {
             newUser.referredBy = req.query.referralCode;
           }
-          // Redirect to verify OTP page
           req.session.verifyOtpPage = true;
           req.session.verifyEmail = req.body.email;
           await sendOtpMail(req, res, "/registerOtpVerify");
@@ -358,7 +356,7 @@ module.exports = {
       req.session.userId = data._id;
       req.session.verifyEmail = req.body.email;
 
-      await sendOtpMail(req, res, "/forgotPassword"); // send otp as mail
+      await sendOtpMail(req, res, "/forgotPassword"); 
     } catch (err) {
       console.error("Error querying the database:", err);
       res.status(500).render("errorPages/500ErrorPage");

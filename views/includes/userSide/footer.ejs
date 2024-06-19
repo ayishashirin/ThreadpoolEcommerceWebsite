@@ -176,9 +176,9 @@
                                             <span aria-hidden="true"><i class="bx bx-x"></i></span>
                                         </button>
                                         <div class="modal-body">
-                                            <h3>My Cart (<%= cartItems.length %>)</h3>
+                                            <h3>My Cart (<%= cartItems?.length %>)</h3>
                                             <div class="products-cart-content">
-                                                <% cartItems.forEach((item, index) => { %>
+                                                <% cartItems?.forEach((item, index) => { %>
                                                     <div class="products-cart">
                                                         <div class="products-image">
                                                             <a href="#"><img src="/<%= item.variations[0].images[0] %>" alt="image"></a>
@@ -198,7 +198,7 @@
                                             </div>
                                             <div class="products-cart-subtotal">
                                                 <span>Subtotal</span>
-                                                <span class="subtotal">$<%= cartItems.reduce((total, value) => { return total +=
+                                                <span class="subtotal">$<%= cartItems?.reduce((total, value) => { return total +=
                                                     (value.pDetails[0].fPrice * value.products.quantity); }, 0); %></span>
                                             </div>
                                             <div class="products-cart-btn">
@@ -220,9 +220,9 @@
                                             <span aria-hidden="true"><i class="bx bx-x"></i></span>
                                         </button>
                                         <div class="modal-body">
-                                            <h3>My Wish List (<%= wishlistItems.length %>)</h3>
+                                            <h3>My Wish List (<%= wishlistItems?.length %>)</h3>
                                             <div class="products-cart-content">
-                                                <% wishlistItems.forEach((item, index) => { %>
+                                                <% wishlistItems?.forEach((item, index) => { %>
 
                                                 <div class="products-cart">
                                                     <div class="products-image">

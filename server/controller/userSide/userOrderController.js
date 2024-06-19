@@ -40,12 +40,34 @@ module.exports = {
                             amount: totalPrice,
                             type: "refund",
                             description: `Refund for order item ${orderItemId}`,
-                            date: new Date()
+                            date: new Date(),
+                            status:"Order Returned",
+                            details: orderItemId
+
                         }
                     }
                 }
             );
-        } else if (paymentMethod === "COD") {
+        } else if (paymentMethod === "razorpay") {
+            await UserWalletdb.updateOne(
+                { userId: userId },
+                {
+                    $inc: { walletBalance: totalPrice },
+                    $push: {
+                        transactions: {
+                            amount: totalPrice,
+                            type: "refund",
+                            description: `Refund for order item ${orderItemId}`,
+                            date: new Date(),
+                            status:"Order Returned",
+                            details: orderItemId
+
+
+                        }
+                    }
+                }
+            );
+        }else if (paymentMethod === "COD") {
             console.log("COD payment return, no wallet update needed");
         }
 
@@ -69,7 +91,7 @@ module.exports = {
         req.params.productId,
         req.session.isUserAuth
       );
-
+      
       return res.status(200).json({ success: true });
     } catch (err) {
       console.error("order Cancel err", err);

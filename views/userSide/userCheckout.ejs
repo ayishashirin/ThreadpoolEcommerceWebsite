@@ -4,7 +4,27 @@
   <link rel="stylesheet" href="/userSide/css/userPayment.css" />
   <link rel="stylesheet" href="/userSide/css/checkout.css" />
 
+<style>
+  #loader {
+    border: 16px solid #f3f3f3; /* Light grey */
+    border-top: 16px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+}
 
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+</style>
   <div class="page-title-area">
     <div class="container">
       <div class="page-title-content">
@@ -195,6 +215,23 @@
                 <div class="billing-details">
                   <h3 class="title">Billing Details</h3>
                   <div class="row" style="padding-right:20px;">
+                    <% if (userInfo.variations[0]?.address.length===0) { %>
+                      <div> 
+
+                        <div class="errNoProduct d-flex justify-content-center" >
+                            <img src="/userSide/img/errorPages/address.png" width="200px" alt="No Data">
+                        </div>
+         
+                        <div class="errNoProduct d-flex justify-content-center"><h3>No Address found!</h3></div>
+                        <div class="row align-items-center" >
+                          <div class="d-flex justify-content-center">
+                            <a href="/addAddress" class="optional-btn ">Add New Address</a>
+                          </div>
+                          </div>
+                        </div>
+                  
+                      <% } else { %>
+
                     <div class="orderSummary ">
                       <div class="orderHeading">
                         <h2>Delivery Address</h2>
@@ -202,6 +239,19 @@
                       <div class="deleviryContent">
                         <div class="chooseAdd position-relative">
                           <% if (userInfo.variations[0]?.address.length===0 || !userInfo.variations[0]) { %>
+
+                            <div class="errNoProduct d-flex justify-content-center" >
+                              <img src="/userSide/img/errorPages/address.png" width="20px" alt="No Data">
+                          </div>
+           
+                          <div class="errNoProduct d-flex justify-content-center"><span>No Address found!</span></div>
+                          <div class="row align-items-center" >
+                            <div class="d-flex justify-content-center">
+                              <a href="/addAddress" class="optional-btn ">Add New Address</a>
+                            </div>
+                            </div>
+                          </div>
+
                             <% } else { %>
                               <div class="existingAddress">
 
@@ -209,8 +259,7 @@
                                   <%= userInfo.variations[0]?.address.find((value)=> String(value._id) ===
                                     String(userInfo.variations[0]?.defaultAddress))?.structuredAddress %>
                                 </p>
-                                <p class="phone">Phone: <%= userInfo.phoneNumber %>
-                                </p>
+                                
                                 <input type="text" name="adId" value="<%= userInfo.variations[0]?.defaultAddress %>"
                                   hidden>
                                 <input type="text" name="couponId" id="couponId"
@@ -232,11 +281,12 @@
                         </div>
                       </div>
                     </div>
-                  </div>
+                    <% } %>
+                  
                   <!-- -------------------------------------- -->
 
-                  <!--Modal Launch Button-->
-                  <div class="button-row d-flex">
+                  <!--Modal-->
+                  <div class="button-row d-flex" style="padding-right: 20px;"    >
                     <% for(let i=0; i < coupons.length; i++) { %>
                       <button type="button" class="btn btn-info btn-lg openmodal m-1" data-toggle="modal"
                         data-target="#myModal<%=i%>">
@@ -297,7 +347,7 @@
 
 
 
-
+                      <div class="coupomSession p-3">
                         <form action="" method="post">
                           <label for="coupon">Enter your coupon code:</label><br>
                           <input type="text" id="coupon" name="coupon" placeholder="Enter coupon code"><br>
@@ -305,18 +355,18 @@
                             <i class="fa-solid fa-circle-exclamation" style="color: #ff0000;"></i> Invalid Coupon
                           </p>
 
-                          <button type="button" onclick="applyCoupon()" onclick=" calculateOrderTotal()">Apply
+                          <button type="button" class="default-btn" onclick="applyCoupon()" onclick=" calculateOrderTotal()">Apply
                             Coupon</button>
 
                         </form>
 
-
+                      </div>
 
 
                         <!-- ------------------------------------------------------------------------ -->
                       </div>
                   </div>
-
+                </div>
 
 
                   <div class="col-lg-6 col-md-12">
@@ -356,13 +406,24 @@
                                       %></span>
                                 </td>
                               </tr>
-                              <tr>
-                                <td class="order-shipping">
-                                  <span>Shipping</span>
-                                </td>
-                                <td class="shipping-price">
-                                  <span>Free</span>
-                                </td>
+                                     <td class="order-shipping"><span>Shipping</span></td>
+                                      <td class="shipping-price"><span id="shippingFee">$0.00</span></td>
+                                      <script>
+                                        document.addEventListener("DOMContentLoaded", function() {
+                                            // Calculate the subtotal from the server-rendered value
+                                            var subtotalElement = document.getElementById('totalAmount');
+                                            var subtotalText = subtotalElement.textContent.replace('$', '').replace('.00', '');
+                                            var totalAmount = parseFloat(subtotalText);
+                                    
+                                            // Determine the shipping fee based on the subtotal
+                                            var shippingFee = totalAmount > 1000 ? 0 : 40;
+                                    
+                                            // Update the shipping fee in the DOM
+                                            var shippingFeeElement = document.getElementById('shippingFee');
+                                            shippingFeeElement.textContent = '$' + shippingFee + '.00';
+                                        });
+                                    </script>
+                                  </tr>
                               </tr>
                               <tr>
                                 <td class="discount-price">
@@ -421,19 +482,20 @@
 
                               <tr>
                                 <td class="total-price">
-                                  <span>Order Total</span>
+                                    <span>Order Total</span>
                                 </td>
                                 <td class="product-subtotal">
-                                  <span class="subtotal-amount" id="orderTotal">$<%= cartItems.reduce((total, value)=> {
-                                      const offerAmount = Math.round((value.pDetails[0].fPrice * value.allOffers) / 100)
-                                      * value.products.quantity;
-                                      const discountedPrice = (value.pDetails[0].lPrice * value.products.quantity) -
-                                      offerAmount;
-                                      return total + discountedPrice;
-                                      }, 0).toFixed(2);
-                                      %></span>
+                                    <span class="subtotal-amount" id="orderTotal">
+                                        $<%= cartItems.reduce((total, value) => {
+                                            const offerAmount = Math.round((value.pDetails[0].fPrice * value.allOffers) / 100) * value.products.quantity;
+                                            const discountedPrice = (value.pDetails[0].lPrice * value.products.quantity) - offerAmount;
+                                            return total + discountedPrice;
+                                        }, 0).toFixed(2); %>
+                                    </span>
                                 </td>
-                              </tr>
+                            </tr>
+                           
+                          
                           </tbody>
                         </table>
                       </div>
@@ -471,6 +533,8 @@
                     </div>
                   </div>
                 </div>
+
+                <div id="loader" style="display: none;">Loading...</div>
           </form>
 
           <% } %>

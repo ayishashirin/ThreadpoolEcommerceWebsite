@@ -1,5 +1,5 @@
 /*---------- font family ----------*/
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Lemon&family=Ubuntu:wght@300;400;500;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Lemon&family=sans-serif:wght@300;400;500;700&display=swap");
 /*---------- end of font family ----------*/
 
 *::after,
@@ -340,7 +340,7 @@ main{
 }
 .cartHead h2 {
   color: #000;
-  font-family: Ubuntu;
+  font-family: sans-serif;
   font-size: 1.125rem;
   font-style: normal;
   font-weight: 700;
@@ -369,7 +369,7 @@ main{
 .orderHeading h2 {
   margin: 0;
   color: rgba(0, 0, 0, 0.5);
-  font-family: Ubuntu;
+  font-family: sans-serif;
   font-size: 1rem;
   font-style: normal;
   font-weight: 700;
@@ -379,7 +379,7 @@ main{
 .orderContent {
   padding: 1.2rem;
   border-bottom: 1px solid #e0e0e0;
-  font-family: Ubuntu;
+  font-family: sans-serif;
   font-style: normal;
   line-height: normal;
 }
@@ -421,7 +421,7 @@ main{
 }
 .existingAddress p {
   color: rgba(0, 0, 0, 0.75);
-  font-family: Ubuntu;
+  font-family: sans-serif;
   font-size: 0.75rem;
   font-style: normal;
   font-weight: 600;
@@ -429,7 +429,7 @@ main{
 }
 .button {
   color: #000;
-  font-family: Ubuntu;
+  font-family: sans-serif;
   font-size: 0.75rem;
   font-style: normal;
   font-weight: 500;
@@ -476,7 +476,7 @@ main{
 }
 .pInfo h2{
     color: #000;
-    font-family: Ubuntu;
+    font-family: sans-serif;
     font-size: 0.9rem;
     font-style: normal;
     font-weight: 700;
@@ -485,7 +485,7 @@ main{
 }
 .pInfo p{
     color: #000;
-    font-family: Ubuntu;
+    font-family: sans-serif;
     font-size: 0.75rem;
     font-style: normal;
     font-weight: 500;
@@ -504,7 +504,7 @@ main{
     background-color: #000;
     color: #fff;
     color: #FFF;
-    font-family: Ubuntu;
+    font-family: sans-serif;
     font-size: 0.75rem;
     font-style: normal;
     font-weight: 700;
@@ -534,7 +534,7 @@ main{
 }
 .cardOptions p{
     color: #000;
-    font-family: Ubuntu;
+    font-family: sans-serif;
     font-size: 0.8rem;
     font-style: normal;
     font-weight: 700;
@@ -566,7 +566,7 @@ footer {
 }
 .subheading h2 {
   color: #fff;
-  font-family: Ubuntu;
+  font-family: sans-serif;
   font-size: 1.25rem;
   font-style: normal;
   font-weight: 700;
@@ -578,7 +578,7 @@ footer {
 }
 .contact {
   color: #fff;
-  font-family: Ubuntu;
+  font-family: sans-serif;
   font-size: 0.875rem;
   font-style: normal;
   font-weight: 700;
@@ -586,7 +586,7 @@ footer {
 }
 .dateTime {
   color: rgba(255, 255, 255, 0.4);
-  font-family: Ubuntu;
+  font-family: sans-serif;
   font-size: 0.75rem;
   font-style: normal;
   font-weight: 700;
@@ -597,7 +597,7 @@ footer {
 }
 .descriptionTwo a {
   color: rgba(255, 255, 255, 0.4);
-  font-family: Ubuntu;
+  font-family: sans-serif;
   font-size: 0.75rem;
   font-style: normal;
   font-weight: 700;
@@ -653,7 +653,7 @@ footer {
   left: 50%;
   transform: translate(-50%, -50%);
   color: #fff;
-  font-family: Ubuntu;
+  font-family: sans-serif;
   font-size: 0.85rem;
   font-style: normal;
   font-weight: 700;
@@ -750,7 +750,7 @@ footer {
   }
   .productDetails h2 {
     color: #000;
-    font-family: Ubuntu;
+    font-family: sans-serif;
     font-size: 1rem;
     font-style: normal;
     font-weight: 700;
@@ -809,7 +809,7 @@ footer {
     font-style: normal;
     line-height: normal;
     text-transform: uppercase;
-    font-family: Ubuntu;
+    font-family: sans-serif;
   }
   .price p:nth-child(1) {
     color: #212121;
@@ -948,7 +948,7 @@ footer {
     }
     .cardOptions p{
         color: #000;
-        font-family: Ubuntu;
+        font-family: sans-serif;
         font-size: 0.7rem;
         font-style: normal;
         font-weight: 700;
@@ -1003,7 +1003,7 @@ footer {
     }
     .cardOptions p{
         color: #000;
-        font-family: Ubuntu;
+        font-family: sans-serif;
         font-size: 0.65rem;
         font-style: normal;
         font-weight: 700;
