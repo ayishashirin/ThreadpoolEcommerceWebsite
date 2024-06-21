@@ -161,7 +161,7 @@ document.getElementById('placeOrderBtn').addEventListener('click', async functio
               description: "Threadpool.online offers you flexible and responsive shopping experience.",
               image: svgDataUrl,
               order_id: response.data.order.id,
-              callback_url: "threadpool.shop/onlinePaymentSuccessfull",
+              callback_url: "/onlinePaymentSuccessfull",
               prefill: {
                   name: response.data.order.fullName,
                   email: response.data.order.email,
