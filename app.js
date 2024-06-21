@@ -3,6 +3,7 @@ const session = require("express-session");
 const dotenv = require("dotenv").config();
 const morgan = require("morgan");
 const flash = require("express-flash");
+const cropperjs = require("cropperjs");
 const passport = require("passport");
 const app = express();
 const userSideRouter = require("./server/router/userSide/userRouter");

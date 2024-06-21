@@ -90,22 +90,22 @@ module.exports = {
         { productId: req.params.productId },
         { quantity: 1 }
       );
-
+  
       const values = parseInt(req.params.values);
-
+  
       if (values !== 0) {
         if (
           values > 0 &&
           cartProduct.products[0].quantity + values > stock.quantity
         ) {
           return res.json({
-            message: `Only ${stock.quantity} stocks available `,
+            message: `Only ${stock.quantity} stocks available`,
             result: false,
             stock: stock.quantity,
           });
         }
-
-        if (values > 0  &&
+  
+        if (values > 0 &&
           cartProduct.products[0].quantity + values > 10) {
           return res.json({
             message: "Quantity cannot be greater than 10",
@@ -113,7 +113,7 @@ module.exports = {
             stock: stock.quantity,
           });
         }
-
+  
         if (values < 0 && cartProduct.products[0].quantity + values < 1) {
           return res.json({
             message: "Quantity cannot be less than 1",
@@ -121,39 +121,69 @@ module.exports = {
             stock: stock.quantity,
           });
         }
-
-        const cartItem = await Cartdb.updateOne(
-          {
-            userId: req.session.isUserAuth,
-            "products.productId": req.params.productId,
-          },
-          { $inc: { "products.$.quantity": values } }
-        );
-        // User Helper function to get all products in the cart
-        const cartItems = await userHelper.getCartItemsAll(
-          req.session.isUserAuth
-        );
-        const discount = cartItems.reduce((total, value) => {
-          const fPrice = value.pDetails[0].fPrice;
-          const lPrice = value.pDetails[0].lPrice;
-          const discountAmount = (fPrice - lPrice) * value.products.quantity;
-          return total + discountAmount;
-        }, 0);
-
-        const total = cartItems.reduce((total, value) => {
-          return (total += value.pDetails[0].lPrice * value.products.quantity);
-        }, 0);
-
-        return res.json({
-          message: "Successful quantity update",
-          result: true,
-          total,
-          discount,
-          cartItems: cartItems, // Sending cartItems to frontend
-          cartItem,
-        });
+  
+        const updatedQuantity = cartProduct.products[0].quantity + values;
+  
+        if (updatedQuantity === 0) {
+          await Cartdb.updateOne(
+            {
+              userId: req.session.isUserAuth,
+              "products.productId": req.params.productId,
+            },
+            { $pull: { products: { productId: req.params.productId } } }
+          );
+  
+          const cartItems = await userHelper.getCartItemsAll(req.session.isUserAuth);
+          const discount = cartItems.reduce((total, value) => {
+            const fPrice = value.pDetails[0].fPrice;
+            const lPrice = value.pDetails[0].lPrice;
+            const discountAmount = (fPrice - lPrice) * value.products.quantity;
+            return total + discountAmount;
+          }, 0);
+  
+          const total = cartItems.reduce((total, value) => {
+            return (total += value.pDetails[0].lPrice * value.products.quantity);
+          }, 0);
+  
+          return res.json({
+            message: "Product removed from cart due to zero stock",
+            result: true,
+            total,
+            discount,
+            cartItems,
+          });
+        } else {
+          const cartItem = await Cartdb.updateOne(
+            {
+              userId: req.session.isUserAuth,
+              "products.productId": req.params.productId,
+            },
+            { $inc: { "products.$.quantity": values } }
+          );
+  
+          const cartItems = await userHelper.getCartItemsAll(req.session.isUserAuth);
+          const discount = cartItems.reduce((total, value) => {
+            const fPrice = value.pDetails[0].fPrice;
+            const lPrice = value.pDetails[0].lPrice;
+            const discountAmount = (fPrice - lPrice) * value.products.quantity;
+            return total + discountAmount;
+          }, 0);
+  
+          const total = cartItems.reduce((total, value) => {
+            return (total += value.pDetails[0].lPrice * value.products.quantity);
+          }, 0);
+  
+          return res.json({
+            message: "Successful quantity update",
+            result: true,
+            total,
+            discount,
+            cartItems,
+            cartItem,
+          });
+        }
       }
-
+  
       return res.json({
         message: "Invalid quantity value",
         result: false,
@@ -163,6 +193,7 @@ module.exports = {
       res.status(500).json({ message: "Internal server error", result: false });
     }
   },
+  
 
   // ----------------------------------------------------------------------------------------------------------
 
@@ -191,7 +222,6 @@ module.exports = {
         }
 
         if (req.session.payErr || req.session.adErr) {
-          console.log("session error//////////////////////");
             return res.json({
                 url: "/cartCheckOut",
                 paymentMethode: "COD",
