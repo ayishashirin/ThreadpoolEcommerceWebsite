@@ -21,7 +21,7 @@ module.exports = {
             req.session.adminPageErr = false;
 
             if (req.session.verifyOtpPage) {
-                res.redirect("/");
+                res.redirect("/registerOtpVerify");
             } else {
                 next();
             }

@@ -468,14 +468,15 @@ module.exports = {
       }
 
       if (req.body.newPassword && !/[@$!%*?&]/.test(req.body.newPassword)) {
-        req.session.newPass = `Password at least contain one special character from the provided set.`;
+        req.session.newPass = `Password at least contain one special character.`;
       }
-
+      
       if (
         req.body.newPassword &&
         !/[A-Za-z\d@$!%*?&]{8,}/.test(req.body.newPassword)
       ) {
-        req.session.newPass = `Password must be 8 charater long and contain letters, digits, and special characters`;
+        req.session.newPass = `Password must be 8 characters long and 
+      contain letters, digits, and special characters.`;
       }
 
       if (req.session.newPass || req.session.conPass || req.session.errMesg) {
