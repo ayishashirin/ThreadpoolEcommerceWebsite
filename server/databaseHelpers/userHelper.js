@@ -734,73 +734,28 @@ module.exports = {
     }
   },
 
-  getOrderItemsAll: async (userId) => {
+GetAllOrder : async (userId, pageNo = 1) => {
     try {
-      const agg = [
-        {
-          $match: {
-            userId: new mongoose.Types.ObjectId(userId),
-          },
-        },
-        {
-          $unwind: {
-            path: "$products",
-          },
-        },
-
-        {
-          $lookup: {
-            from: "offerdbs",
-            localField: "pDetails.offers",
-            foreignField: "_id",
-            as: "allOffers",
-          },
-        },
-
-        {
-          $lookup: {
-            from: "productdbs",
-            localField: "products.productId",
-            foreignField: "_id",
-            as: "pDetails",
-          },
-        },
-        {
-          $match: {
-            "pDetails.unlistedProduct": false,
-          },
-        },
-        {
-          $lookup: {
-            from: "productvariationdbs",
-            localField: "products.productId",
-            foreignField: "productId",
-            as: "variations",
-          },
-        },
-        {
-          $sort: { orderDate: -1 },
-        },
-      ];
-
-      const products = await Cartdb.aggregate(agg);
-
-      products.forEach((each) => {
-        each.allOffers = each.allOffers.reduce((total, offer) => {
-          if (offer.expiry >= new Date() && offer.discount > total) {
-            return (total = offer.discount);
-          }
-
-          return total;
-        }, 0);
-      });
-
-      return products;
+      const skip = (Number(pageNo) - 1) * 12;
+      const userObjectId = new mongoose.Types.ObjectId(userId);
+  
+      const totalOrders = await Orderdb.countDocuments({ userId: userObjectId });
+  
+      const orders = await Orderdb.aggregate([
+        { $match: { userId: userObjectId } },
+        { $sort: { orderDate: -1 } },
+        { $skip: skip },
+        { $limit: 12 },
+      ]);
+  
+      return {
+        orders,
+        totalOrders,
+      };
     } catch (err) {
       throw err;
     }
   },
-
   getSingleOrderOfDetails: async (params, userId) => {
     try {
       if (

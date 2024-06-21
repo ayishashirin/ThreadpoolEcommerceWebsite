@@ -410,15 +410,12 @@
                                       <td class="shipping-price"><span id="shippingFee">$0.00</span></td>
                                       <script>
                                         document.addEventListener("DOMContentLoaded", function() {
-                                            // Calculate the subtotal from the server-rendered value
                                             var subtotalElement = document.getElementById('totalAmount');
                                             var subtotalText = subtotalElement.textContent.replace('$', '').replace('.00', '');
                                             var totalAmount = parseFloat(subtotalText);
                                     
-                                            // Determine the shipping fee based on the subtotal
                                             var shippingFee = totalAmount > 1000 ? 0 : 40;
                                     
-                                            // Update the shipping fee in the DOM
                                             var shippingFeeElement = document.getElementById('shippingFee');
                                             shippingFeeElement.textContent = '$' + shippingFee + '.00';
                                         });
