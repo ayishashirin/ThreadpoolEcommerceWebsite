@@ -65,7 +65,7 @@ module.exports = {
           const cartItems = await userHelper.getCartItemsAll(req.session.isUserAuth);
           const coupons =  await adminHelper.getAllCoupon();
           res.status(200).render(
-            "userSide/UserCheckout",
+            "userSide/userCheckout",
             {
               category,
               userInfo,
