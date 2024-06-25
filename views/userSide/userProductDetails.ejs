@@ -1,283 +1,258 @@
 <!-- header -->
 <%- include('../includes/userSide/header') %>
-    <!-- end of header -->
+<!-- end of header -->
 
 
 
-    <div class="page-title-area">
-        <div class="container">
-            <div class="page-title-content">
-                <h2>
-                    <%= products.pName %>
-                </h2>
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li>Products Details</li>
-                </ul>
-            </div>
-        </div>
+<div class="page-title-area">
+  <div class="container">
+    <div class="page-title-content">
+      <h2>
+        <%= products.pName %>
+      </h2>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li>Products Details</li>
+      </ul>
     </div>
+  </div>
+</div>
 
 
-    <section class="product-details-area pt-100 pb-70">
-        <div class="container">
-        <div class="row">
-        <div class="col-lg-5 col-md-12">
+<section class="product-details-area pt-100 pb-70">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-5 col-md-12">
         <div class="products-details-image">
-        <ul class="products-details-image-slides">
+          <ul class="products-details-image-slides">
             <% for( let i=0; i <=products.variations[0].images.length; i++ ) { %>
-                
-                    <li>
-                        <a href="#" class="imageZoom">
-                            <img src="/<%= products.variations[0].images[i] %>" alt="image">
-                        </a>
-                    </li>
-                
+
+            <li>
+              <a href="#" class="imageZoom">
+                <img src="/<%= products.variations[0].images[i] %>" alt="image">
+              </a>
+            </li>
+
             <% } %>
-        </ul>
-        <div class="slick-thumbs">
+          </ul>
+          <div class="slick-thumbs">
             <ul>
-                <% for( let i=0; i <=products.variations[0].images.length; i++ ) { %>
-                    <li><img src="/<%= products.variations[0].images[i] %>" alt="image"></li>
-                <% } %>
+              <% for( let i=0; i <=products.variations[0].images.length; i++ ) { %>
+              <li><img src="/<%= products.variations[0].images[i] %>" alt="image"></li>
+              <% } %>
 
             </ul>
+          </div>
         </div>
-        </div>
-        </div>
-        <div class="col-lg-7 col-md-12">
+      </div>
+      <div class="col-lg-7 col-md-12">
         <div class="products-details-desc">
-        <h3><%= products.pName %></h3>
-        <div class="price">
-        <span class="new-price">$<%= products.lPrice %>.00</span>
-        <span class="old-price">$<%= products.fPrice %>.00 </span>
-        <span class="offer" style="color:#866528;">(<%= products.allOffers%>% OFF)</span>
-        </div>
-        
-        <!-- <div class="products-review">
-        <div class="rating">
-        <i class="bx bx-star"></i>
-        <i class="bx bx-star"></i>
-        <i class="bx bx-star"></i>
-        <i class="bx bx-star"></i>
-        <i class="bx bx-star"></i>
-        </div>
-        <a href="#" class="rating-count">3 reviews</a>
-        </div> -->
-        <ul class="products-info">
-        <li><span>Availability:<p
-            class="stock <%= products.variations[0].quantity > 0?'text-success':'text-danger' %>">
-            <%= products.variations[0].quantity> 0?'In Stock':'Out Of Stock' %></p> (<%= products.variations[0].quantity %> items)</span></li>
-        
-        <li><span>Category:</span><%= products.category%> <a href="#"></a></li>
-        </ul>
-        <div class="products-color-switch">
+          <h3><%= products.pName %></h3>
+          <div class="price">
+            <span class="new-price">$<%= products.lPrice %>.00</span>
+            <span class="old-price">$<%= products.fPrice %>.00 </span>
+            <span class="offer" style="color:#866528;">(<%= products.allOffers%>% OFF)</span>
+          </div>
+
+          <ul class="products-info">
+            <li><span>Availability:<p class="stock <%= products.variations[0].quantity > 0?'text-success':'text-danger' %>">
+                  <%= products.variations[0].quantity> 0?'In Stock':'Out Of Stock' %></p> (<%= products.variations[0].quantity %> items)</span></li>
+
+            <li><span>Category:</span><%= products.category%> <a href="#"></a></li>
+          </ul>
+          <div class="products-color-switch">
             <span>Color: <%= products.variations[0].color %></span>
             <ul id="colorList">
-                <li><a href="#" title="Black" class="color-black"></a></li>
-                <li><a href="#" title="White" class="color-white"></a></li>
-                <li><a href="#" title="Red" class="color-red"></a></li>
-                <li><a href="#" title="Yellow" class="color-yellow"></a></li>
-                <li><a href="#" title="Blue" class="color-blue"></a></li>
+              <li><a href="#" title="Black" class="color-black"></a></li>
+              <li><a href="#" title="White" class="color-white"></a></li>
+              <li><a href="#" title="Red" class="color-red"></a></li>
+              <li><a href="#" title="Yellow" class="color-yellow"></a></li>
+              <li><a href="#" title="Blue" class="color-blue"></a></li>
             </ul>
-        </div>
-        
-        <script>
+          </div>
+
+          <script>
             document.addEventListener('DOMContentLoaded', function() {
-                var currentColor = '<%= products.variations[0].color %>';
-                
-                // Get the list of colors
-                var colorList = document.getElementById('colorList');
-                var colorItems = colorList.getElementsByTagName('li');
-                
-                for (var i = 0; i < colorItems.length; i++) {
-                    var colorAnchor = colorItems[i].getElementsByTagName('a')[0];
-                    if (colorAnchor.title.toLowerCase() !== currentColor.toLowerCase()) {
-                        colorItems[i].style.display = 'none';
-                    }
+              var currentColor = '<%= products.variations[0].color %>';
+
+              // Get the list of colors
+              var colorList = document.getElementById('colorList');
+              var colorItems = colorList.getElementsByTagName('li');
+
+              for (var i = 0; i < colorItems.length; i++) {
+                var colorAnchor = colorItems[i].getElementsByTagName('a')[0];
+                if (colorAnchor.title.toLowerCase() !== currentColor.toLowerCase()) {
+                  colorItems[i].style.display = 'none';
                 }
+              }
             });
-        </script>
-        
-        <div class="products-size-wrapper">
+          </script>
+
+          <div class="products-size-wrapper">
             <span>Size: <%= products.variations[0].size %></span>
             <ul id="sizeList">
-                <li><a href="#" id="sizeXS">XS</a></li>
-                <li><a href="#" id="sizeS">S</a></li>
-                <li><a href="#" id="sizeM">M</a></li>
-                <li><a href="#" id="sizeL">L</a></li>
-                <li><a href="#" id="sizeXL">XL</a></li>
-                <li><a href="#" id="sizeXXL">XXL</a></li>
+              <li><a href="#" id="sizeXS">XS</a></li>
+              <li><a href="#" id="sizeS">S</a></li>
+              <li><a href="#" id="sizeM">M</a></li>
+              <li><a href="#" id="sizeL">L</a></li>
+              <li><a href="#" id="sizeXL">XL</a></li>
+              <li><a href="#" id="sizeXXL">XXL</a></li>
             </ul>
-        </div>
-        
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                // Assuming products.variations[0].size contains the current size
-                var currentSize = '<%= products.variations[0].size %>';
-                
-                // Get the list of sizes
-                var sizeList = document.getElementById('sizeList');
-                var sizeItems = sizeList.getElementsByTagName('li');
-                
-                // Loop through the size items and hide the ones that do not match the current size
-                for (var i = 0; i < sizeItems.length; i++) {
-                    var sizeAnchor = sizeItems[i].getElementsByTagName('a')[0];
-                    if (sizeAnchor.textContent !== currentSize) {
-                        sizeItems[i].style.display = 'none';
-                    }
-                }
-            });
-        </script>
-       
-        
-        
-        
-        <!-- <div class="products-add-to-cart">
-        <div class="input-counter">
-        <span class="minus-btn"><i class="bx bx-minus"></i></span>
-        <input type="text" value="1">
-        <span class="plus-btn"><i class="bx bx-plus"></i></span>
-        </div> -->
-        <% if (isCartItem) { %>
-            <a href="/addToCart">
-                <button class="default-btn cartBtn">go to cart</button>
-            </a>
-            <% } else { %>
-                <% if (products.variations[0].quantity> 0) { %>
-                    <a href="/cartNow/<%= products._id %>">
-                        <button class="default-btn cartBtn" id="addToCart">add to cart</button>
-                    </a>
-                    <% } %>
-                        <% } %>
-   <div class=" pt-3">
-        <img src="/userSide/img/errorPages/freedelivery.svg" width="30px" alt="No Data">
-        <span>FREE delivery on orders dispatched by Threadpool over $1000.</span>
-      </div>  
-      
-      
+          </div>
 
-        <div class="item">
+          <script>
+            document.addEventListener('DOMContentLoaded', function() {
+              var currentSize = '<%= products.variations[0].size %>';
+
+              var sizeList = document.getElementById('sizeList');
+              var sizeItems = sizeList.getElementsByTagName('li');
+
+              // Loop through the size items and hide the ones that do not match the current size
+              for (var i = 0; i < sizeItems.length; i++) {
+                var sizeAnchor = sizeItems[i].getElementsByTagName('a')[0];
+                if (sizeAnchor.textContent !== currentSize) {
+                  sizeItems[i].style.display = 'none';
+                }
+              }
+            });
+          </script>
+          <% if (isCartItem) { %>
+          <a href="/addToCart">
+            <button class="default-btn cartBtn">go to cart</button>
+          </a>
+          <% } else { %>
+          <% if (products.variations[0].quantity> 0) { %>
+          <a href="/cartNow/<%= products._id %>">
+            <button class="default-btn cartBtn" id="addToCart">add to cart</button>
+          </a>
+          <% } %>
+          <% } %>
+          <div class=" pt-3">
+            <img src="/userSide/img/errorPages/freedelivery.svg" width="30px" alt="No Data">
+            <span>FREE delivery on orders dispatched by Threadpool over $1000.</span>
+          </div>
+
+
+
+          <div class="item">
             <% if (products.variations[0].quantity=== 0) { %>
-               
-                    <button class="buyBtn">out of stock</button>
-                    <% } %>
+
+            <button class="buyBtn">out of stock</button>
+            <% } %>
+          </div>
+
         </div>
-        <!-- <div class="item">
-        <a href="#" class="default-btn">Buy it now!</a>
-        </div> -->
-        </div>
-        </div>
-        </div>
-        </div>
-        <div class="tab products-details-tab">
-        <ul class="tabs">
-        <li><a href="#">
-        <div class="dot"></div> Description
+      </div>
+    </div>
+  </div>
+  <div class="tab products-details-tab">
+    <ul class="tabs">
+      <li><a href="#">
+          <div class="dot"></div> Description
         </a></li>
-        <li><a href="#">
-        <div class="dot"></div> Additional Information
+      <li><a href="#">
+          <div class="dot"></div> Additional Information
         </a></li>
-        <li><a href="#">
-        <div class="dot"></div> Shipping
+      <li><a href="#">
+          <div class="dot"></div> Shipping
         </a></li>
-        <li><a href="#">
-        <div class="dot"></div> Why Buy From Us
+      <li><a href="#">
+          <div class="dot"></div> Why Buy From Us
         </a></li>
-        <!-- <li><a href="#">
+      <!-- <li><a href="#">
         <div class="dot"></div> Reviews
         </a></li> -->
-        </ul>
-        <div class="tab-content">
-        <div class="tabs-item">
+    </ul>
+    <div class="tab-content">
+      <div class="tabs-item">
         <div class="products-details-tab-content">
-        <p><%= products.pDescription %></p>
-        <div class="row">
-        <div class="col-lg-6 col-md-6">
-        <ul>
-        <li>Fabric 1: 100% Polyester</li>
-        <li>Fabric 2: 100% Polyester, Lining: 100% Polyester</li>
-        <li>Fabric 3: 75% Polyester, 20% Viscose, 5% Elastane</li>
-        </ul>
+          <p><%= products.pDescription %></p>
+          <div class="row">
+            <div class="col-lg-6 col-md-6">
+              <ul>
+                <li>Fabric 1: 100% Polyester</li>
+                <li>Fabric 2: 100% Polyester, Lining: 100% Polyester</li>
+                <li>Fabric 3: 75% Polyester, 20% Viscose, 5% Elastane</li>
+              </ul>
+            </div>
+            <div class="col-lg-6 col-md-6">
+              <ol>
+                <li>Fabric 3: 75% Polyester, 20% Viscose, 5% Elastane</li>
+                <li>Fabric 2: 100% Polyester, Lining: 100% Polyester</li>
+                <li>Fabric 1: 100% Polyester</li>
+              </ol>
+            </div>
+          </div>
         </div>
-        <div class="col-lg-6 col-md-6">
-        <ol>
-        <li>Fabric 3: 75% Polyester, 20% Viscose, 5% Elastane</li>
-        <li>Fabric 2: 100% Polyester, Lining: 100% Polyester</li>
-        <li>Fabric 1: 100% Polyester</li>
-        </ol>
-        </div>
-        </div>
-        </div>
-        </div>
-        <div class="tabs-item">
+      </div>
+      <div class="tabs-item">
         <div class="products-details-tab-content">
-        <div class="table-responsive">
-        <table class="table table-striped">
-        <tbody>
-        <tr>
-        <td>Color:</td>
-        <td>Blue, Purple, White</td>
-        </tr>
-        <tr>
-        <td>Size:</td>
-        <td>20, 24</td>
-        </tr>
-        <tr>
-        <td>Material:</td>
-        <td>100% Polyester</td>
-        </tr>
-        <tr>
-        <td>Height:</td>
-        <td>180 cm - 5' 11”</td>
-        </tr>
-        <tr>
-        <td>Bust:</td>
-        <td>83 cm - 32”</td>
-        </tr>
-        <tr>
-        <td>Waist:</td>
-        <td>57 cm - 22”</td>
-        </tr>
-        <tr>
-        <td>Hips:</td>
-        <td>88 cm - 35</td>
-        </tr>
-        <tr>
-        <td>Shipping:</td>
-        <td>Free</td>
-        </tr>
-        </tbody>
-        </table>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <tbody>
+                <tr>
+                  <td>Color:</td>
+                  <td>Blue, Purple, White</td>
+                </tr>
+                <tr>
+                  <td>Size:</td>
+                  <td>20, 24</td>
+                </tr>
+                <tr>
+                  <td>Material:</td>
+                  <td>100% Polyester</td>
+                </tr>
+                <tr>
+                  <td>Height:</td>
+                  <td>180 cm - 5' 11”</td>
+                </tr>
+                <tr>
+                  <td>Bust:</td>
+                  <td>83 cm - 32”</td>
+                </tr>
+                <tr>
+                  <td>Waist:</td>
+                  <td>57 cm - 22”</td>
+                </tr>
+                <tr>
+                  <td>Hips:</td>
+                  <td>88 cm - 35</td>
+                </tr>
+                <tr>
+                  <td>Shipping:</td>
+                  <td>Free</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-        </div>
-        </div>
-        <div class="tabs-item">
+      </div>
+      <div class="tabs-item">
         <div class="products-details-tab-content">
-        <div class="table-responsive">
-        <table class="table table-bordered">
-        <tbody>
-        <tr>
-        <td>Shipping</td>
-        <td>This item Ship to USA</td>
-        </tr>
-        <tr>
-        <td>Delivery</td>
-        <td>
-            Estimated between <%= new Date().toString().split(' ').splice(0, 4).join(' - ') %> and <%= new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toString().split(' ').splice(0, 4).join(' - ') %>
-            <br>
-            Will usually ship within 1 business day.
-        </td>
-        </tr>
-        </tbody>
-        </table>
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <tbody>
+                <tr>
+                  <td>Shipping</td>
+                  <td>This item Ship to USA</td>
+                </tr>
+                <tr>
+                  <td>Delivery</td>
+                  <td>
+                    Estimated between <%= new Date().toString().split(' ').splice(0, 4).join(' - ') %> and <%= new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toString().split(' ').splice(0, 4).join(' - ') %>
+                    <br>
+                    Will usually ship within 1 business day.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-        </div>
-        </div>
-        <div class="tabs-item">
+      </div>
+      <div class="tabs-item">
         <div class="products-details-tab-content">
-        <p>Here are 5 more great reasons to buy from us:</p>
-        <ol>
+          <p>Here are 5 more great reasons to buy from us:</p>
+          <ol>
             <li>Wide Selection of Trendy Products: Explore an extensive range of fashionable clothing, accessories, and footwear curated to keep you in style all year round.</li>
             <li>Exceptional Customer Service: Our dedicated team is committed to providing personalized assistance, answering queries, and resolving any concerns promptly to guarantee a seamless shopping experience.</li>
             <li>Fast and Reliable Shipping: Experience swift and reliable delivery services to your doorstep, ensuring your fashion essentials reach you in no time, wherever you are.
@@ -285,199 +260,105 @@
             <li>Satisfaction Guaranteed: Your satisfaction is our top priority. Shop with confidence knowing that we offer hassle-free returns and exchanges, ensuring you find the perfect fit and style every time.</li>
             <li>Quality Assurance: We prioritize quality, offering products crafted from premium materials to ensure durability and comfort without compromising on style.
             </li>
-        </ol>
+          </ol>
         </div>
-        </div>
-        <div class="tabs-item">
-        <div class="products-details-tab-content">
-        <div class="products-review-form">
-        <h3>Customer Reviews</h3>
-        <div class="review-title">
-        <div class="rating">
-        <i class="bx bxs-star"></i>
-        <i class="bx bxs-star"></i>
-        <i class="bx bxs-star"></i>
-        <i class="bx bxs-star"></i>
-        <i class="bx bx-star"></i>
-        </div>
-        <p>Based on 3 reviews</p>
-        <a href="#" class="default-btn">Write a Review</a>
-        </div>
-        <div class="review-comments">
-        <div class="review-item">
-        <div class="rating">
-        <i class="bx bxs-star"></i>
-        <i class="bx bxs-star"></i>
-        <i class="bx bxs-star"></i>
-        <i class="bx bxs-star"></i>
-        <i class="bx bx-star"></i>
-        </div>
-        <h3>Good</h3>
-        <span><strong>Admin</strong> on <strong>Sep 21, 2021</strong></span>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.</p>
-        </div>
-        <div class="review-item">
-        <div class="rating">
-        <i class="bx bxs-star"></i>
-        <i class="bx bxs-star"></i>
-        <i class="bx bxs-star"></i>
-        <i class="bx bxs-star"></i>
-        <i class="bx bx-star"></i>
-        </div>
-        <h3>Good</h3>
-        <span><strong>Admin</strong> on <strong>Sep 21, 2021</strong></span>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.</p>
-        </div>
-        <div class="review-item">
-        <div class="rating">
-        <i class="bx bxs-star"></i>
-        <i class="bx bxs-star"></i>
-        <i class="bx bxs-star"></i>
-        <i class="bx bxs-star"></i>
-        <i class="bx bx-star"></i>
-        </div>
-        <h3>Good</h3>
-        <span><strong>Admin</strong> on <strong>Sep 21, 2021</strong></span>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.</p>
-        </div>
-        </div>
-        <div class="review-form">
-        <h3>Write a Review</h3>
-        <form>
-        <div class="row">
-        <div class="col-lg-6 col-md-6">
-        <div class="form-group">
-        <input type="text" id="name" name="name" placeholder="Enter your name" class="form-control">
-        </div>
-        </div>
-        <div class="col-lg-6 col-md-6">
-        <div class="form-group">
-        <input type="email" id="email" name="email" placeholder="Enter your email" class="form-control">
-        </div>
-        </div>
-        <div class="col-lg-12 col-md-12">
-        <div class="form-group">
-        <input type="text" id="review-title" name="review-title" placeholder="Enter your review a title" class="form-control">
-        </div>
-        </div>
-        <div class="col-lg-12 col-md-12">
-        <div class="form-group">
-        <textarea name="review-body" id="review-body" cols="30" rows="6" placeholder="Write your comments here" class="form-control"></textarea>
-        </div>
-        </div>
-        <div class="col-lg-12 col-md-12">
-        <button type="submit" class="default-btn">Submit Review</button>
-        </div>
-        </div>
-        </form>
-        </div>
-        </div>
-        </div>
-        </div>
-        </div>
-        </div>
-        </div>
-        </section>
+      </div>
+
+    </div>
+  </div>
+  </div>
+</section>
 
 <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        var size = "<%= products.variations[0].size %>"; // Get the size from server-side code
-
-        // Remove 'active' class from all li elements
-        var lis = document.querySelectorAll('.products-size-wrapper ul li');
-        lis.forEach(function (li) {
-            li.classList.remove('active');
-        });
-
-        // Set 'active' class based on the size
-        var activeSizeElement = document.getElementById("size" + size);
-        if (activeSizeElement) {
-            activeSizeElement.parentNode.classList.add('active');
-        }
+  document.addEventListener("DOMContentLoaded", function() {
+    var size = "<%= products.variations[0].size %>";
+    var lis = document.querySelectorAll('.products-size-wrapper ul li');
+    lis.forEach(function(li) {
+      li.classList.remove('active');
     });
 
+    var activeSizeElement = document.getElementById("size" + size);
+    if (activeSizeElement) {
+      activeSizeElement.parentNode.classList.add('active');
+    }
+  });
 
 
 
-    document.addEventListener("DOMContentLoaded", function () {
-        var color = "<%= products.variations[0].color.toLowerCase() %>"; // Get the color from server-side code and convert to lowercase
 
-        // Function to remove 'active' class from all color elements
-        function removeActiveClass() {
-            var lis = document.querySelectorAll('.products-color-switch ul li');
-            lis.forEach(function (li) {
-                li.classList.remove('active');
-            });
-        }
+  document.addEventListener("DOMContentLoaded", function() {
+    var color = "<%= products.variations[0].color.toLowerCase() %>";
 
-        // Set 'active' class based on the color
-        var activeColorElement = document.querySelector('.products-color-switch .color-' + color);
-        if (activeColorElement) {
-            activeColorElement.parentNode.classList.add('active');
-        }
+    function removeActiveClass() {
+      var lis = document.querySelectorAll('.products-color-switch ul li');
+      lis.forEach(function(li) {
+        li.classList.remove('active');
+      });
+    }
 
-        // Add click event listener to each color element
-        var colorElements = document.querySelectorAll('.products-color-switch ul li a');
-        colorElements.forEach(function (element) {
-            element.addEventListener('click', function (event) {
-                event.preventDefault(); // Prevent default link behavior
+    var activeColorElement = document.querySelector('.products-color-switch .color-' + color);
+    if (activeColorElement) {
+      activeColorElement.parentNode.classList.add('active');
+    }
 
-                removeActiveClass(); // Remove 'active' class from all color elements
-                var clickedColorElement = event.target.parentNode;
-                clickedColorElement.classList.add('active'); // Add 'active' class to the clicked color element
-            });
-        });
+    var colorElements = document.querySelectorAll('.products-color-switch ul li a');
+    colorElements.forEach(function(element) {
+      element.addEventListener('click', function(event) {
+        event.preventDefault();
+
+        removeActiveClass();
+        var clickedColorElement = event.target.parentNode;
+        clickedColorElement.classList.add('active');
+      });
     });
+  });
 
 
 
 
-    document.addEventListener('DOMContentLoaded', function () {
-        function zoomIn(event, zoomFactor) {
-            const image = event.target;
-            image.style.transform = `scale(${zoomFactor})`;
-            const boundingBox = image.getBoundingClientRect();
-            const offsetX = (event.clientX - boundingBox.left) / boundingBox.width;
-            const offsetY = (event.clientY - boundingBox.top) / boundingBox.height;
-            image.style.transformOrigin = `${offsetX * 100}% ${offsetY * 100}%`;
-        }
+  document.addEventListener('DOMContentLoaded', function() {
+    function zoomIn(event, zoomFactor) {
+      const image = event.target;
+      image.style.transform = `scale(${zoomFactor})`;
+      const boundingBox = image.getBoundingClientRect();
+      const offsetX = (event.clientX - boundingBox.left) / boundingBox.width;
+      const offsetY = (event.clientY - boundingBox.top) / boundingBox.height;
+      image.style.transformOrigin = `${offsetX * 100}% ${offsetY * 100}%`;
+    }
 
-        function resetZoom(event) {
-            const image = event.target;
-            image.style.transform = 'scale(1)';
-        }
+    function resetZoom(event) {
+      const image = event.target;
+      image.style.transform = 'scale(1)';
+    }
 
-        const productImages = document.querySelectorAll('.imageZoom img');
+    const productImages = document.querySelectorAll('.imageZoom img');
 
-        productImages.forEach(img => {
-            img.addEventListener('mouseover', function () {
-                img.style.transform = 'scale(5)';
-                img.style.transition = 'transform 0.3s ease';
-            });
+    productImages.forEach(img => {
+      img.addEventListener('mouseover', function() {
+        img.style.transform = 'scale(5)';
+        img.style.transition = 'transform 0.3s ease';
+      });
 
-            img.addEventListener('mousemove', function (e) {
-                zoomIn(e, 1.2);
-            });
+      img.addEventListener('mousemove', function(e) {
+        zoomIn(e, 1.2);
+      });
 
-            img.addEventListener('mouseleave', function () {
-                img.style.transform = 'scale(1)';
-            });
+      img.addEventListener('mouseleave', function() {
+        img.style.transform = 'scale(1)';
+      });
 
-            img.addEventListener('mouseout', resetZoom);
-        });
+      img.addEventListener('mouseout', resetZoom);
     });
-
+  });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="userSide/js/userProductDetail.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/elevatezoom/3.0.8/jquery.elevatezoom.min.js"></script>
+<!-- recent Products -->
+<%- include('../includes/userSide/relatedProducts') %>
+<!-- end of recent Products -->
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/elevatezoom/3.0.8/jquery.elevatezoom.min.js"></script>
- <!-- custom js -->
- <script src="userSide/js/userProductDetail.js"></script>
- <!-- end of custom js -->
-  <!-- recent Products -->
-  <%- include('../includes/userSide/relatedProducts') %>
-  <!-- end of recent Products -->
-
-    <!-- footer -->
-    <%- include('../includes/userSide/footer') %>
-        <!-- end of footer -->
+<!-- footer -->
+<%- include('../includes/userSide/footer') %>
+<!-- end of footer -->

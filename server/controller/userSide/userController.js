@@ -8,6 +8,7 @@ const userHelper = require("../../databaseHelpers/userHelper");
 const saltRounds = 10; // Salt rounds for bcrypt
 const shortid = require("shortid");
 const Razorpay = require("razorpay");
+const comparedb = require("../../model/userSide/compareModel");
 
 function capitalizeFirstLetter(str) {
   str = str.toLowerCase();
@@ -85,35 +86,6 @@ const sendOtpMail = async (req, res, getRoute) => {
   }
 };
 
-const userOtpVerify = async (req, res, getRoute) => {
-  try {
-    const data = await Otpdb.findOne({ _id: req.session.otpId });
-
-    if (!data) {
-      req.session.otpError = "OTP Expired";
-      req.session.rTime = "0";
-      return res.status(401).redirect(getRoute);
-    }
-
-    if (data.expiresAt < Date.now()) {
-      req.session.otpError = "OTP Expired";
-      req.session.rTime = "0";
-      deleteOtpFromdb(req.session.otpId);
-      return res.status(401).redirect(getRoute);
-    }
-
-    if (data.otp != req.body.otp) {
-      req.session.otpError = "Wrong OTP";
-      req.session.rTime = req.body.rTime;
-      return res.status(401).redirect(getRoute);
-    }
-
-    return true;
-  } catch (err) {
-    console.error("Function error", err);
-    res.status(500).render("errorPages/500ErrorPage");
-  }
-};
 
 // -----------------------------------------------------------------------------------------------------------
 
@@ -297,6 +269,7 @@ module.exports = {
       res.status(500).render("errorPages/500ErrorPage");
     }
   },
+
 
   // ---------------------------------------------------------------------------------------------------------------------
 
@@ -662,6 +635,44 @@ module.exports = {
     }
 },
 
+userCompareNow: async (req, res) => {
+  try {
+    const isCompare = await comparedb.findOne({
+      userId: req.session.isUserAuth,
+      "products.productId": req.params.productId,
+    });
 
+    if (!isCompare) {
+      await comparedb.updateOne(
+        { userId: req.session.isUserAuth },
+        { $push: { products: { productId: req.params.productId } } },
+        { upsert: true },
+        { new: true }
+      );
+
+      return res.status(200).json({ success: true });
+    } else {
+      return res.status(200).redirect("/addToCompare");
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      err,
+    });
+  }
+},
+userCompareDelete: async (req, res) => {
+  try {
+    await comparedb.updateOne(
+      { userId: req.session.isUserAuth },
+      { $pull: { products: { productId: req.params.productId } } }
+    );
+
+    res.redirect("/addToCompare");
+  } catch (err) {
+    console.error("cart Update err", err);
+    res.status(500).render("errorPages/500ErrorPage");
+  }
+},
   // ------------------------------------------------------------------------------------------------------
 };

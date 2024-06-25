@@ -5,13 +5,13 @@ module.exports = {
         try {
             req.session.adminPageErr = true;
 
-            if(req.session.isAdminAuth){
+            if (req.session.isAdminAuth) {
                 next();
-            }else{
+            } else {
                 res.status(401).redirect('/adminLogin');
             }
         } catch (err) {
-            console.error('adminMiddleWare err',err);
+            console.error('adminMiddleWare err', err);
             res.status(500).send('Intenal Server err');
         }
     },
@@ -19,21 +19,21 @@ module.exports = {
         try {
             req.session.adminPageErr = true;
 
-            if(req.session.isAdminAuth){
+            if (req.session.isAdminAuth) {
                 res.status(401).redirect('/adminHome');
-            }else{
+            } else {
                 next();
             }
         } catch (err) {
-            console.error('adminMiddleWare err',err);
+            console.error('adminMiddleWare err', err);
             res.status(500).send('Intenal Server err');
         }
     },
     onlyOneReferal: async (req, res, next) => {
         try {
             const referralOffers = await adminHelper.referralOffers();
-            
-            if(!referralOffers || referralOffers.length === 0){
+
+            if (!referralOffers || referralOffers.length === 0) {
                 return next();
             }
 

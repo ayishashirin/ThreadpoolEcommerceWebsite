@@ -15,7 +15,7 @@ const connectDB = require("./server/database/connection");
 connectDB();
 
 app.set("view engine", "ejs");
-app.set('views', '/home/ubuntu/ThreadpoolEcommerceWebsite/views');
+// app.set('views', '/home/ubuntu/ThreadpoolEcommerceWebsite/views');
 
 // app.use(morgan('dev'));
 app.use(flash());

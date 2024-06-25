@@ -23,7 +23,7 @@ const razorPayController = require('../../controller/userSide/razorPayController
 router.get('/', authMiddleware.isUserBlocked,userRender.homePage);
 
 
-// -----------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------
 
 
 // User Login Routes
@@ -102,7 +102,12 @@ router.route('/loginResetPassword')
 router.get('/Category', authMiddleware.isUserBlocked, userCategoryRender.showProductsCategory); // To list all product in given category for user
 
 router.get('/productDetail/:productId', authMiddleware.isUserBlocked, userProductRender.userProductDetails);// Detail page for chosen product
+  
+router.get('/addToCompare', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userProductRender.userAddToCompare); 
 
+router.get('/compareNow/:productId', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userController.userCompareNow)
+
+router.get('/compareDelete/:productId', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userController.userCompareDelete);
 // --------------------------------------------------------------------------------------------------------------------------------------
 
 

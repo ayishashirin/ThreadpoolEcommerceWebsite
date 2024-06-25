@@ -138,7 +138,7 @@
                         <div class="lPrice marginRes">
                           <p class="m-0">
                             $
-                            <%= (orders[i].orderItems[j].lPrice * orders[i].orderItems[j].quantity) %>
+                            <%= (orders[i].orderItems[j].totalAmount) %>
                           </p>
                         </div>
                         <% if (orders[i].orderItems[j].orderStatus !== "Delivered") { %>

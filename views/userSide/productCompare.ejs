@@ -1,0 +1,131 @@
+<!-- header -->
+<%- include('../includes/userSide/header') %>
+<!-- end of header -->
+
+
+<div class="page-title-area">
+<div class="container">
+<div class="page-title-content">
+<h2>Compare Products</h2>
+<ul>
+<li><a href="/">Home</a></li>
+<li>Compare</li>
+</ul>
+</div>
+</div>
+</div>
+
+<% if (CompareItems.length===0) { %>
+
+    <div class="my-5">
+      <div class="errNoProduct d-flex justify-content-center">
+        <img src="/userSide/img/errorPages/cart7.webp" width="500px" alt="No Data">
+      </div>
+      <div class="errNoProduct d-flex justify-content-center">
+        <h3>Your CompareList is empty!</h3>
+      </div>
+      <div class="row align-items-center m-2">
+        <div class="d-flex justify-content-center">
+          <a href="/category" class="optional-btn">Continue Shopping</a>
+        </div>
+
+      </div>
+    </div>
+
+    <% } else { %>
+<section class="compare-area ptb-100">
+<div class="container">
+<div class="products-compare-table table-responsive">
+<table class="table table-bordered">
+<tbody>
+<tr>
+<td>Products</td>
+<% for( let i=0; i < CompareItems.length; i++ ) { %>
+<td class="product-thumbnail" dataProductId="<%= CompareItems[i].products.productId %>"onclick="location.href='/productDetail/<%= CompareItems[i].products.productId %>'">
+
+<div class="remove-btn"><a href="/compareDelete/<%= CompareItems[i].products.productId %>" class="remove"><i class="bx bx-trash"></i></a>
+</div>
+<div class="single-products-box">
+<div class="products-image">
+<a href="#">
+<img src="<%= CompareItems[i].variations[0].images[i] %>" class="main-image" alt="image">
+</a>
+</div>
+<div class="products-content">
+<h3><a href="#"><%= CompareItems[i].pDetails[0].pName %></a></h3>
+<div class="price">
+<span class="old-price">$<%=CompareItems[i].pDetails[0].fPrice %></span>
+<span class="new-price">$<%=CompareItems[i].pDetails[0].lPrice %></span>
+</div>
+
+<a href="#" class="add-to-cart">Add to Cart</a>
+</div>
+</div>
+</td>
+<% } %>
+</tr>
+
+<tr>
+<td>Collection</td>
+<% for( let i=0; i < CompareItems.length; i++ ) { %>
+<td><%= CompareItems[i].pDetails[0].category %></td>
+<% } %>
+</tr>
+
+<tr>
+<td>Availability</td>
+<% for( let i=0; i < CompareItems.length; i++ ) { %>
+
+    
+<td><%= CompareItems[i].variations[0].quantity> 0?'In Stock':'Out Of Stock' %></td>
+<% } %>
+</tr>
+
+<tr>
+<td>Material</td>
+<% for( let i=0; i < CompareItems.length; i++ ) { %>
+<td>100% Polyester</td>
+<% } %>
+</tr>
+
+
+<tr>
+<td>Price</td>
+<% for( let i=0; i < CompareItems.length; i++ ) { %>
+<td>$<%=CompareItems[i].pDetails[0].fPrice %></td>
+<% } %>
+</tr>
+
+<tr>
+<td>Color</td>
+<% for( let i=0; i < CompareItems.length; i++ ) { %>
+<td><%= CompareItems[i].variations[0].color %></td>
+<% } %>
+</tr>
+
+<tr>
+<td>Size</td>
+<% for( let i=0; i < CompareItems.length; i++ ) { %>
+<td><%= CompareItems[i].variations[0].size %></td>
+<% } %>
+</tr>
+
+<tr>
+<td>Offer</td>
+<% for( let i=0; i < CompareItems.length; i++ ) { %>
+<td> <% if (CompareItems[i].allOffers.length > 0) { %>
+        <%=CompareItems[i].allOffers%> %OFF
+        <% } else { %> No Offer!
+            <% } %>
+     </td>
+<% } %>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<% } %>
+<!-- footer -->
+<%- include('../includes/userSide/footer') %>
+<!-- end of footer -->

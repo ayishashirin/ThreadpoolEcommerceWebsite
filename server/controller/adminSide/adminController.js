@@ -34,10 +34,10 @@ module.exports = {
     }
     if (req.body.password === adminPassword && req.body.email === adminEmail) {
       req.session.isAdminAuth = true;
-      res.status(200).redirect("/adminHome"); //Login Sucessfull
+      res.status(200).redirect("/adminHome"); 
     } else {
       req.session.invalidAdmin = `Invalid credentials!`;
-      res.status(401).redirect("/adminLogin"); //Wrong Password or email
+      res.status(401).redirect("/adminLogin"); 
     }
   },
 

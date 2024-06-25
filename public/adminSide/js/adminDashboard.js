@@ -4,32 +4,58 @@ $(".counter").counterUp({
 });
 
 const ctx = document.getElementById("myChart");
+const chartTypeSelect = document.getElementById("chartTypeSelect");
 let newChart;
 let flag = false;
 
-function chartShow(saleData) {
+function chartShow(saleData, chartType) {
   if (flag) {
     newChart.destroy();
     flag = false;
   }
   newChart = new Chart(ctx, {
-    type: "bar",
+    type: chartType,
     data: {
       labels: saleData.label,
       datasets: [
         {
           label: "Total Sales",
           data: saleData.salesCount,
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(153, 102, 255, 0.2)',
+            'rgba(255, 159, 64, 0.2)'
+          ],
+          borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)'
+          ],
           borderWidth: 1,
         },
       ],
     },
     options: {
-      scales: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'top',
+        },
+        tooltip: {
+          enabled: true
+        }
+      },
+      scales: chartType === "bar" ? {
         y: {
           beginAtZero: true,
         },
-      },
+      } : {},
     },
   });
 }
@@ -41,7 +67,7 @@ function chartDetails(filter) {
     data: { filter },
   })
     .then((res) => {
-      chartShow(res);
+      chartShow(res, chartTypeSelect.value);
     })
     .catch((err) => {
       console.log(err);
@@ -216,6 +242,10 @@ document.addEventListener("click", closeAllSelect);
 
 formSelect.addEventListener("change", () => {
   flag = true;
+  chartDetails(formSelect.value);
+});
+
+chartTypeSelect.addEventListener("change", () => {
   chartDetails(formSelect.value);
 });
 

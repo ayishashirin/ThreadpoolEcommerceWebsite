@@ -414,12 +414,12 @@
                                             var subtotalText = subtotalElement.textContent.replace('$', '').replace('.00', '');
                                             var totalAmount = parseFloat(subtotalText);
                                     
-                                            var shippingFee = totalAmount > 1000 ? 0 : 40;
+                                            var shippingFee = totalAmount > 1000 ? 0 : 10;
                                     
                                             var shippingFeeElement = document.getElementById('shippingFee');
                                             shippingFeeElement.textContent = '$' + shippingFee + '.00';
                                         });
-                                    </script>
+                                    </script>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
                                   </tr>
                               </tr>
                               <tr>

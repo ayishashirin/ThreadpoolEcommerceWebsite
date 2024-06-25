@@ -1,50 +1,63 @@
-
-  function copyCouponCode(code) {
+function copyCouponCode(code) {
     var tempInput = document.createElement("input");
     tempInput.setAttribute("value", code);
     document.body.appendChild(tempInput);
     tempInput.select();
     document.execCommand("copy");
     document.body.removeChild(tempInput);
-    alert("Coupon code '" + code + "' copied to clipboard!");
+    
+    Swal.fire({
+      icon: 'success',
+      title: 'Copied!',
+      text: "Coupon code '" + code + "' copied to clipboard!",
+    });
   }
-
-//   ----------------------------------------------------------------------------------------------------
-
-
-
-function applyCoupon() {
-  var orderTotal = parseFloat(document.getElementById("orderTotal").innerText.replace("$", ""));
-  var couponCode = document.getElementById("coupon").value;
   
-  document.getElementById("coupon").value = "";
-  var totalAmount = parseFloat(document.getElementById("totalAmount").innerText.replace("$", ""));
-  document.getElementById("couponRow").style.display = "none";
-  document.getElementById("couponError").style.display = "none";
-
-  axios.post('/isCouponValidCart', {
-      code: couponCode,
-      total: totalAmount,
-      orderTotal
-  })
-  .then(function(response) {
-      console.log(response.data);
-      var discountAmount = response.data.totalDiscount;
-      document.getElementById("cDPrice").innerHTML = `-$${discountAmount.toFixed(2)}`;
-      document.getElementById("couponRow").style.display = "block";
-      document.getElementById("cDPrice").style.display = "block";
-      document.getElementById("code").innerHTML = response.data.coupon.code;
-      document.getElementById("code").style.display = "block";
-
-      alert(response.data.message);
-      calculateOrderTotal(); 
-  })
-  .catch(function(error) {
-      console.error('Error:', error);
-      document.getElementById("couponError").innerText = error.response.data.message;
-      document.getElementById("couponError").style.display = "block";
-  });
-}
+  // ----------------------------------------------------------------------------------------------------
+  
+  function applyCoupon() {
+    var orderTotal = parseFloat(document.getElementById("orderTotal").innerText.replace("$", ""));
+    var couponCode = document.getElementById("coupon").value;
+    
+    document.getElementById("coupon").value = "";
+    var totalAmount = parseFloat(document.getElementById("totalAmount").innerText.replace("$", ""));
+    document.getElementById("couponRow").style.display = "none";
+    document.getElementById("couponError").style.display = "none";
+  
+    axios.post('/isCouponValidCart', {
+        code: couponCode,
+        total: totalAmount,
+        orderTotal
+    })
+    .then(function(response) {
+        console.log(response.data);
+        var discountAmount = response.data.totalDiscount;
+        document.getElementById("cDPrice").innerHTML = `-$${discountAmount.toFixed(2)}`;
+        document.getElementById("couponRow").style.display = "block";
+        document.getElementById("cDPrice").style.display = "block";
+        document.getElementById("code").innerHTML = response.data.coupon.code;
+        document.getElementById("code").style.display = "block";
+  
+        Swal.fire({
+          icon: 'success',
+          title: 'Coupon Applied!',
+          text: response.data.message,
+        });
+  
+        calculateOrderTotal(); 
+    })
+    .catch(function(error) {
+        console.error('Error:', error);
+        document.getElementById("couponError").innerText = error.response.data.message;
+        document.getElementById("couponError").style.display = "block";
+  
+        Swal.fire({
+          icon: 'error',
+          title: 'Coupon Error',
+          text: error.response.data.message,
+        });
+    });
+  }
 
 // --------------------------------------------------------------------------------------------------------------
 
@@ -70,7 +83,7 @@ function applyCoupon() {
 
     var shippingFee = parseFloat(document.getElementById("shippingFee").innerText.replace("$", ""));
 
-    var orderTotal = (totalAmount + shippingFee)- (discountPrice+cDPrice+offerPrice);51
+    var orderTotal = (totalAmount)- (discountPrice+cDPrice+offerPrice);51
 
     document.getElementById("orderTotal").innerText =  "$" + orderTotal.toFixed(2);
   }
@@ -197,7 +210,6 @@ document.getElementById('placeOrderBtn').addEventListener('click', async functio
           location.href = '/orderSuccessfull';
       }
   } catch (error) {
-      // Hide the loader in case of an error
       document.getElementById('loader').style.display = 'none';
 
       console.error('Error:', error);
@@ -217,7 +229,6 @@ document.getElementById('placeOrderBtn').addEventListener('click', async functio
           });
       }
   } finally {
-      // Hide loader after processing
       document.getElementById('loader').style.display = 'none';
   }
 });

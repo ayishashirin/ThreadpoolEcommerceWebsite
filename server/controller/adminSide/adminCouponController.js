@@ -154,7 +154,6 @@ module.exports = {
   },
   adminDeleteCoupon: async (req, res) => {
     try {
-      //adminHelper fn to delete coupon from admin side
       await adminHelper.adminDeleteCoupon(req.params.couponId);
 
       res.status(200).json({

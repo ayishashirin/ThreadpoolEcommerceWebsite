@@ -46,11 +46,9 @@
                 <div class="col-lg-6 col-md-12">
                     <ul class="header-top-menu">
                         <li><a href="/account"><i class="bx bxs-user"></i> My Account</a></li>
-                        <!-- <li><a href="/orders"><i 
-                            class="fa-solid fa-bag-shopping" style="color: white;"></i> Orders</a></li> -->
+                       <li><a href="/addToCompare"><i class="bx bx-shuffle"></i> Compare</a></li>
                         <li><a href="/userWishList" data-bs-toggle="modal" data-bs-target="#shoppingWishlistModal"><i class="fa-solid fa-heart"></i>Wishlist</a></li>
-                        <!-- <li><a href="/addToCart" data-bs-toggle="modal" data-bs-target="#shoppingWishlistModal"><i 
-                            class="fa-solid fa-cart-shopping"></i>  Cart </a></li> -->
+                        
                             
                             <% if (user) { %>
                                 <li><a href="/logOut"><i class="bx bx-log-out"></i> Logout</a></li>
@@ -315,7 +313,7 @@
                             <div class="option-item">
                                 <div class="cart-btn">
                                     <a href="#" data-bs-toggle="modal" data-bs-target="#shoppingCartModal"><i
-                                            class="bx bx-shopping-bag"></i><span></span></a>
+                                            class="bx bx-shopping-bag"></i><span><%= cartItems?.length %></span></a>
                                 </div>
                             </div>
                             <div class="option-item">

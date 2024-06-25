@@ -716,7 +716,7 @@ module.exports = {
 
   getSalesReportfilter: async (req, res) => {
     try {
-      const { reportType, filter } = req.query; rs
+      const { reportType, filter } = req.query;
       const reportTypes = [
         "All",
         "Today",

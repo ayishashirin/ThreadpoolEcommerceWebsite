@@ -99,7 +99,6 @@ module.exports = {
     },
     admintDeleteReferralOffer: async (req, res) => {
         try {
-             //adminHelper fn to delete coupon from admin side
             await adminHelper.admintDeleteReferralOffer(req.params.referralOfferId);
 
             res.status(200).json({

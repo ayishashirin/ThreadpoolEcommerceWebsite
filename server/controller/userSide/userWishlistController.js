@@ -29,6 +29,9 @@ module.exports = {
       });
     }
   },
+
+  
+
   userWishlistDelete: async (req, res) => {
     try {
       await wishlistdb.updateOne(

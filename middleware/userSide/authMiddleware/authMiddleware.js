@@ -106,7 +106,7 @@ module.exports = {
             res.status(500).render("errorPages/500ErrorPage");
         }
     },
-   
+
     isDelivered: async (req, res, next) => {
         try {
             req.session.adminPageErr = false;

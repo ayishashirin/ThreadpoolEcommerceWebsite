@@ -97,18 +97,18 @@ function searchProducts() {
 
   document.addEventListener("DOMContentLoaded", function() {
     const addToCartButtons = document.querySelectorAll(".add-to-cart");
-
+  
     addToCartButtons.forEach(function(button) {
       button.addEventListener("click", function(event) {
         event.stopPropagation();
         event.preventDefault();
-
+  
         const productId = button.getAttribute('data-productId');
-
+  
         axios.get(`/cartNow/${productId}`)
           .then(res => {
             console.log(res);
-            if (res.status) {
+            if (res.status === 200 && res.data.success) {
               Swal.fire({
                   icon: 'success',
                   title: 'Success',
@@ -122,21 +122,30 @@ function searchProducts() {
                     location.href = res.data.url;
                   }
                 })
+            } else if (res.status === 401) {
+              location.href = '/login';
             } else {
               Swal.fire({
                 icon: 'info',
-                title: 'Info',
-                text: res.data.message
+                title: '',
+                text: res.data.message,
+                timer: 3000,
               });
+              
+              location.href = '/login';
             }
           })
           .catch(error => {
             console.error("Error adding product to cart:", error);
-            Swal.fire({
-              icon: 'error',
-              title: 'Error',
-              text: 'Failed to add product to cart'
-            });
+            if (error.response && error.response.status === 401) {
+              location.href = '/login';
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to add product to cart'
+              });
+            }
           });
       });
     });
@@ -207,3 +216,60 @@ function searchProducts() {
     const value = getBeforeContent(irsFromElement);
     console.log(value);
   });
+
+
+
+  document.addEventListener("DOMContentLoaded", function() {
+    const addToCompareButtons = document.querySelectorAll(".compare-btn a");
+
+    addToCompareButtons.forEach(function(button) {
+        button.addEventListener("click", function(event) {
+            event.stopPropagation();
+            event.preventDefault();
+
+            const productId = button.getAttribute('data-productId');
+
+            axios.get(`/compareNow/${productId}`)
+                .then(res => {
+                    console.log(res);
+                    if (res.data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: 'Product added to compare list',
+                            timer: 3000,
+                            timerProgressBar: true
+                        }).then(isTrue => {
+                            console.log(isTrue);
+                            if ((isTrue.isDismissed || isTrue.isConfirmed) && res.data.url) {
+                                location.href = res.data.url;
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Please login first...!'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error("Error adding product to compare list:", error);
+
+                    if (error.response && error.response.status === 401) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'User not logged in. Please log in to add products to your compare list.'
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Product already exists in compare list!'
+                        });
+                    }
+                });
+        });
+    });
+});

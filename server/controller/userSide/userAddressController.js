@@ -7,7 +7,6 @@ function capitalizeFirstLetter(string) {
 module.exports = {
   userAddAddress: async (req, res) => {
     try {
-      req.body.name = req.body.name?.trim();
       req.body.country = req.body.country?.trim();
       req.body.district = req.body.district?.trim();
       req.body.state = req.body.state?.trim();
@@ -192,8 +191,6 @@ module.exports = {
 
   userupdateAddress: async (req, res) => {
     try {
-        // Trim whitespace from input fields
-        req.body.name = req.body.name.trim();
         req.body.country = req.body.country.trim();
         req.body.district = req.body.district.trim();
         req.body.state = req.body.state.trim();
@@ -202,7 +199,6 @@ module.exports = {
         req.body.phoneNo = req.body.phoneNo.trim();
 
 
-        // Check if required fields are empty and set session messages
         if (!req.body.name) {
             req.session.name = `This Field is required`;
         }
@@ -231,7 +227,6 @@ module.exports = {
           req.session.pin = 'PinCode must contain 6 numbers';
       }
 
-        // Redirect if any required fields are missing
         if (
             req.session.pin ||
             req.session.phoneNo ||
@@ -245,7 +240,6 @@ module.exports = {
             return res.status(401).redirect(`/editAddress/${req.query.adId}`);
         }
 
-        // Capitalize input fields
         req.body.name = capitalizeFirstLetter(req.body.name);
         req.body.country = capitalizeFirstLetter(req.body.country);
         req.body.district = capitalizeFirstLetter(req.body.district);

@@ -37,7 +37,7 @@
                   <div class="form-group">
                     <input type="email" placeholder="email address"
                       class="form-control  <%= (errMesg?.email || invalid)?'errDiv':'' %>" name="email"
-                      value="">
+                      >
                   </div>
                   <p class="err <%= !errMesg?.email?'d-none':'' %>">
                     <%= errMesg?.email %>
@@ -46,7 +46,7 @@
                   <div class="form-group">
                     <input type="password"
                       class="form-control <%= (errMesg?.password || errMesg?.email || invalid)?'errDiv':'' %>"
-                      placeholder="Password" name="password" value="">
+                      placeholder="Password" name="password" >
                   </div>
                   <p class="err <%= !errMesg?.password?'d-none':'' %>">
                     <%= errMesg?.password %>

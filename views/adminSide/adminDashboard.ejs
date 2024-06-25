@@ -107,10 +107,13 @@
         });
       </script>
 
-      <div style="max-width: 600px; margin: 0 auto;">
-        <canvas id="myChart" style="width: 100%; height: 400px;"></canvas>
-      </div>
-
+<div style="max-width: 600px; margin: 0 auto;">
+  <select id="chartTypeSelect" >
+    <option value="bar">Bar Chart</option>
+    <option value="pie">Pie Chart</option>
+  </select>
+  <canvas id="myChart" style="width: 100%; height: 400px;"></canvas>
+</div>
 
       <div class="container m-5 d-flex justify-content-center align-content-center ">
         <div class="card-heading">
@@ -126,10 +129,10 @@
             <div class="info-wrap">
               <a href="#" class="title"><%=product.productId.pName%></a>
               <div class="price mt-1">$<%=product.productId.fPrice%></div>
-              <!-- price-wrap.// -->
+         
             </div>
           </div>
-          <!-- card-product  end// -->
+     
         </div>
 
         <%})%>

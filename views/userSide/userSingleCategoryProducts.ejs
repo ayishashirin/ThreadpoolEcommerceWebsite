@@ -100,6 +100,15 @@
                   </li>
 
                   <li>
+                    <div class="compare-btn">
+                        <a data-productId="<%= products[i]._id %>">
+                            <i data-productId="<%= products[i]._id %>" class="bx bx-refresh"></i>
+                            <span class="tooltip-label">Compare</span>
+                        </a>
+                    </div>
+                </li>
+
+                  <li>
                     <div class="quick-view-btn">
                       <a href="/productDetail/<%= products[i]._id %>" data-bs-toggle="modal" data-bs-target="#productsQuickView">
                         <i class="bx bx-search-alt"></i>
@@ -168,37 +177,37 @@
   </div>
   <% } else { %>
 
-   
-      <div class="row">
-        <div class="col-12">
-          <ul class="pagination justify-content-center">
-            <% const totalPages = Math.ceil(totalProducts / 12); %>
-            <% const currentPage = curentPage || 1; %>
+    <div class="row">
+      <div class="col-12">
+        <ul class="pagination justify-content-center">
+          <% const totalPages = Math.ceil(totalProducts / 12); %>
+          
+          <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+            <a class="page-link" href="/Category?page=<%= currentPage - 1 %>&sort=<%= sortOrder %>&size=<%= size %>&color=<%= color %>&maxPrice=<%= maxPrice %>" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
     
-            <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
-              <a class="page-link" href="/Category?page=<%= currentPage - 1 %>" aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
+          <% for (let i = 1; i <= totalPages; i++) { %>
+            <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+              <a class="page-link" href="/Category?page=<%= i %>&sort=<%= sortOrder %>&size=<%= size %>&color=<%= color %>&maxPrice=<%= maxPrice %>">
+                <%= i %>
               </a>
             </li>
+          <% } %>
     
-            <% for (let i = 0; i < totalPages; i++) { %>
-              <li class="page-item <%= currentPage === (i + 1) ? 'active' : '' %>">
-                <a class="page-link" href="/Category?page=<%= i + 1 %>">
-                  <%= i + 1 %>
-                </a>
-              </li>
-            <% } %>
+          <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+            <a class="page-link" href="/Category?page=<%= currentPage + 1 %>&sort=<%= sortOrder %>&size=<%= size %>&color=<%= color %>&maxPrice=<%= maxPrice %>" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
     
-            <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
-              <a class="page-link" href="/Category?page=<%= currentPage + 1 %>" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-              </a>
-            </li>
-    
-          </ul>
-        </div>
+        </ul>
       </div>
- 
+    </div>
+    
+    
+    
   <% } %>
 
 
@@ -356,7 +365,7 @@
               <li><a href="/category?color=Blue" title="Blue" class="color-blue<%= color === 'Blue' ? ' active' : '' %>"></a></li>
               <li><a href="/category?color=Green" title="Green" class="color-green<%= color === 'Green' ? ' active' : '' %>"></a></li>
               <li><a href="/category?color=Pink" title="Pink" class="color-pink<%= color === 'Pink' ? ' active' : '' %>"></a></li>
-              <li><a href="/category?color=BlueViolet" title="Blue Violet" class="color-blueviolet<%= color === 'BlueViolet' ? ' active' : '' %>"></a></li>
+              <li><a href="/category?color=Violet" title="Violet" class="color-violet<%= color === 'Violet' ? ' active' : '' %>"></a></li>
             </ul>
           </div>
         
