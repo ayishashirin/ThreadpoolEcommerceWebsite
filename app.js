@@ -3,7 +3,6 @@ const session = require("express-session");
 const dotenv = require("dotenv").config();
 const morgan = require("morgan");
 const flash = require("express-flash");
-const cropperjs = require("cropperjs");
 const passport = require("passport");
 const app = express();
 const userSideRouter = require("./server/router/userSide/userRouter");
@@ -11,11 +10,14 @@ const adminSideRouter = require("./server/router/adminSide/adminRouter");
 const errPageRouter = require("./server/router/errPage/errPageRouter");
 const googleController = require("./server/controller/userSide/googleController");
 const connectDB = require("./server/database/connection");
-
+const cors =  require("cors");
 connectDB();
-
+const corsOptions = {
+  origin: ['https://chatrace.com/webchat/?p=1894441&id=ADJKHUyKtJ']
+};
+ app.use(cors(corsOptions))
 app.set("view engine", "ejs");
-// app.set('views', '/home/ubuntu/ThreadpoolEcommerceWebsite/views');
+app.set('views', '/home/ubuntu/ThreadpoolEcommerceWebsite/views');
 
 // app.use(morgan('dev'));
 app.use(flash());
