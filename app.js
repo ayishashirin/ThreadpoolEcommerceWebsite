@@ -13,7 +13,7 @@ const connectDB = require("./server/database/connection");
 const cors =  require("cors");
 connectDB();
 const corsOptions = {
-  origin: ['https://chatrace.com/webchat/?p=1789349&id=OvznawLJselz']
+  origin: ['https://chatrace.com/webchat/?p=1325286&id=M4CLtI92V5iJ97Gz']
 };
  app.use(cors(corsOptions))
 app.set("view engine", "ejs");
