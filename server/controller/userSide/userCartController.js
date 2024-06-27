@@ -41,7 +41,7 @@ module.exports = {
         
         });
       } else {
-        return res.status(200).json({
+        return res.status(402).json({
           success: false,
           message: "Product already exists in cart"
         });
@@ -332,7 +332,6 @@ module.exports = {
             totalPrice: tPrice,
             couponDiscountAmount: totalCouponDiscountAmount,
         });
-        console.log(newOrder,"newOrder");
 
         if (paymentMethode === "COD") {
             if (tPrice > 1000) {
@@ -422,7 +421,6 @@ module.exports = {
 
   isCouponValidCart: async (req, res) => {
     try {
-  
       const coupon = await userHelper.getCoupon(req.body.code);
   
       if (!coupon) {
@@ -450,29 +448,29 @@ module.exports = {
       }
   
       const cartItems = await userHelper.getCartItemsAll(req.session.isUserAuth);
-      let minPriceErr = false;
-      const total = cartItems.reduce((total, value) => {
-        return total + Math.round(value.pDetails[0].fPrice * value.products.quantity);
+  
+      const total = cartItems.reduce((total, item) => {
+        const itemPrice = item.pDetails[0].lPrice * item.products.quantity;
+        const discountedPrice = itemPrice * (item.allOffers / 100); 
+        return total + Math.round(discountedPrice);
       }, 0);
   
-      let totalDiscount = 0;
-      cartItems.forEach((item) => {
-        if ((item.pDetails[0].category === coupon.category || coupon.category === "All") && total >= coupon.minPrice) {
-          totalDiscount += Math.round((item.pDetails[0].fPrice * item.products.quantity * coupon.discount) / 100);
-        }
-      });
-  
-      if (!totalDiscount && total < coupon.minPrice) {
-        minPriceErr = true;
-      }
-  
-      if (minPriceErr) {
+      if (total < coupon.minPrice) {
         return res.status(401).json({
           err: true,
           reload: false,
           message: `This coupon is for products greater than or equal to ₹${coupon.minPrice}`,
         });
       }
+  
+      let totalDiscount = 0;
+      cartItems.forEach((item) => {
+        if (item.pDetails[0].category === coupon.category || coupon.category === "All") {
+          const itemPrice = item.pDetails[0].fPrice * item.products.quantity;
+          const discountAmount = (itemPrice * coupon.discount) / 100;
+          totalDiscount += Math.round(discountAmount);
+        }
+      });
   
       res.status(200).json({
         status: true,
@@ -489,7 +487,9 @@ module.exports = {
         message: "errorPages/500ErrorPage",
       });
     }
-  },
+  }
+  
+  
   
   // --------------------------------------------------------------------------------------------------------------------
 };

@@ -1203,8 +1203,8 @@ module.exports = {
 
   userTotalProductNumber: async (category) => {
     try {
-      return (await Productdb.find({ category, unlistedProduct: false }))
-        .length;
+      const products = await Productdb.find({ unlistedProduct: false })
+      return products.length
     } catch (err) {
       throw err;
     }

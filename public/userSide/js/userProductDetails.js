@@ -86,5 +86,24 @@
         });
     });
 
- 
+    function goToCart(productId) {
+        console.log('Product ID:', productId); 
+        axios.get(`/cartNow/${productId}`)
+            .then(function (response) {
+                console.log(response); 
+                if (response.status === 200 && response.data.success) {
+                    window.location.href = '/addToCart';
+                } else {
+                  window.location.href = '/login';
+                }
+            })
+            .catch(function (err) {
+                console.error('Error adding product to cart', err);
+                swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Error adding product to cart'
+                });
+            });
+    }
   

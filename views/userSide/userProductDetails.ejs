@@ -1,7 +1,8 @@
 <!-- header -->
 <%- include('../includes/userSide/header') %>
 <!-- end of header -->
-
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
 <div class="page-title-area">
@@ -121,11 +122,10 @@
             <button class="default-btn cartBtn">go to cart</button>
           </a>
           <% } else { %>
-          <% if (products.variations[0].quantity> 0) { %>
-          <a href="/cartNow/<%= products._id %>">
-            <button class="default-btn cartBtn" id="addToCart">add to cart</button>
-          </a>
+            <% if (products.variations[0].quantity > 0) { %>
+              <button class="default-btn cartBtn" id="addToCart" onclick="goToCart('<%= products._id %>')">add to cart</button>
           <% } %>
+          
           <% } %>
           <div class=" pt-3">
             <img src="/userSide/img/errorPages/freedelivery.svg" width="30px" alt="No Data">
@@ -351,13 +351,13 @@
     });
   });
 </script>
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<script src="userSide/js/userProductDetail.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/elevatezoom/3.0.8/jquery.elevatezoom.min.js"></script>
+
 <!-- recent Products -->
 <%- include('../includes/userSide/relatedProducts') %>
 <!-- end of recent Products -->
+<script src="userSide/js/userProductDetails.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/elevatezoom/3.0.8/jquery.elevatezoom.min.js"></script>
 
 <!-- footer -->
 <%- include('../includes/userSide/footer') %>

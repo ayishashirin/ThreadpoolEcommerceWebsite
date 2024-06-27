@@ -10,6 +10,7 @@ const shortid = require("shortid");
 const Razorpay = require("razorpay");
 const comparedb = require("../../model/userSide/compareModel");
 
+
 function capitalizeFirstLetter(str) {
   str = str.toLowerCase();
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -85,7 +86,35 @@ const sendOtpMail = async (req, res, getRoute) => {
     res.status(500).render("errorPages/500ErrorPage");
   }
 };
+const userOtpVerify = async (req, res, getRoute) => {
+  try {
+    const data = await Otpdb.findOne({ _id: req.session.otpId });
 
+    if (!data) {
+      req.session.otpError = "OTP Expired";
+      req.session.rTime = "0";
+      return res.status(401).redirect(getRoute);
+    }
+
+    if (data.expiresAt < Date.now()) {
+      req.session.otpError = "OTP Expired";
+      req.session.rTime = "0";
+      deleteOtpFromdb(req.session.otpId);
+      return res.status(401).redirect(getRoute);
+    }
+
+    if (data.otp != req.body.otp) {
+      req.session.otpError = "Wrong OTP";
+      req.session.rTime = req.body.rTime;
+      return res.status(401).redirect(getRoute);
+    }
+
+    return true;
+  } catch (err) {
+    console.error("Function error", err);
+    res.status(500).render("errorPages/500ErrorPage");
+  }
+};
 
 // -----------------------------------------------------------------------------------------------------------
 
@@ -123,16 +152,16 @@ module.exports = {
             { _id: data._id },
             { $set: { userLstatus: true } }
           );
-          res.status(200).redirect("/"); //Login Successful
+          res.status(200).redirect("/"); 
         } else {
           req.session.userInfo = req.body.email;
           req.session.invalidUser = `Invalid credentials!`;
-          res.status(401).redirect("/login"); //Wrong Password or email
+          res.status(401).redirect("/login"); 
         }
       } else {
         req.session.userInfo = req.body.email;
         req.session.invalidUser = `No user with that email`;
-        res.status(401).redirect("/login"); //No user Found server err
+        res.status(401).redirect("/login"); 
       }
     } catch (err) {
       console.error(err);
@@ -577,7 +606,7 @@ module.exports = {
       const userInfo = await Userdb.findOne({ _id: req.session.isUserAuth });
 
       if (userInfo.email !== req.body.email) {
-        // write the logic code to send otp and verify otp to proced
+       
       }
 
       if (req.body.oldPass) {

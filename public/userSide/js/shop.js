@@ -124,15 +124,22 @@ function searchProducts() {
                 })
             } else if (res.status === 401) {
               location.href = '/login';
+            }else if(res.status === 402){
+              Swal.fire({
+                icon: 'info',
+                title: 'already login',
+                text: res.data.message,
+                timer: 3000,
+              });
             } else {
               Swal.fire({
                 icon: 'info',
-                title: '',
+                title: 'please login',
                 text: res.data.message,
                 timer: 3000,
               });
               
-              location.href = '/login';
+             
             }
           })
           .catch(error => {
@@ -143,7 +150,7 @@ function searchProducts() {
               Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'Failed to add product to cart'
+                text: 'Product already exists in cart'
               });
             }
           });

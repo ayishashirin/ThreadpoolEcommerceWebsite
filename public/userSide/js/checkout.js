@@ -149,7 +149,7 @@ document.getElementById('placeOrderBtn').addEventListener('click', async functio
       });
 
       if (response.data.err) {
-          document.getElementById('loader').style.display = 'none'; // Hide loader on error
+          document.getElementById('loader').style.display = 'none'; 
           if (response.data.message === "Order above Rs 1000 is not allowed for COD") {
               Swal.fire({
                   title: 'Order Limit Exceeded',

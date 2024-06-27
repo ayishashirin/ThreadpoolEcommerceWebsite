@@ -1,7 +1,5 @@
-<!-- header -->
-<%- include('../includes/adminSide/header') %>
-<!-- end of header -->
 
+<%- include('../includes/adminSide/header') %>
 <link rel="stylesheet" href="/adminSide/css/adminDashboard.css" />
 <link rel="stylesheet" href="/public/adminSide/sass/layout/_layout.scss" />
 
@@ -60,7 +58,6 @@
       }
 
       .custom-date-input label {
-        /* margin-left:1px; */
         padding-top: 5px;
       }
 
@@ -92,8 +89,6 @@
             <button type="submit">Get Chart</button>
           </div>
         </form>
-
-
       </div>
 
       <script>
@@ -107,13 +102,13 @@
         });
       </script>
 
-<div style="max-width: 600px; margin: 0 auto;">
-  <select id="chartTypeSelect" >
-    <option value="bar">Bar Chart</option>
-    <option value="pie">Pie Chart</option>
-  </select>
-  <canvas id="myChart" style="width: 100%; height: 400px;"></canvas>
-</div>
+      <div style="max-width: 500px; margin: 0 auto;">
+        <select id="chartTypeSelect">
+          <option value="bar">Bar Chart</option>
+          <option value="pie">Pie Chart</option>
+        </select>
+        <canvas id="myChart" style="width: 100%; height: 400px;"></canvas>
+      </div>
 
       <div class="container m-5 d-flex justify-content-center align-content-center ">
         <div class="card-heading">
@@ -121,21 +116,19 @@
         </div>
       </div>
       <div class="row">
-        <%doc.forEach(product=>{%>
-
-        <div class="col-xl-3 col-lg-4 col-md-6">
-          <div class="card card-product-grid">
-            <a href="#" class="img-wrap"> <img src="/<%=product.images[0]%>" alt="Product" /> </a>
-            <div class="info-wrap">
-              <a href="#" class="title"><%=product.productId.pName%></a>
-              <div class="price mt-1">$<%=product.productId.fPrice%></div>
-         
+        <% doc.forEach(product => { %>
+          <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card card-product-grid">
+              <a href="#" class="img-wrap">
+                <img src="/<%= product.images[0] %>" alt="Product" />
+              </a>
+              <div class="info-wrap">
+                <a href="#" class="title"><%= product.productId.pName %></a>
+                <div class="price mt-1">$<%= product.productId.fPrice %></div>
+              </div>
             </div>
           </div>
-     
-        </div>
-
-        <%})%>
+        <% }) %>
       </div>
 
       <div class="container m-5 d-flex justify-content-center align-content-center ">
@@ -144,32 +137,78 @@
         </div>
       </div>
       <div class="row">
-        <%categories.forEach(category=>{%>
-
-        <div class=" col-md-6">
-          <div class="card card-product-grid">
-            <a href="#" class="img-wrap">
-              <% if (category.name === 'Women') { %>
-              <img src="/userSide/img/categories/women.jpg" alt="Women Category" />
-              <% } else if (category.name === 'Men') { %>
-              <img src="/userSide/img/categories/men.jpg" alt="Men Category" />
-              <% } else { %>
-              <img src="/userSide/img/categories/default.jpg" alt="Default Category" />
-              <% } %>
-            </a>
-            <div class="info-wrap">
-              <a href="#" class="title"><%=category.name%></a>
-              <!-- price-wrap.// -->
+        <% categories.forEach(category => { %>
+          <div class="col-md-6">
+            <div class="card card-product-grid">
+              <a href="#" class="img-wrap">
+                <% if (category.name === 'Women') { %>
+                  <img src="/userSide/img/categories/women.jpg" alt="Women Category" />
+                <% } else if (category.name === 'Men') { %>
+                  <img src="/userSide/img/categories/men.jpg" alt="Men Category" />
+                <% } else { %>
+                  <img src="/userSide/img/categories/default.jpg" alt="Default Category" />
+                <% } %>
+              </a>
+              <div class="info-wrap">
+                <a href="#" class="title"><%= category.name %></a>
+              </div>
             </div>
           </div>
-          <!-- card-product  end// -->
-        </div>
-
-        <%})%>
+        <% }) %>
       </div>
 
-  </main>
+      <!-- Ledger Book Section -->
+  
 
+      <div class="container m-5 d-flex justify-content-center align-content-center ">
+        <div class="card-heading">
+          <h3> Ledger Book </h3>
+        </div>
+      </div>
+    <div class="card">
+      <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>OrderID</th>
+                        <th>User ID</th>
+                        <th scope="col">Order Date</th>
+                        <th scope="col">Product Name</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Final Price</th>
+                        <th scope="col">Discount</th>
+                        <th scope="col">Total Amount</th>
+                        <th scope="col">Order Status</th>
+                        
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                  <% orders.forEach(order => { %>
+                    <% order.orderItems.forEach(item => { %>
+                      <tr>
+                        <td>#<%= String(order._id).slice(0, 5) %></td>
+                        <td>#<%= String(order.userId).slice(0, 5) %></td>
+                        <td><%= new Date(order.orderDate).toLocaleDateString() %></td>
+                        <td><%= item.pName %></td>
+                        <td><%= item.category %></td>
+                        <td><%= item.quantity %></td>
+                        <td><%= item.lPrice %></td>
+                        <td><%= item.offerDiscountAmount %></td>
+                        <td><%= item.lPrice - item.offerDiscountAmount %></td>
+                        <td><%= item.orderStatus %></td>
+                      </tr>
+                    <% }) %>
+                  <% }) %>
+                </tbody>
+              </table>
+          </div>
+      </div>
+    </div>
+
+  </main>
   <!-- MAIN -->
 </section>
 <!-- CONTENT -->
