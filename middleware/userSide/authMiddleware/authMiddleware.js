@@ -89,7 +89,7 @@ module.exports = {
             next();
         } catch (err) {
             console.error("Middle ware err", err);
-            res.status(401).send("You are block");
+            res.status(401).send("You are blocked");
         }
     },
     isUserLoggedIn: (req, res, next) => {
@@ -106,7 +106,6 @@ module.exports = {
             res.status(500).render("errorPages/500ErrorPage");
         }
     },
-
     isDelivered: async (req, res, next) => {
         try {
             req.session.adminPageErr = false;
@@ -128,7 +127,6 @@ module.exports = {
     simpleFindErrMiddleWare: (req, res, next) => {
         try {
             req.session.adminPageErr = false;
-
             return next();
         } catch (err) {
             console.error("Simple Middleware err:", err);

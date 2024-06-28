@@ -14,18 +14,10 @@ const userAddressController = require('../../controller/userSide/userAddressCont
 const userCartController = require('../../controller/userSide/userCartController');
 const userOrderController = require('../../controller/userSide/userOrderController');
 const razorPayController = require('../../controller/userSide/razorPayController');
-const passport = require('passport'); 
-require('../../../passport'); 
-
-// -------------------------------------------------------------------------------------------------------------------------
 const googleController = require('../../controller/userSide/googleController');
+const passport = require('passport');
 
-
-
-router.use(passport.initialize()); 
-router.use(passport.session());
-
-
+// Google Auth Routes
 router.get('/auth/google', passport.authenticate('google', { scope: ['email', 'profile'] }));
 
 router.get('/auth/google/callback', 
@@ -35,20 +27,11 @@ router.get('/auth/google/callback',
   })
 );
 
-// Success 
-router.get('success', googleController.successGoogleLogin); 
-
-// Failure 
+router.get('/success', googleController.successGoogleLogin); 
 router.get('/failure', googleController.failureGoogleLogin);
-
-module.exports = router;
 
 // User Home Routes
 router.get('/', authMiddleware.isUserBlocked, userRender.homePage);
-
-
-// -------------------------------------------------------------------------------------------------------------------
-
 
 // User Login Routes
 router.route('/login')
@@ -61,10 +44,6 @@ router.route('/login')
         authMiddleware.isUserAuth,
         userController.userLogin
     );
-
-// --------------------------------------------------------------------------------------------------------------------------
-
-
 
 // User Register Routes
 router.route('/register')
@@ -91,20 +70,16 @@ router.route('/registerOtpVerify')
         userController.userRegisterOtpVerify
     );
 
-router.get('/userRegisterEmailVerifyResend', authMiddleware.otpVerify, authMiddleware.isUserAuth, userController.userRegisterEmailVerifyResend); // Resend otp in user register
-
-// -----------------------------------------------------------------------------------------------------------------------------
-
-
+router.get('/userRegisterEmailVerifyResend', authMiddleware.otpVerify, authMiddleware.isUserAuth, userController.userRegisterEmailVerifyResend);
 
 // User Forgot Password Routes
-router.get('/forgotPassword', authMiddleware.isUserAuth, authMiddleware.noUserLoginResetPassword, userRender.userForgotPassword); // frogot pass get
+router.get('/forgotPassword', authMiddleware.isUserAuth, authMiddleware.noUserLoginResetPassword, userRender.userForgotPassword);
 
-router.post('/loginEmailVerify', authMiddleware.simpleFindErrMiddleWare, userController.userLoginEmailVerify); // checking if given email is already a user
+router.post('/loginEmailVerify', authMiddleware.simpleFindErrMiddleWare, userController.userLoginEmailVerify);
 
-router.post('/loginOtpVerify', authMiddleware.simpleFindErrMiddleWare, userController.userLoginOtpVerify); // otp verify in forgot password page
+router.post('/loginOtpVerify', authMiddleware.simpleFindErrMiddleWare, userController.userLoginOtpVerify);
 
-router.get('/loginEmailVerifyResend', authMiddleware.simpleFindErrMiddleWare, userController.userLoginEmailVerify); // resend otp in forgot password page
+router.get('/loginEmailVerifyResend', authMiddleware.simpleFindErrMiddleWare, userController.userLoginEmailVerify);
 
 // User Reset Password Routes
 router.route('/loginResetPassword')
@@ -117,53 +92,39 @@ router.route('/loginResetPassword')
         userController.userLoginResetPass
     );
 
-// -----------------------------------------------------------------------------------------------------------------------
-
-
-
 // User product listing
+router.get('/Category', authMiddleware.isUserBlocked, userCategoryRender.showProductsCategory);
 
-router.get('/Category', authMiddleware.isUserBlocked, userCategoryRender.showProductsCategory); // To list all product in given category for user
-
-router.get('/productDetail/:productId', authMiddleware.isUserBlocked, userProductRender.userProductDetails);// Detail page for chosen product
+router.get('/productDetail/:productId', authMiddleware.isUserBlocked, userProductRender.userProductDetails);
 
 router.get('/addToCompare', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userProductRender.userAddToCompare);
 
-router.get('/compareNow/:productId', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userController.userCompareNow)
+router.get('/compareNow/:productId', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userController.userCompareNow);
 
 router.get('/compareDelete/:productId', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userController.userCompareDelete);
-// --------------------------------------------------------------------------------------------------------------------------------------
 
+// User Wishlist Routes
+router.get('/addToWishlist', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userWishlistRender.userAddToWishlist);
 
+router.get('/wishlistNow/:productId', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userWishlistController.userWishlistNow);
 
-router.get('/addToWishlist', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userWishlistRender.userAddToWishlist); // page to list all existing products in WishList
+router.get('/wishlistDelete/:productId', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userWishlistController.userWishlistDelete);
 
-router.get('/wishlistNow/:productId', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userWishlistController.userWishlistNow);// Option to add new product to WishList
+router.get('/wishlistDeleteAll', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userWishlistController.userWishlistDeleteAll);
 
-router.get('/wishlistDelete/:productId', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userWishlistController.userWishlistDelete);// Option to delete product from cart
+router.get('/wishlistItemUpdate/:productId/:values', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userWishlistController.userWishlistItemUpdate);
 
-router.get('/wishlistDeleteAll', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userWishlistController.userWishlistDeleteAll);// Option to delete all product from cart
+// User Cart Routes
+router.get('/addToCart', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userCartRender.usersAddToCart);
 
-router.get('/wishlistItemUpdate/:productId/:values', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userWishlistController.userWishlistItemUpdate);// Option to inc or dec qty of selected product in cart
+router.get('/cartNow/:productId', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userCartController.userCartNow);
 
+router.get('/cartDelete/:productId', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userCartController.userCartDelete);
 
+router.get('/cartDeleteAll', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userCartController.userCartDeleteAll);
 
-// --------------------------------------------------------------------------------------------------------------------
+router.get('/cartItemUpdate/:productId/:values', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userCartController.userCartItemUpdate);
 
-// User Cart Routes (add product, remove products from cart and inc or dec qty of products in cart)
-
-router.get('/addToCart', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userCartRender.usersAddToCart); // page to list all existing products in cart
-
-router.get('/cartNow/:productId', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userCartController.userCartNow);// Option to add new product to cart
-
-router.get('/cartDelete/:productId', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userCartController.userCartDelete);// Option to delete product from cart
-
-router.get('/cartDeleteAll', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userCartController.userCartDeleteAll);// Option to delete all product from cart
-
-
-router.get('/cartItemUpdate/:productId/:values', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userCartController.userCartItemUpdate);// Option to inc or dec qty of selected product in cart
-
-// User Routes (payment from cart)
 router.route('/cartCheckOut')
     .get(
         authMiddleware.isUserLoggedIn,
@@ -176,42 +137,32 @@ router.route('/cartCheckOut')
         userCartController.userCartCheckOut
     );
 
-router.post('/isCouponValidCart', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userCartController.isCouponValidCart)
+router.post('/isCouponValidCart', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userCartController.isCouponValidCart);
 
-router.post('/onlinePaymentSuccessfull', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, razorPayController.onlinePaymentSuccessfull); // online payment callback url for razor pay
+router.post('/onlinePaymentSuccessfull', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, razorPayController.onlinePaymentSuccessfull);
 
-router.post('/onlinePaymentFailed', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, razorPayController.onlinePaymentFailed); // online payment callback url for razor pay
-
+router.post('/onlinePaymentFailed', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, razorPayController.onlinePaymentFailed);
 
 router.post('/payAgain', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, razorPayController.payAgain);
 
-router.get('/wallet', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userRender.userWallet)
+router.get('/wallet', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userRender.userWallet);
+
 router.post('/walletOrder', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userCartController.userCartCheckOut);
 
+// User Order Routes
+router.get('/orderSuccessfull', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userOrderRender.userOrderSuccessfull);
 
-// --------------------------------------------------------------------------------------------------------------------
+router.get('/orderFailed', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userOrderRender.userOrderFailed);
 
+router.get('/orders', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userOrderRender.userOrders);
 
+router.post('/orderCancel/:orderId/:productId', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userOrderController.userOrderCancel);
 
-// User Order Routes (view orders, cancel orders, invoice download and order summary)
+router.get('/orderDetails/:orderId/:productId', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userOrderRender.orderDetails);
 
-router.get('/orderSuccessfull', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userOrderRender.userOrderSuccessfull); // order successful page when a order is placed
+router.post('/userOrderReturn/:orderItemId', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userOrderController.userOrderReturn);
 
-router.get('/orderFailed', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userOrderRender.userOrderFailed)
-
-router.get('/orders', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userOrderRender.userOrders);// User order history listing page
-
-router.post('/orderCancel/:orderId/:productId', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userOrderController.userOrderCancel);// Option to cancel order of user
-
-
-router.get('/orderDetails/:orderId/:productId', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userOrderRender.orderDetails)
-
-router.post('/userOrderReturn/:orderItemId', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userOrderController.userOrderReturn)
-
-// --------------------------------------------------------------------------------------------------------------------------------
-
-
-// User Account Routes (view profile and Update)
+// User Account Routes
 router.get('/account', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userRender.userProfile);
 
 router.route('/updateAccount')
@@ -225,42 +176,27 @@ router.route('/updateAccount')
         authMiddleware.isUserBlocked,
         userController.userUpdateAccount
     );
-// ----------------------------------------------------------------------------------------------------------------------------
 
+// User Address Router
+router.get('/editAddress', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userAddressRender.userEditAddress);
 
+router.get('/addAddress', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userAddressRender.addAddress);
 
-// User Address Router (view address, change default, add, delete and update address)
-router.get('/editAddress', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userAddressRender.userEditAddress); // list all existing address page
+router.get('/changeDefault/:adId', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userAddressController.userChangeDefault);
 
-router.get('/addAddress', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userAddressRender.addAddress); // add new addres for user page
+router.get('/deleteAddress/:adId', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userAddressController.deleteAddress);
 
-router.get('/changeDefault/:adId', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userAddressController.userChangeDefault);// change default addres of the user 
+router.get('/editAddress/:adId', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userAddressRender.updateAddress);
 
-router.get('/deleteAddress/:adId', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userAddressController.deleteAddress);// delete address of user
+router.post('/UpdateAddress', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userAddressController.userupdateAddress);
 
-router.get('/editAddress/:adId', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userAddressRender.updateAddress);// Update address of user page
+router.post('/AddAddress', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userAddressController.userAddAddress);
 
-router.post('/UpdateAddress', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userAddressController.userupdateAddress); // Updates the new address 
+router.post('/api/changeAddressPayment', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userAddressController.changeAddressPayment);
 
-router.post('/AddAddress', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userAddressController.userAddAddress);// adds new address
-
-router.post('/api/changeAddressPayment', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userAddressController.changeAddressPayment); // Option to change address from check out page
-// --------------------------------------------------------------------------------------------------------------------
-
-
-//search
-
-
-
-
-
-router.get('/aboutUs', userRender.userAboutUs)
-
+// Other Routes
+router.get('/aboutUs', userRender.userAboutUs);
 router.get('/search', userRender.searchProducts);
-
-// logOut
-
 router.get('/logOut', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userController.userLogOut);
 
-
-module.exports = router; 
+module.exports = router;
