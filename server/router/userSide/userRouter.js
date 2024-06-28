@@ -31,16 +31,16 @@ router.get('/auth/google', passport.authenticate('google', { scope: ['email', 'p
 
 router.get('/auth/google/callback', 
   passport.authenticate('google', { 
-    successRedirect: '/', 
-    failureRedirect: '/login'
+    successRedirect: '/success', 
+    failureRedirect: '/failure'
   })
 );
 
 // Success 
-router.get('/', googleController.successGoogleLogin); 
+router.get('success', googleController.successGoogleLogin); 
 
 // Failure 
-router.get('/login', googleController.failureGoogleLogin);
+router.get('/failure', googleController.failureGoogleLogin);
 
 module.exports = router;
 

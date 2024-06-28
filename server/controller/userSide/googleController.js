@@ -1,21 +1,19 @@
-const loadAuth = (req, res) => {
-  res.redirect('/login');
-};
+module.exports = {
 
-const successGoogleLogin = (req, res) => {
+  loadAuth : (req, res) => {
+  res.render('userHome');
+},
+
+successGoogleLogin : (req, res) => {
   if (!req.user) {
-    return res.redirect('/login');
+    return res.redirect('/failure');
   }
   console.log(req.user);
-  res.redirect("/");
-};
+  res.send("Welcome " + req.user.email); 
+},
 
-const failureGoogleLogin = (req, res) => {
-  res.redirect("/");
-};
+ failureGoogleLogin : (req, res) => {
+  res.redirect("Error");
+},
+}
 
-module.exports = {
-  loadAuth,
-  successGoogleLogin,
-  failureGoogleLogin
-};

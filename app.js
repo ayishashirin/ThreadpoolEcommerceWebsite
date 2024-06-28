@@ -26,9 +26,9 @@ app.use((req, res, next) => {
   next();
 });
 
-function isLoggedIn(req, res, next) {
-  req.user ? next() : res.sendStatus(401);
-}
+// function isLoggedIn(req, res, next) {
+//   req.user ? next() : res.sendStatus(401);
+// }
 
 app.use(
   session({

@@ -9,8 +9,8 @@ passport.deserializeUser(function(user, done) {
 }); 
 
 passport.use(new GoogleStrategy({ 
-	clientID:process.env.CLIENT_ID, // Your Credentials here. 
-	clientSecret:process.env.CLIENT_SECRET, // Your Credentials here. 
+	clientID:process.env.CLIENT_ID, 
+	clientSecret:process.env.CLIENT_SECRET,  
 	callbackURL:"https://threadpool.shop/auth/google/callback", 
 	passReqToCallback:true
 }, 
