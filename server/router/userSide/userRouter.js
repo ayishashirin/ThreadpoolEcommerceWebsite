@@ -25,7 +25,6 @@ const googleController = require('../../controller/userSide/googleController');
 router.use(passport.initialize()); 
 router.use(passport.session());
 
-router.get('/', googleController.loadAuth);
 
 router.get('/auth/google', passport.authenticate('google', { scope: ['email', 'profile'] }));
 

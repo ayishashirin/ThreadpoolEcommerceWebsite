@@ -1,8 +1,6 @@
 module.exports = {
 
-  loadAuth : (req, res) => {
-  res.render('userHome');
-},
+
 
 successGoogleLogin : (req, res) => {
   if (!req.user) {
