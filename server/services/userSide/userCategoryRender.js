@@ -34,7 +34,6 @@ module.exports = {
       if (req.query.sort) {
         product = await userHelper.userSingleProductCategory(req.query);
   
-        // Sorting logic based on req.query.sort
         switch (req.query.sort) {
           case "priceAsc":
             product.sort((a, b) => a.lPrice - b.lPrice);
@@ -52,7 +51,6 @@ module.exports = {
             product.sort((a, b) => new Date(b.date) - new Date(a.date));
             break;
           default:
-            // Default sorting logic
             product.sort((a, b) => a._id - b._id);
             break;
         }
@@ -61,7 +59,7 @@ module.exports = {
       res.status(200).render("userSide/userSingleCategoryProducts", {
         products: product,
         category,
-        currentPage, // Pass currentPage directly to the template
+        currentPage,
         currentCategory: req.params.category,
         user: req.session.isUserAuth,
         counts,
@@ -69,7 +67,7 @@ module.exports = {
         isCartItem,
         totalProducts,
         singleProduct,
-        product: products, // Check if this is required, you're passing products twice
+        product: products, 
         wishlistItems,
         iswishlistItem,
         size: req.query.size,

@@ -20,7 +20,7 @@ const razorPayController = require('../../controller/userSide/razorPayController
 
 
 // User Home Routes
-router.get('/', authMiddleware.isUserBlocked,userRender.homePage);
+router.get('/', authMiddleware.isUserBlocked, userRender.homePage);
 
 
 // -------------------------------------------------------------------------------------------------------------------
@@ -29,12 +29,12 @@ router.get('/', authMiddleware.isUserBlocked,userRender.homePage);
 // User Login Routes
 router.route('/login')
     .get(
-        authMiddleware.isUserAuth, 
-        authMiddleware.noUserLoginResetPassword, 
+        authMiddleware.isUserAuth,
+        authMiddleware.noUserLoginResetPassword,
         userRender.userLogin
     )
     .post(
-        authMiddleware.isUserAuth, 
+        authMiddleware.isUserAuth,
         userController.userLogin
     );
 
@@ -67,20 +67,20 @@ router.route('/registerOtpVerify')
         userController.userRegisterOtpVerify
     );
 
-    router.get('/userRegisterEmailVerifyResend', authMiddleware.otpVerify, authMiddleware.isUserAuth, userController.userRegisterEmailVerifyResend); // Resend otp in user register
+router.get('/userRegisterEmailVerifyResend', authMiddleware.otpVerify, authMiddleware.isUserAuth, userController.userRegisterEmailVerifyResend); // Resend otp in user register
 
 // -----------------------------------------------------------------------------------------------------------------------------
 
 
 
 // User Forgot Password Routes
-router.get('/forgotPassword', authMiddleware.isUserAuth,authMiddleware.noUserLoginResetPassword, userRender.userForgotPassword); // frogot pass get
+router.get('/forgotPassword', authMiddleware.isUserAuth, authMiddleware.noUserLoginResetPassword, userRender.userForgotPassword); // frogot pass get
 
 router.post('/loginEmailVerify', authMiddleware.simpleFindErrMiddleWare, userController.userLoginEmailVerify); // checking if given email is already a user
 
-router.post('/loginOtpVerify', authMiddleware.simpleFindErrMiddleWare,userController.userLoginOtpVerify); // otp verify in forgot password page
+router.post('/loginOtpVerify', authMiddleware.simpleFindErrMiddleWare, userController.userLoginOtpVerify); // otp verify in forgot password page
 
-router.get('/loginEmailVerifyResend',  authMiddleware.simpleFindErrMiddleWare,userController.userLoginEmailVerify); // resend otp in forgot password page
+router.get('/loginEmailVerifyResend', authMiddleware.simpleFindErrMiddleWare, userController.userLoginEmailVerify); // resend otp in forgot password page
 
 // User Reset Password Routes
 router.route('/loginResetPassword')
@@ -102,8 +102,8 @@ router.route('/loginResetPassword')
 router.get('/Category', authMiddleware.isUserBlocked, userCategoryRender.showProductsCategory); // To list all product in given category for user
 
 router.get('/productDetail/:productId', authMiddleware.isUserBlocked, userProductRender.userProductDetails);// Detail page for chosen product
-  
-router.get('/addToCompare', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userProductRender.userAddToCompare); 
+
+router.get('/addToCompare', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userProductRender.userAddToCompare);
 
 router.get('/compareNow/:productId', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userController.userCompareNow)
 
@@ -144,7 +144,7 @@ router.route('/cartCheckOut')
     .get(
         authMiddleware.isUserLoggedIn,
         authMiddleware.isUserBlocked,
-        userCartRender.userCartCheckOut 
+        userCartRender.userCartCheckOut
     )
     .post(
         authMiddleware.isUserLoggedIn,
@@ -152,17 +152,17 @@ router.route('/cartCheckOut')
         userCartController.userCartCheckOut
     );
 
-    router.post('/isCouponValidCart', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userCartController.isCouponValidCart)
+router.post('/isCouponValidCart', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userCartController.isCouponValidCart)
 
-    router.post('/onlinePaymentSuccessfull', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, razorPayController.onlinePaymentSuccessfull); // online payment callback url for razor pay
+router.post('/onlinePaymentSuccessfull', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, razorPayController.onlinePaymentSuccessfull); // online payment callback url for razor pay
 
-    router.post('/onlinePaymentFailed', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, razorPayController.onlinePaymentFailed); // online payment callback url for razor pay
+router.post('/onlinePaymentFailed', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, razorPayController.onlinePaymentFailed); // online payment callback url for razor pay
 
-    
-    router.post('/payAgain', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, razorPayController.payAgain);
 
-    router.get('/wallet', authMiddleware.isUserLoggedIn,authMiddleware.isUserBlocked, userRender.userWallet)
-    router.post('/walletOrder', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userCartController.userCartCheckOut);
+router.post('/payAgain', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, razorPayController.payAgain);
+
+router.get('/wallet', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userRender.userWallet)
+router.post('/walletOrder', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userCartController.userCartCheckOut);
 
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -171,24 +171,24 @@ router.route('/cartCheckOut')
 
 // User Order Routes (view orders, cancel orders, invoice download and order summary)
 
-router.get('/orderSuccessfull', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked,userOrderRender.userOrderSuccessfull); // order successful page when a order is placed
+router.get('/orderSuccessfull', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userOrderRender.userOrderSuccessfull); // order successful page when a order is placed
 
-router.get('/orderFailed', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked,userOrderRender.userOrderFailed)
+router.get('/orderFailed', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userOrderRender.userOrderFailed)
 
 router.get('/orders', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userOrderRender.userOrders);// User order history listing page
 
 router.post('/orderCancel/:orderId/:productId', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userOrderController.userOrderCancel);// Option to cancel order of user
 
 
-router.get('/orderDetails/:orderId/:productId',  authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userOrderRender.orderDetails)
+router.get('/orderDetails/:orderId/:productId', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userOrderRender.orderDetails)
 
-router.post('/userOrderReturn/:orderItemId',  authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userOrderController.userOrderReturn)
- 
+router.post('/userOrderReturn/:orderItemId', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userOrderController.userOrderReturn)
+
 // --------------------------------------------------------------------------------------------------------------------------------
 
 
 // User Account Routes (view profile and Update)
-router.get('/account', authMiddleware.isUserLoggedIn,authMiddleware.isUserBlocked, userRender.userProfile);
+router.get('/account', authMiddleware.isUserLoggedIn, authMiddleware.isUserBlocked, userRender.userProfile);
 
 router.route('/updateAccount')
     .get(
@@ -230,7 +230,7 @@ router.post('/api/changeAddressPayment', authMiddleware.isUserLoggedIn, authMidd
 
 
 
-router.get('/aboutUs',userRender.userAboutUs)
+router.get('/aboutUs', userRender.userAboutUs)
 
 router.get('/search', userRender.searchProducts);
 
