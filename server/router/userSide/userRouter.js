@@ -14,10 +14,35 @@ const userAddressController = require('../../controller/userSide/userAddressCont
 const userCartController = require('../../controller/userSide/userCartController');
 const userOrderController = require('../../controller/userSide/userOrderController');
 const razorPayController = require('../../controller/userSide/razorPayController');
+const passport = require('passport'); 
+require('../../../passport'); 
 
 // -------------------------------------------------------------------------------------------------------------------------
+const googleController = require('../../controller/userSide/googleController');
 
 
+
+router.use(passport.initialize()); 
+router.use(passport.session());
+
+router.get('/', googleController.loadAuth);
+
+router.get('/auth/google', passport.authenticate('google', { scope: ['email', 'profile'] }));
+
+router.get('/auth/google/callback', 
+  passport.authenticate('google', { 
+    successRedirect: '/', 
+    failureRedirect: '/login'
+  })
+);
+
+// Success 
+router.get('/', googleController.successGoogleLogin); 
+
+// Failure 
+router.get('/login', googleController.failureGoogleLogin);
+
+module.exports = router;
 
 // User Home Routes
 router.get('/', authMiddleware.isUserBlocked, userRender.homePage);

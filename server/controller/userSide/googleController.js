@@ -1,24 +1,21 @@
-const GoogleStrategy = require( 'passport-google-oauth2' ).Strategy;
-const passport = require('passport')
-const dotenv = require('dotenv').config();
+const loadAuth = (req, res) => {
+  res.redirect('/login');
+};
 
-passport.use(new GoogleStrategy({
-    clientID:  process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "https://threadpool.shop/googleController/google/callback",
-    passReqToCallback   : true
-  },
-  function(request, accessToken, refreshToken, profile, done) {
-
-    done(null, profile);
-  
+const successGoogleLogin = (req, res) => {
+  if (!req.user) {
+    return res.redirect('/login');
   }
-));
+  console.log(req.user);
+  res.redirect("/");
+};
 
-passport.serializeUser((user,done)=>{
-      done(null,user)
-});
+const failureGoogleLogin = (req, res) => {
+  res.redirect("/");
+};
 
-passport.deserializeUser((user,done)=>{
-  done(null,user);
-});
+module.exports = {
+  loadAuth,
+  successGoogleLogin,
+  failureGoogleLogin
+};
