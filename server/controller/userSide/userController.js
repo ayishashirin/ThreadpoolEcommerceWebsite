@@ -140,7 +140,6 @@ module.exports = {
 
       // Check if user opted for Google OAuth login
       if (req.session.googleLogin) {
-        // Clear session flags related to local login
         delete req.session.email;
         delete req.session.password;
         delete req.session.userInfo;
@@ -182,11 +181,12 @@ module.exports = {
 
   successGoogleLogin: (req, res) => {
     // Handle successful Google OAuth login
-    // This function should already be implemented correctly
     if (!req.user) {
       return res.redirect('/failure');
     }
     console.log(req.user); // Optional: Log the user object retrieved from Google
+    req.session.isUserAuth = req.user._id; // Store user's ID in session
+    req.flash("toastMessage", "Signed in successfully");
     res.redirect("/");
   },
 
