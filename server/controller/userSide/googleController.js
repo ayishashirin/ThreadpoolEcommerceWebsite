@@ -4,7 +4,7 @@ module.exports = {
       return res.redirect('/failure');
     }
     console.log(req.user);
-    res.redirect("/");
+    res.redirect("userSide/userHome");
   },
 
   failureGoogleLogin: (req, res) => {
