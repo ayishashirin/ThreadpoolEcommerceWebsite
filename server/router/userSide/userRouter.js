@@ -17,15 +17,14 @@ const razorPayController = require('../../controller/userSide/razorPayController
 const passport = require('passport');
 
 // Google Auth Routes
-router.get('/auth/google',
-    passport.authenticate('google', { scope: ['profile', 'email'] }));
-  
-  router.get('/auth/google/callback',
-    passport.authenticate('google', { failureRedirect: '/login' }),
-    successGoogleLogin
-  );
-  
-  router.get('/failure', failureGoogleLogin);
+router.get('/auth/google', passport.authenticate('google', { scope: ['email', 'profile'] }));
+
+router.get('/auth/google/callback', 
+  passport.authenticate('google', { 
+    successRedirect: '/success', 
+    failureRedirect: '/failure'
+  })
+);
 
 router.get('/success', userController.successGoogleLogin); 
 router.get('/failure', userController.failureGoogleLogin);

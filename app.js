@@ -7,7 +7,6 @@ const passport = require("passport");
 const connectDB = require("./server/database/connection");
 const cors = require("cors");
 const GoogleStrategy = require('passport-google-oauth2').Strategy; 
-const Userdb = require("../../model/userSide/userModel");
 
 passport.serializeUser((user , done) => { 
 	done(null , user); 
@@ -22,41 +21,10 @@ passport.use(new GoogleStrategy({
 	callbackURL:"https://threadpool.shop/auth/google/callback", 
 	passReqToCallback:true
 }, 
-async (accessToken, refreshToken, profile, done) => {
-  try {
-    let user = await Userdb.findOne({ googleId: profile.id });
-
-    if (!user) {
-      // Create a new user in your database if not exists
-      user = await Userdb.create({
-        googleId: profile.id,
-        googleDisplayName: profile.displayName,
-        googleEmail: profile.emails[0].value,
-        fullName: profile.displayName, // Example: You can adjust this as needed
-        // Add other relevant fields
-      });
-    }
-
-    // Pass the user to the callback
-    return done(null, user);
-  } catch (err) {
-    return done(err, null);
-  }
-}
+function(request, accessToken, refreshToken, profile, done) { 
+	return done(null, profile); 
+} 
 ));
-
-passport.serializeUser((user, done) => {
-done(null, user.id);
-});
-
-passport.deserializeUser(async (id, done) => {
-try {
-  const user = await Userdb.findById(id);
-  done(null, user);
-} catch (err) {
-  done(err, null);
-}
-});
 
 
 
