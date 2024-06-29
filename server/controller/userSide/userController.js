@@ -138,6 +138,16 @@ module.exports = {
         return res.status(401).redirect("/login");
       }
 
+      // Check if user opted for Google OAuth login
+      if (req.session.googleLogin) {
+        // Clear session flags related to local login
+        delete req.session.email;
+        delete req.session.password;
+        delete req.session.userInfo;
+
+        return res.redirect('/auth/google'); // Redirect to Google OAuth flow
+      }
+
       const data = await Userdb.findOne({ email: req.body.email });
 
       if (data) {
@@ -169,6 +179,22 @@ module.exports = {
       res.status(401).redirect("/login");
     }
   },
+
+  successGoogleLogin: (req, res) => {
+    // Handle successful Google OAuth login
+    // This function should already be implemented correctly
+    if (!req.user) {
+      return res.redirect('/failure');
+    }
+    console.log(req.user); // Optional: Log the user object retrieved from Google
+    res.redirect("/");
+  },
+
+  failureGoogleLogin: (req, res) => {
+    // Handle failed Google OAuth login
+    res.redirect("/error");
+  },
+
 
 
   // --------------------------------------------------------------------------------------------------------------------

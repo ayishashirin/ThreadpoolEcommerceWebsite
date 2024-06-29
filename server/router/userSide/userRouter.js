@@ -14,7 +14,6 @@ const userAddressController = require('../../controller/userSide/userAddressCont
 const userCartController = require('../../controller/userSide/userCartController');
 const userOrderController = require('../../controller/userSide/userOrderController');
 const razorPayController = require('../../controller/userSide/razorPayController');
-const googleController = require('../../controller/userSide/googleController');
 const passport = require('passport');
 
 // Google Auth Routes
@@ -27,8 +26,8 @@ router.get('/auth/google/callback',
   })
 );
 
-router.get('/success', googleController.successGoogleLogin); 
-router.get('/failure', googleController.failureGoogleLogin);
+router.get('/success', userController.successGoogleLogin); 
+router.get('/failure', userController.failureGoogleLogin);
 
 // User Home Routes
 router.get('/', authMiddleware.isUserBlocked, userRender.homePage);
