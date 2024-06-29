@@ -113,6 +113,9 @@ module.exports = {
             req.session.isUserAuth,
             req.query.page
           );
+
+          orders.sort((a, b) => b.createdAt - a.createdAt);
+          
           res.status(200).render("userSide/userOrderPage", {
             category,
             orders,

@@ -4,12 +4,13 @@
 <head>
   <!-- header -->
   <%- include('../includes/userSide/header') %>
-  <!-- end of header -->
+    <!-- end of header -->
 
-  <link rel="stylesheet" href="/userSide/css/userOrderPage.css" />
-  <!-- end of Style css -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
-  <!-- end of Bootstrap css cdn link -->
+    <link rel="stylesheet" href="/userSide/css/userOrderPage.css" />
+    <!-- end of Style css -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-T3c6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+    <!-- end of Bootstrap css cdn link -->
 </head>
 
 <body>
@@ -32,7 +33,7 @@
       <main>
         <div id="confirmation-popup" class="modal">
           <div class="modal-content">
-            <p>Do you want to cancel the order?</p>
+            <p class="" style="color: #ffff;">Do you want to cancel the order?</p>
             <div class="button-container">
               <button class="close-btn" id="cancel-btn">NO</button>
               <button id="confirm-btn" class="confirm-btn">YES</button>
@@ -41,95 +42,91 @@
         </div>
 
         <style>
-          /* The Modal (background) */
           .modal {
             display: none;
-            /* Hidden by default */
             position: fixed;
-            /* Stay in place */
             z-index: 1;
-            /* Sit on top */
             left: 0;
             top: 0;
             width: 100%;
-            /* Full width */
             height: 100%;
-            /* Full height */
             overflow: auto;
-            /* Enable scroll if needed */
-            background-color: rgb(0, 0, 0);
-            /* Fallback color */
-            background-color: rgba(0, 0, 0, 0.4);
-            /* Black w/ opacity */
           }
 
-          /* Modal Content/Box */
+
           .modal-content {
-            background-color: #fefefe;
+            background-color: #000;
             margin: 15% auto;
-            /* 15% from the top and centered */
             padding: 20px;
-            border: 1px solid #888;
+            border: 1px solid #000;
             width: 20%;
-            /* Could be more or less, depending on screen size */
+            box-shadow: 0 4px 8px white;
           }
 
-          /* The Close Button */
+
           .close-btn {
-            color: #aaa;
+            color: #000;
             font-size: 18px;
             font-weight: bold;
           }
 
           .close-btn:hover,
           .close-btn:focus {
-            color: black;
+            color: #000000;
             text-decoration: none;
             cursor: pointer;
           }
 
-          /* Show the modal */
+
           .modal.show {
             display: block;
           }
         </style>
 
         <% for (let i=0; i < orders.length; i++) { %>
-        <div class="container-fluid main d">
-          <div class="row mainContainer">
-            <div class="col-12">
-              <div class="cartHead">
-                <div class="d-flex align-items-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="15" viewBox="0 0 20 15" fill="none">
-                    <path d="M3 7H17V11C17 12.8856 17 13.8284 16.4142 14.4142C15.8284 15 14.8856 15 13 15H7C5.11438 15 4.17157 15 3.58579 14.4142C3 13.8284 3 12.8856 3 11V7Z" fill="black" />
-                    <path d="M0.815301 3.8153L3 6L7 2L4.58869 0.392459C4.23591 0.157275 3.77317 0.170119 3.43399 0.424509L0.922408 2.30819C0.435568 2.67332 0.384992 3.38499 0.815301 3.8153Z" fill="black" />
-                    <path d="M19.1847 3.8153L17 6L13 2L15.4113 0.392459C15.7641 0.157275 16.2268 0.170119 16.566 0.424509L19.0776 2.30819C19.5644 2.67332 19.615 3.38499 19.1847 3.8153Z" fill="black" />
-                    <path d="M16 6V7H4V6L7 3H13L16 6Z" fill="black" stroke="white" stroke-width="2" stroke-linecap="round" />
-                  </svg>
-                  <h2 class="m-0 p-0">Order Id :</h2>
-                  <p>
-                    <%= orders[i]._id %>
-                  </p>
+          <div class="container-fluid main d">
+            <div class="row mainContainer">
+              <div class="col-12">
+                <div class="cartHead">
+                  <div class="d-flex align-items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="15" viewBox="0 0 20 15" fill="none">
+                      <path
+                        d="M3 7H17V11C17 12.8856 17 13.8284 16.4142 14.4142C15.8284 15 14.8856 15 13 15H7C5.11438 15 4.17157 15 3.58579 14.4142C3 13.8284 3 12.8856 3 11V7Z"
+                        fill="black" />
+                      <path
+                        d="M0.815301 3.8153L3 6L7 2L4.58869 0.392459C4.23591 0.157275 3.77317 0.170119 3.43399 0.424509L0.922408 2.30819C0.435568 2.67332 0.384992 3.38499 0.815301 3.8153Z"
+                        fill="black" />
+                      <path
+                        d="M19.1847 3.8153L17 6L13 2L15.4113 0.392459C15.7641 0.157275 16.2268 0.170119 16.566 0.424509L19.0776 2.30819C19.5644 2.67332 19.615 3.38499 19.1847 3.8153Z"
+                        fill="black" />
+                      <path d="M16 6V7H4V6L7 3H13L16 6Z" fill="black" stroke="white" stroke-width="2"
+                        stroke-linecap="round" />
+                    </svg>
+                    <h2 class="m-0 p-0">Order Id :</h2>
+                    <p>
+                      <%= orders[i]._id %>
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <div class="cartBody">
-                <% for (let j=0; j < orders[i].orderItems.length; j++) { %>
-                <div class="col-12 oneSection">
-                  <div class="cartItems d-flex w-100 justify-content-between align-items-center cursor">
-                    <div class="d-flex align-items-center gap-3">
-                      <a href="/orderDetails/<%= orders[i]._id %>/<%= orders[i].orderItems[j].productId %>"><img src="<%= orders[i].orderItems[j].images %>" alt="" /></a>
-                      <div class="textOrder d-flex flex-column gap-2">
-                        <h2 class="m-0 text-capitalize">
-                          <%= orders[i].orderItems[j].pName %>
-                        </h2>
-                        <p class="m-0">
-                          <span class="text-capitalize">
-                            <%= orders[i].orderItems[j].pDescription %>
-                          </span>
-                        </p>
-                        <p class="m-0">
-                          Order Placed:
-                          <%= orders[i].orderDate.toString().split(' ').slice(0, 4).join(' ') %>
+                <div class="cartBody">
+                  <% for (let j=0; j < orders[i].orderItems.length; j++) { %>
+                    <div class="col-12 oneSection">
+                      <div class="cartItems d-flex w-100 justify-content-between align-items-center cursor">
+                        <div class="d-flex align-items-center gap-3">
+                          <a href="/orderDetails/<%= orders[i]._id %>/<%= orders[i].orderItems[j].productId %>"><img
+                              src="<%= orders[i].orderItems[j].images %>" alt="" /></a>
+                          <div class="textOrder d-flex flex-column gap-2">
+                            <h2 class="m-0 text-capitalize">
+                              <%= orders[i].orderItems[j].pName %>
+                            </h2>
+                            <p class="m-0">
+                              <span class="text-capitalize">
+                                <%= orders[i].orderItems[j].pDescription %>
+                              </span>
+                            </p>
+                            <p class="m-0">
+                              Order Placed:
+                              <%= orders[i].orderDate.toString().split(' ').slice(0, 4).join(' ') %>
                         </p>
                       </div>
                     </div>
@@ -143,155 +140,171 @@
                         </div>
                         <% if (orders[i].orderItems[j].orderStatus !== "Delivered") { %>
                         <div class="d-flex align-items-center gap-2">
-                          <div class="statusCircle <%= orders[i].orderItems[j].orderStatus === ' Cancelled'
-                                ? 'red' : '' %>">
+                          <div class="statusCircle <%= orders[i].orderItems[j].orderStatus === ' Cancelled' ? 'red'
+                                : '' %>">
                           </div>
                           <p class="statusOrder me-3">
                             <%= orders[i].orderItems[j].orderStatus %>
                           </p>
                         </div>
                         <% if (orders[i].orderItems[j].orderStatus==="Cancelled" ) { %>
-                        <button class="cancelBtn margin">
-                          Cancelled
-                        </button>
-                        <% } else { %>
-                        <a class="aTag" data-order-id="<%= orders[i]._id %>" data-product-id="<%= orders[i].orderItems[j].productId %>">
-                          <button class="cancelBtn margin" id="cancel-btn">
-                            Cancel
+                          <button class="cancelBtn margin">
+                            Cancelled
                           </button>
-                        </a>
-                        <% } %>
-                        <% if (orders[i].orderItems[j].orderStatus === "Pending") { %>
-                          <button class="cancelBtn margin" id="payAgainBtn" name="paymentMethod" value="razorpay" data-order-id='<%=orders[i]._id%>' data-product-id='<%=orders[i].orderItems[j].productId%>'>Pay Again</button>
-                        <% } %>
-
-                      
-                        
-
-                        <% } else { %>
-                        <div class="d-flex align-items-center gap-2">
-                          <div class="statusCircle statusDeleText"></div>
-                          <p class="statusOrder me-3">Delivered</p>
-                        </div>
-                        <button class="cancelBtn statusDele" onclick="returnOrder('<%= orders[i].orderItems[j]._id %>')">
-                          Return
-                        </button>
-                        <div class="d-flex align-items-center gap-2">
-
-
-                          <% if (orders[i].orderItems[j].orderStatus!=="Cancelled") {%>
-
-                          <input type="hidden" id="product-id" value="<%=orders[i].orderItems[j].productId%>">
-
-
-
-                          <div class="col-lg-12" id="dwnld-invoice">
-                            <svg width="31" height="25" viewBox="0 0 31 25" xmlns="http://www.w3.org/2000/svg">
-                              <rect x="0.417969" width="30.5811" height="25" rx="7" fill="black" />
-                              <path d="M16.1016 5.33325H13.903C12.0428 5.33325 11.1128 5.33325 10.5349 5.91904C9.95703 6.50482 9.95703 7.44763 9.95703 9.33325V14.6666C9.95703 16.5522 9.95703 17.495 10.5349 18.0808C11.1128 18.6666 12.0428 18.6666 13.903 18.6666H16.5336C18.3937 18.6666 19.3238 18.6666 19.9017 18.0808C20.4796 17.495 20.4796 16.5522 20.4796 14.6666V9.77115C20.4796 9.22615 20.4796 8.95365 20.3794 8.70863C20.2793 8.4636 20.0892 8.27091 19.7091 7.88554L17.9618 6.1143C17.5816 5.72893 17.3915 5.53624 17.1498 5.43475C16.9081 5.33325 16.6393 5.33325 16.1016 5.33325Z" fill="white" />
-                              <path d="M15.875 4.6665V7.99984C15.875 8.94265 15.875 9.41405 16.1679 9.70694C16.4608 9.99984 16.9322 9.99984 17.875 9.99984H21.1363" stroke="#00FF00" stroke-width="2" />
-                            </svg><span>Invoice</span>
-                          </div>
-
-
-                          <table class="invoice-table d-none" id="invoice-table-<%=orders[i].orderItems[j].productId%>">
-
-
-                            <tr>
-                              <th colspan="2">Sold by :</th>
-
-                              <th colspan="3">Billing Address:</th>
-                            </tr>
-
-
-                            <tbody>
-                              <tr>
-                                <td colspan="2">
-                                  Thredpool pvt ltd ,<br>
-                                  KINFRA Techno Industrial Park,<br>
-                                  National Highway 66 <br>
-                                  near Calicut University <br>
-                                  Kakkanchery Chelembra PO,<br>
-                                  Dt, Thenhipalam, Kerala 673634
-                                </td>
-
-                                <td colspan="1">
-                                  <%=orders[i].address[0].name %> <br>
-                                  <%=orders[i].address[0].country %> <br>
-                                  <%=orders[i].address[0].state %> <br>
-                                  <%=orders[i].address[0].district %> <br>
-                                  <%=orders[i].address[0].city %> <br>
-                                  <%=orders[i].address[0].pin %> <br>
-                                  <%=orders[i].address[0].houseName %> <br>
-                                  <%=orders[i].address[0].phoneNo %> <br>
-                                </td>
-                              </tr>
-                              <td>
-                                Order ID : <%= orders[i]._id.toString().slice(0, 6) %> <br>
-                                Order Date : <%=orders[i].orderDate.toLocaleDateString('en-US',{day: 'numeric' , month: 'short' ,
-                                          year: 'numeric' })%>
-                              </td>
-                            </tbody>
-
-
-
-                            <tr style="font-weight: bold;" class="mt-5">
-                              <th>No</th>
-                              <th>Product</th>
-                              <th>Price</th>
-                              <th>Qty</th>
-                              <th>Total</th>
-                            </tr>
-                            <tr>
-
-                            </tr>
+                          <% } else { %>
+                            <a class="aTag" data-order-id="<%= orders[i]._id %>"
+                              data-product-id="<%= orders[i].orderItems[j].productId %>">
+                              <button class="cancelBtn margin" id="cancel-btn">
+                                Cancel
+                              </button>
+                            </a>
+                            <% } %>
+                              <% if (orders[i].orderItems[j].orderStatus==="Pending" ) { %>
+                                <button class="cancelBtn margin" id="payAgainBtn" name="paymentMethod" value="razorpay"
+                                  data-order-id='<%=orders[i]._id%>'
+                                  data-product-id='<%=orders[i].orderItems[j].productId%>'>Pay Again</button>
+                                <% } %>
 
 
 
 
-                            <%let count=0;%>
-                            <% count++ %>
-                            <tbody>
-                              <tr>
-                                <td>
-                                  <%=count%>
-                                </td>
-                                <td>
-                                  <%= orders[i].orderItems[j].pName %>
-                                </td>
-                                <td>₹<%= orders[i].orderItems[j].fPrice %>
-                                </td>
-                                <td>
-                                  <%= orders[i].orderItems[j].quantity %>
-                                </td>
-                                <td>₹<%= orders[i].orderItems[j].quantity*orders[i].orderItems[j].fPrice %>
-                                </td>
+                                  <% } else { %>
+                                    <div class="d-flex align-items-center gap-2">
+                                      <div class="statusCircle statusDeleText"></div>
+                                      <p class="statusOrder me-3">Delivered</p>
+                                    </div>
+                                    <button class="cancelBtn statusDele"
+                                      onclick="returnOrder('<%= orders[i].orderItems[j]._id %>')">
+                                      Return
+                                    </button>
+                                    <div class="d-flex align-items-center gap-2">
 
-                              </tr>
-                            </tbody>
 
-                            <tr>
-                              <td colspan="4">Total Offer Amount</td>
-                              <td colspan="1">-$ <%= Math.round((orders[i].orderItems[j].quantity)*((orders[i].orderItems[j].offerDiscountAmount)))
-                                                  %></td>
-                            </tr>
-                            <tr>
-                              <td colspan="4">Total</td>
-                              <td colspan="1">$ <%= Math.round((orders[i].orderItems[j].lPrice *
-                                                     orders[i].orderItems[j].quantity)-((orders[i].orderItems[j].offerDiscountAmount)))
-                                                     %></td>
-                            </tr>
+                                      <% if (orders[i].orderItems[j].orderStatus!=="Cancelled" ) {%>
 
-                          </table>
-                          <% }%>
+                                        <input type="hidden" id="product-id"
+                                          value="<%=orders[i].orderItems[j].productId%>">
 
-                        </div>
-                        <% } %>
+
+
+                                        <div class="col-lg-12" id="dwnld-invoice">
+                                          <svg width="31" height="25" viewBox="0 0 31 25"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <rect x="0.417969" width="30.5811" height="25" rx="7" fill="black" />
+                                            <path
+                                              d="M16.1016 5.33325H13.903C12.0428 5.33325 11.1128 5.33325 10.5349 5.91904C9.95703 6.50482 9.95703 7.44763 9.95703 9.33325V14.6666C9.95703 16.5522 9.95703 17.495 10.5349 18.0808C11.1128 18.6666 12.0428 18.6666 13.903 18.6666H16.5336C18.3937 18.6666 19.3238 18.6666 19.9017 18.0808C20.4796 17.495 20.4796 16.5522 20.4796 14.6666V9.77115C20.4796 9.22615 20.4796 8.95365 20.3794 8.70863C20.2793 8.4636 20.0892 8.27091 19.7091 7.88554L17.9618 6.1143C17.5816 5.72893 17.3915 5.53624 17.1498 5.43475C16.9081 5.33325 16.6393 5.33325 16.1016 5.33325Z"
+                                              fill="white" />
+                                            <path
+                                              d="M15.875 4.6665V7.99984C15.875 8.94265 15.875 9.41405 16.1679 9.70694C16.4608 9.99984 16.9322 9.99984 17.875 9.99984H21.1363"
+                                              stroke="#00FF00" stroke-width="2" />
+                                          </svg><span>Invoice</span>
+                                        </div>
+
+
+                                        <table class="invoice-table d-none"
+                                          id="invoice-table-<%=orders[i].orderItems[j].productId%>">
+
+
+                                          <tr>
+                                            <th colspan="2">Sold by :</th>
+
+                                            <th colspan="3">Billing Address:</th>
+                                          </tr>
+
+
+                                          <tbody>
+                                            <tr>
+                                              <td colspan="2">
+                                                Thredpool pvt ltd ,<br>
+                                                KINFRA Techno Industrial Park,<br>
+                                                National Highway 66 <br>
+                                                near Calicut University <br>
+                                                Kakkanchery Chelembra PO,<br>
+                                                Dt, Thenhipalam, Kerala 673634
+                                              </td>
+
+                                              <td colspan="1">
+                                                <%=orders[i].address[0].name %> <br>
+                                                  <%=orders[i].address[0].country %> <br>
+                                                    <%=orders[i].address[0].state %> <br>
+                                                      <%=orders[i].address[0].district %> <br>
+                                                        <%=orders[i].address[0].city %> <br>
+                                                          <%=orders[i].address[0].pin %> <br>
+                                                            <%=orders[i].address[0].houseName %> <br>
+                                                              <%=orders[i].address[0].phoneNo %> <br>
+                                              </td>
+                                            </tr>
+                                            <td>
+                                              Order ID : <%= orders[i]._id.toString().slice(0, 6) %> <br>
+                                                Order Date :
+                                                <%=orders[i].orderDate.toLocaleDateString('en-US',{day: 'numeric' ,
+                                                  month: 'short' , year: 'numeric' })%>
+                                            </td>
+                                          </tbody>
+
+
+
+                                          <tr style="font-weight: bold;" class="mt-5">
+                                            <th>No</th>
+                                            <th>Product</th>
+                                            <th>Price</th>
+                                            <th>Qty</th>
+                                            <th>Total</th>
+                                          </tr>
+                                          <tr>
+
+                                          </tr>
+
+
+
+
+                                          <%let count=0;%>
+                                            <% count++ %>
+                                              <tbody>
+                                                <tr>
+                                                  <td>
+                                                    <%=count%>
+                                                  </td>
+                                                  <td>
+                                                    <%= orders[i].orderItems[j].pName %>
+                                                  </td>
+                                                  <td>₹<%= orders[i].orderItems[j].fPrice %>
+                                                  </td>
+                                                  <td>
+                                                    <%= orders[i].orderItems[j].quantity %>
+                                                  </td>
+                                                  <td>₹<%=
+                                                      orders[i].orderItems[j].quantity*orders[i].orderItems[j].fPrice %>
+                                                  </td>
+
+                                                </tr>
+                                              </tbody>
+
+                                              <tr>
+                                                <td colspan="4">Total Offer Amount</td>
+                                                <td colspan="1">-$ <%=
+                                                    Math.round((orders[i].orderItems[j].quantity)*((orders[i].orderItems[j].offerDiscountAmount)))
+                                                    %>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td colspan="4">Total</td>
+                                                <td colspan="1">$ <%= Math.round((orders[i].orderItems[j].lPrice *
+                                                    orders[i].orderItems[j].quantity)-((orders[i].orderItems[j].offerDiscountAmount)))
+                                                    %>
+                                                </td>
+                                              </tr>
+
+                                        </table>
+                                        <% }%>
+
+                                    </div>
+                                    <% } %>
                       </div>
                     </div>
-                  </div>
+                </div>
 
-                  <% if (orders.length===0) { %>
+                <% if (orders.length===0) { %>
                   <div class="errNoProduct">
                     <p>
                       <span>\(^Д^)/</span>No Orders
@@ -301,16 +314,17 @@
 
 
 
-                </div>
-                <% } %>
               </div>
+              <% } %>
             </div>
           </div>
-        </div>
-        <% } %>
+    </div>
+    </div>
+    <% } %>
 
-        <% if (orders.length===0) { %>
-        <div class="errNoProduct" style="display: flex; justify-content: center; align-items: center;  margin-left: 125px;">
+      <% if (orders.length===0) { %>
+        <div class="errNoProduct"
+          style="display: flex; justify-content: center; align-items: center;  margin-left: 125px;">
           <img src="/userSide/img/errorPages/no_data.png" width="300px;" alt="No Data">
         </div>
 
@@ -318,43 +332,45 @@
 
 
 
-        <!-- Pagination -->
-        <% if (totalOrders> 0) { %>
-        <div class="row">
-          <div class="col-12">
-            <div class="text-center pagenationButton">
-              <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-center">
-                  <% const totalPages=Math.ceil(totalOrders / 12); %>
-                  <% const currentPage=curentPage || 1; %>
-                  <li class="page-item <%= currentPage == 1 ? 'disabled' : '' %>">
-                    <a class="page-link" href="/orders?page=<%= currentPage - 1 %>" aria-label="Previous" tabindex="<%= currentPage == 1 ? -1 : 0 %>">
-                      <span aria-hidden="true">&laquo;</span>
-                    </a>
-                  </li>
-                  <% for (let i=1; i <=totalPages; i++) { %>
-                  <li class="page-item <%= currentPage == i ? 'active' : '' %>">
-                    <a class="page-link" href="/orders?page=<%= i %>">
-                      <%= i %>
-                    </a>
-                  </li>
-                  <% } %>
-                  <li class="page-item <%= currentPage == totalPages ? 'disabled' : '' %>">
-                    <a class="page-link" href="/orders?page=<%= currentPage + 1 %>" aria-label="Next" tabindex="<%= currentPage == totalPages ? -1 : 0 %>">
-                      <span aria-hidden="true">&raquo;</span>
-                    </a>
-                  </li>
-                </ul>
-              </nav>
+          <!-- Pagination -->
+          <% if (totalOrders> 0) { %>
+            <div class="row">
+              <div class="col-12">
+                <div class="text-center pagenationButton">
+                  <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center">
+                      <% const totalPages=Math.ceil(totalOrders / 12); %>
+                        <% const currentPage=curentPage || 1; %>
+                          <li class="page-item <%= currentPage == 1 ? 'disabled' : '' %>">
+                            <a class="page-link" href="/orders?page=<%= currentPage - 1 %>" aria-label="Previous"
+                              tabindex="<%= currentPage == 1 ? -1 : 0 %>">
+                              <span aria-hidden="true">&laquo;</span>
+                            </a>
+                          </li>
+                          <% for (let i=1; i <=totalPages; i++) { %>
+                            <li class="page-item <%= currentPage == i ? 'active' : '' %>">
+                              <a class="page-link" href="/orders?page=<%= i %>">
+                                <%= i %>
+                              </a>
+                            </li>
+                            <% } %>
+                              <li class="page-item <%= currentPage == totalPages ? 'disabled' : '' %>">
+                                <a class="page-link" href="/orders?page=<%= currentPage + 1 %>" aria-label="Next"
+                                  tabindex="<%= currentPage == totalPages ? -1 : 0 %>">
+                                  <span aria-hidden="true">&raquo;</span>
+                                </a>
+                              </li>
+                    </ul>
+                  </nav>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-        <% } %>
+            <% } %>
 
 
-      </main>
-      <!-- end of main -->
-    </div>
+              </main>
+              <!-- end of main -->
+              </div>
   </section>
 
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -366,39 +382,41 @@
   <script src="/userSide/js/orderpage.js"></script>
   <!-- footer -->
   <%- include('../includes/userSide/footer') %>
-  <!-- end of footer -->
-  <script src="https://kit.fontawesome.com/23d1247997.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+    <!-- end of footer -->
+    <script src="https://kit.fontawesome.com/23d1247997.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
 
-  <script>
-    document.getElementById("dwnld-invoice").addEventListener("click", function() {
-      let doc = new window.jspdf.jsPDF();
-      let pageCenter = doc.internal.pageSize.getWidth() / 2;
+    <script>
+      document.getElementById("dwnld-invoice").addEventListener("click", function () {
+        let doc = new window.jspdf.jsPDF();
+        let pageCenter = doc.internal.pageSize.getWidth() / 2;
 
-      let productId = document.getElementById("product-id").value;
+        let productId = document.getElementById("product-id").value;
 
-      doc.setFontSize(20);
-      doc.text("Threadpool", pageCenter, 8, {
-        align: 'center'
+        doc.setFontSize(20);
+        doc.text("Threadpool", pageCenter, 8, {
+          align: 'center'
+        });
+        doc.setFontSize(15);
+        doc.text(`Invoice/Bill`, pageCenter, 20, {
+          align: 'center'
+        });
+
+        let table = document.getElementById(`invoice-table-${productId}`);
+
+        doc.autoTable({
+          html: table,
+          startY: 35
+        });
+
+        doc.save(`invoice.pdf`);
       });
-      doc.setFontSize(15);
-      doc.text(`Invoice/Bill`, pageCenter, 20, {
-        align: 'center'
-      });
-
-      let table = document.getElementById(`invoice-table-${productId}`);
-
-      doc.autoTable({
-        html: table,
-        startY: 35
-      });
-
-      doc.save(`invoice.pdf`);
-    });
-  </script>
+    </script>
 
 </body>
 
