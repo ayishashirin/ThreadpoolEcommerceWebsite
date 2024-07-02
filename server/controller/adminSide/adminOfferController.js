@@ -147,7 +147,6 @@ module.exports = {
   },
   adminDeleteOffer: async (req, res) => {
     try {
-      //adminHelper fn to delete offer from admin side
       await adminHelper.adminDeleteOffer(req.params.offerId);
 
       res.status(200).json({

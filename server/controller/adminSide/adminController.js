@@ -3,12 +3,11 @@ const adminPassword = process.env.adminPass;
 const Userdb = require("../../model/userSide/userModel");
 const path = require("path");
 const adminHelper = require("../../databaseHelpers/adminHelper");
-const Orderdb = require('../../model/userSide/orderModel');
+const Orderdb = require("../../model/userSide/orderModel");
 const puppeteer = require("puppeteer");
-const ejs = require('ejs')
+const ejs = require("ejs");
 const fs = require("fs");
 const CsvParser = require("json2csv").Parser;
-
 
 function capitalizeFirstLetter(str) {
   str = str.toLowerCase();
@@ -34,16 +33,12 @@ module.exports = {
     }
     if (req.body.password === adminPassword && req.body.email === adminEmail) {
       req.session.isAdminAuth = true;
-      res.status(200).redirect("/adminHome"); 
+      res.status(200).redirect("/adminHome");
     } else {
       req.session.invalidAdmin = `Invalid credentials!`;
-      res.status(401).redirect("/adminLogin"); 
+      res.status(401).redirect("/adminLogin");
     }
   },
-
-
- 
-
 
   getDetailsChart: async (req, res) => {
     try {
@@ -155,7 +150,11 @@ module.exports = {
       orders.forEach((order) => {
         if (index === 2) {
           salesCount[
-            labelObj[Number(order.orderDate.toISOString().split('-')[index].split('T')[0])]
+            labelObj[
+              Number(
+                order.orderDate.toISOString().split("-")[index].split("T")[0]
+              )
+            ]
           ] += 1;
         } else {
           salesCount[labelObj[String(order.orderDate).split(" ")[index]]] += 1;
@@ -202,16 +201,13 @@ module.exports = {
 
   adminChangeOrderStatus: async (req, res) => {
     try {
-      //function to change order status for admin
       await adminHelper.statusUpdate(
         req.params.orderId,
         req.params.productId,
         req.body.orderStatus
       );
 
-      //check for filter
       if (!req.body.filter) {
-       
         return res.status(200).redirect("/adminOrderDetails");
       }
     } catch (err) {
@@ -220,23 +216,18 @@ module.exports = {
     }
   },
 
-  
-  
-  
-
   statusUpdate: async (req, res) => {
     try {
-  
       const updateResult = await adminHelper.statusUpdate(
         req.params.orderId,
         req.params.productId,
-        req.body.status )
-  
+        req.body.status
+      );
+
       return res.status(200).redirect("/adminOrderDetails");
     } catch (error) {
-      console.log('Error in Controller:', error);
-      return res.status(500).send('Internal Server Error');
+      console.log("Error in Controller:", error);
+      return res.status(500).send("Internal Server Error");
     }
   },
-  
 };

@@ -1,11 +1,6 @@
 const userHelper = require("../../databaseHelpers/userHelper");
 
-
-
-
 module.exports = {
-
-    
   userAddToWishlist: async (req, res) => {
     try {
       //userHelper fn to get all listed category,counts of product in cart,all product in cart
@@ -21,7 +16,6 @@ module.exports = {
       );
       const product = await userHelper.getWishlistItems(req.session.isUserAuth);
 
-
       res.status(200).render(
         "userSide/userAddWishlist",
         {
@@ -31,7 +25,7 @@ module.exports = {
           counts,
           user: req.session.isUserAuth,
           cartItems,
-          products:product
+          products: product,
         },
         (err, html) => {
           if (err) {
@@ -50,5 +44,4 @@ module.exports = {
       res.status(500).render("errorPages/500ErrorPage");
     }
   },
-
-}
+};

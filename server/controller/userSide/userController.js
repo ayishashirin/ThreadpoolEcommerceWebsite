@@ -5,7 +5,7 @@ const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const Mailgen = require("mailgen");
 const userHelper = require("../../databaseHelpers/userHelper");
-const saltRounds = 10; // Salt rounds for bcrypt
+const saltRounds = 10; 
 const shortid = require("shortid");
 const Razorpay = require("razorpay");
 const comparedb = require("../../model/userSide/compareModel");
@@ -203,13 +203,11 @@ module.exports = {
       req.body.confirmPassword = req.body.confirmPassword?.trim();
       req.body.email = req.body.email?.trim();
 
-      // Validation checks
       const errors = {};
 
       if (!req.body.fullName) {
         errors.fName = "This field is required";
       } else {
-        // Regular expression to match only capital and small letters
         const fullNameRegex = /^[a-zA-Z]+$/;
         if (!fullNameRegex.test(req.body.fullName)) {
           errors.fName = "Name must contain only capital and small letters";
@@ -674,7 +672,6 @@ module.exports = {
             { $set: { userLstatus: false } }
         );
 
-        // Flash the toast message
         req.flash('toastMessage', 'You have been successfully logged out.');
 
         req.session.destroy();

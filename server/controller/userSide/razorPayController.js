@@ -8,28 +8,27 @@ const instance = new Razorpay({
   key_secret: process.env.key_secret,
 });
 
-
-
 module.exports = {
   onlinePaymentSuccessfull: async (req, res) => {
     try {
-
-      const { orderId, productId } = req.query
+      const { orderId, productId } = req.query;
 
       const hmac = crypto.createHmac("sha256", process.env.key_secret);
-      hmac.update(req.body.razorpay_order_id + "|" + req.body.razorpay_payment_id);
+      hmac.update(
+        req.body.razorpay_order_id + "|" + req.body.razorpay_payment_id
+      );
 
       if (hmac.digest("hex") === req.body.razorpay_signature) {
-
         if (orderId && productId) {
-          await orderdb.updateOne({
-            _id: orderId,
-            "orderItems.productId": productId
-          },
-          {
-            $set:{"orderItems.$.orderStatus":"Orderd"}
-          }
-        )
+          await orderdb.updateOne(
+            {
+              _id: orderId,
+              "orderItems.productId": productId,
+            },
+            {
+              $set: { "orderItems.$.orderStatus": "Orderd" },
+            }
+          );
         } else {
           const newOrder = new orderdb(req.session.newOrder);
           await newOrder.save();
@@ -42,10 +41,11 @@ module.exports = {
           if (cartUpdateResult.nModified > 0) {
             console.log("Cart items cleared successfully.");
           } else {
-            console.log("No cart items were cleared. Check if the cart was already empty.");
+            console.log(
+              "No cart items were cleared. Check if the cart was already empty."
+            );
           }
         }
-
 
         req.session.orderSucessPage = true;
         return res.status(200).redirect("/orderSuccessfull");
@@ -54,23 +54,23 @@ module.exports = {
         return res.status(400).send("Payment verification failed.");
       }
     } catch (error) {
-
       console.error("Error during online payment success handling:", error);
-      return res.status(500).send("An error occurred while processing the payment.");
+      return res
+        .status(500)
+        .send("An error occurred while processing the payment.");
     }
   },
 
-
   onlinePaymentFailed: async (req, res) => {
     try {
-      req.session.newOrder.orderItems.forEach(product => {
-        product.orderStatus = "Pending"
+      req.session.newOrder.orderItems.forEach((product) => {
+        product.orderStatus = "Pending";
       });
 
       const failedOrder = new orderdb({
         ...req.session.newOrder,
         paymentId: req.body.paymentId,
-        orderId: req.body.orderId
+        orderId: req.body.orderId,
       });
 
       await failedOrder.save();
@@ -84,7 +84,9 @@ module.exports = {
       if (cartUpdateResult.nModified > 0) {
         console.log("Cart items cleared successfully.");
       } else {
-        console.log("No cart items were cleared. Check if the cart was already empty.");
+        console.log(
+          "No cart items were cleared. Check if the cart was already empty."
+        );
       }
 
       return res.status(200).redirect("/orderFailed");
@@ -97,19 +99,20 @@ module.exports = {
     try {
       const { orderid, productId, paymentMethode } = req.body;
 
-
-
       if (paymentMethode === "razorpay") {
         try {
-          const failedOrder = await orderdb.findOne({
-            _id: orderid,
-            "orderItems.productId": productId
-          }, { "orderItems.$": 1 });
+          const failedOrder = await orderdb.findOne(
+            {
+              _id: orderid,
+              "orderItems.productId": productId,
+            },
+            { "orderItems.$": 1 }
+          );
 
           if (!failedOrder) {
             return res.status(404).json({ error: "Failed order not found" });
           } else {
-            const tPrice = failedOrder.orderItems[0].totalAmount
+            const tPrice = failedOrder.orderItems[0].totalAmount;
             const options = {
               amount: tPrice * 100,
               currency: "INR",
@@ -123,7 +126,7 @@ module.exports = {
               paymentMethod: "razorpay",
               keyId: process.env.key_id,
               message: "Payment successful. Order updated.",
-              failedOrder
+              failedOrder,
             });
           }
         } catch (err) {
@@ -138,5 +141,4 @@ module.exports = {
       return res.status(500).render("errorPages/500ErrorPage");
     }
   },
-
-}
+};

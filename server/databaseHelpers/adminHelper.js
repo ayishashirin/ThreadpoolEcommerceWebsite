@@ -240,7 +240,7 @@ module.exports = {
         },
         { $set: { "orderItems.$.orderStatus": orderStatus } }
       );
-console.log("updateResult:",updateResult,orderStatus);
+      console.log("updateResult:", updateResult, orderStatus);
       return updateResult;
     } catch (err) {
       console.log("Error:", err);

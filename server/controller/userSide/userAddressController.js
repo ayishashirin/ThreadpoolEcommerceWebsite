@@ -1,6 +1,5 @@
 const userVariationdb = require("../../model/userSide/userVariationModel");
 
-
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
@@ -39,14 +38,12 @@ module.exports = {
       }
 
       if (req.body.phoneNo && String(req.body.phoneNo).length !== 10) {
-       
-         req.session.phoneNo = `Invalid Phone Number`
+        req.session.phoneNo = `Invalid Phone Number`;
       }
 
       if (req.body.phoneNo && !/^[6-9]\d{9}$/.test(req.body.phoneNo)) {
-        req.session.phoneNo = `Invalid Phone Number`
+        req.session.phoneNo = `Invalid Phone Number`;
       }
-
 
       if (!req.body.houseName) {
         req.session.houseName = `This Field is required`;
@@ -98,7 +95,6 @@ module.exports = {
       }
 
       const structuredAddress = `${req.body.name},${req.body.houseName} - ${req.body.phoneNo},${req.body.city},${req.body.district},${req.body.state} - ${req.body.pin}`;
-
 
       await userVariationdb.updateOne(
         { userId: req.session.isUserAuth },
@@ -188,112 +184,105 @@ module.exports = {
     }
   },
 
-
   userupdateAddress: async (req, res) => {
     try {
-        req.body.country = req.body.country.trim();
-        req.body.district = req.body.district.trim();
-        req.body.state = req.body.state.trim();
-        req.body.city = req.body.city.trim();
-        req.body.houseName = req.body.houseName.trim();
-        req.body.phoneNo = req.body.phoneNo.trim();
+      req.body.country = req.body.country.trim();
+      req.body.district = req.body.district.trim();
+      req.body.state = req.body.state.trim();
+      req.body.city = req.body.city.trim();
+      req.body.houseName = req.body.houseName.trim();
+      req.body.phoneNo = req.body.phoneNo.trim();
 
-
-        if (!req.body.name) {
-            req.session.name = `This Field is required`;
-        }
-        if (!req.body.country) {
-            req.session.country = `This Field is required`;
-        }
-        if (!req.body.district) {
-            req.session.district = `This Field is required`;
-        }
-        if (!req.body.state) {
-            req.session.state = `This Field is required`;
-        }
-        if (!req.body.city) {
-            req.session.city = `This Field is required`;
-        }
-        if (!req.body.phoneNo) {
-            req.session.phoneNo = `This Field is required`;
-        }
-        if (!req.body.houseName) {
-            req.session.houseName = `This Field is required`;
-        }
-        if (!req.body.pin) {
-            req.session.pin = `This Field is required`;
-        }
-        if (req.body.pin.length !== 6) {
-          req.session.pin = 'PinCode must contain 6 numbers';
+      if (!req.body.name) {
+        req.session.name = `This Field is required`;
+      }
+      if (!req.body.country) {
+        req.session.country = `This Field is required`;
+      }
+      if (!req.body.district) {
+        req.session.district = `This Field is required`;
+      }
+      if (!req.body.state) {
+        req.session.state = `This Field is required`;
+      }
+      if (!req.body.city) {
+        req.session.city = `This Field is required`;
+      }
+      if (!req.body.phoneNo) {
+        req.session.phoneNo = `This Field is required`;
+      }
+      if (!req.body.houseName) {
+        req.session.houseName = `This Field is required`;
+      }
+      if (!req.body.pin) {
+        req.session.pin = `This Field is required`;
+      }
+      if (req.body.pin.length !== 6) {
+        req.session.pin = "PinCode must contain 6 numbers";
       }
 
-        if (
-            req.session.pin ||
-            req.session.phoneNo ||
-            req.session.city ||
-            req.session.state ||
-            req.session.district ||
-            req.session.country ||
-            req.session.name
-        ) {
-            req.session.sAddress = req.body;
-            return res.status(401).redirect(`/editAddress/${req.query.adId}`);
+      if (
+        req.session.pin ||
+        req.session.phoneNo ||
+        req.session.city ||
+        req.session.state ||
+        req.session.district ||
+        req.session.country ||
+        req.session.name
+      ) {
+        req.session.sAddress = req.body;
+        return res.status(401).redirect(`/editAddress/${req.query.adId}`);
+      }
+
+      req.body.name = capitalizeFirstLetter(req.body.name);
+      req.body.country = capitalizeFirstLetter(req.body.country);
+      req.body.district = capitalizeFirstLetter(req.body.district);
+      req.body.state = capitalizeFirstLetter(req.body.state);
+      req.body.city = capitalizeFirstLetter(req.body.city);
+      req.body.houseName = capitalizeFirstLetter(req.body.houseName);
+
+      const isAddress = await userVariationdb.findOne({
+        userId: req.session.isUserAuth,
+        "address.name": req.body.name,
+        "address.country": req.body.country,
+        "address.district": req.body.district,
+        "address.state": req.body.state,
+        "address.city": req.body.city,
+        "address.phoneNo": req.body.phoneNo,
+        "address.houseName": req.body.houseName,
+        "address.pin": req.body.pin,
+      });
+
+      if (isAddress) {
+        req.session.exist = `This address already exists`;
+        return res.status(401).redirect(`/editAddress/${req.query.adId}`);
+      }
+
+      const structuredAddress = `${req.body.name}\n${req.body.houseName}-${req.body.phoneNo}\n${req.body.city}\n${req.body.district}\n${req.body.state} - ${req.body.pin}`;
+
+      await userVariationdb.updateOne(
+        { userId: req.session.isUserAuth, "address._id": req.query.adId },
+        {
+          $set: {
+            "address.$.name": req.body.name,
+            "address.$.country": req.body.country,
+            "address.$.district": req.body.district,
+            "address.$.state": req.body.state,
+            "address.$.city": req.body.city,
+            "address.$.houseName": req.body.houseName,
+            "address.$.phoneNo": req.body.phoneNo,
+            "address.$.pin": req.body.pin,
+            "address.$.structuredAddress": structuredAddress,
+          },
         }
+      );
 
-        req.body.name = capitalizeFirstLetter(req.body.name);
-        req.body.country = capitalizeFirstLetter(req.body.country);
-        req.body.district = capitalizeFirstLetter(req.body.district);
-        req.body.state = capitalizeFirstLetter(req.body.state);
-        req.body.city = capitalizeFirstLetter(req.body.city);
-        req.body.houseName = capitalizeFirstLetter(req.body.houseName);
-
-        // Check if address already exists
-        const isAddress = await userVariationdb.findOne({
-            userId: req.session.isUserAuth,
-            "address.name": req.body.name,
-            "address.country": req.body.country,
-            "address.district": req.body.district,
-            "address.state": req.body.state,
-            "address.city": req.body.city,
-            "address.phoneNo": req.body.phoneNo,
-            "address.houseName": req.body.houseName,
-            "address.pin": req.body.pin,
-        });
-
-        // Redirect if address already exists
-        if (isAddress) {
-            req.session.exist = `This address already exists`;
-            return res.status(401).redirect(`/editAddress/${req.query.adId}`);
-        }
-
-        // Construct structured address
-        const structuredAddress = `${req.body.name}\n${req.body.houseName}-${req.body.phoneNo}\n${req.body.city}\n${req.body.district}\n${req.body.state} - ${req.body.pin}`;
-
-        // Update user address
-        await userVariationdb.updateOne(
-            { userId: req.session.isUserAuth,  "address._id": req.query.adId },
-            {
-                $set: {
-                    "address.$.name": req.body.name,
-                    "address.$.country": req.body.country,
-                    "address.$.district": req.body.district,
-                    "address.$.state": req.body.state,
-                    "address.$.city": req.body.city,
-                    "address.$.houseName": req.body.houseName,
-                    "address.$.phoneNo": req.body.phoneNo,
-                    "address.$.pin": req.body.pin,
-                    "address.$.structuredAddress": structuredAddress,
-                },
-            }
-        );
-
-        // Redirect to editAddress page
-        res.status(200).redirect("/editAddress");
+      res.status(200).redirect("/editAddress");
     } catch (err) {
-        console.error(err);
-        res.status(500).render("errorPages/500ErrorPage");
+      console.error(err);
+      res.status(500).render("errorPages/500ErrorPage");
     }
-},
+  },
 
   changeAddressPayment: async (req, res) => {
     try {

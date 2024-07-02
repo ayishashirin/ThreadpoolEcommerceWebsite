@@ -1,130 +1,155 @@
 <!-- header -->
 <%- include('../includes/adminSide/header') %>
-<!-- end of header -->
+  <!-- end of header -->
 
-<link rel="stylesheet" href="/adminSide/css/adminDashboard.css" />
-<link rel="stylesheet" href="/public/adminSide/sass/layout/_layout.scss" />
+  <link rel="stylesheet" href="/adminSide/css/adminDashboard.css" />
+  <link rel="stylesheet" href="/public/adminSide/sass/layout/_layout.scss" />
 
-<!-- CONTENT -->
-<section id="content">
-  <!-- MAIN -->
-  <main>
-    <div class="head-title">
-      <div class="left">
-        <h1>Sales Report</h1>
-        <ul class="breadcrumb">
-          <li>
-            <a href="#">Dashboard</a>
-          </li>
-          <li><i class="bx bx-chevron-right"></i></li>
-          <li>
-            <a class="active" href="#">Sales Report</a>
-          </li>
-        </ul>
+  <!-- CONTENT -->
+  <section id="content">
+    <!-- MAIN -->
+    <main>
+      <div class="head-title">
+        <div class="left">
+          <h1>Sales Report</h1>
+          <ul class="breadcrumb">
+            <li>
+              <a href="#">Dashboard</a>
+            </li>
+            <li><i class="bx bx-chevron-right"></i></li>
+            <li>
+              <a class="active" href="#">Sales Report</a>
+            </li>
+          </ul>
+        </div>
       </div>
-    </div>
 
-    <div class="mb-2">
-      <div class="custom-select ms-auto" style="width: 200px">
-        <select id="filterSales" onchange="filterSales()">
-          <option value="Monthly">Monthly</option>
-          <option value="Yearly">Yearly</option>
-          <option value="Weekly">Weekly</option>
-          <option value="Daily">Daily</option>
-        </select>
+      <div class="mb-2">
+        <div class="custom-select ms-auto" style="width: 200px">
+          <select id="filterSales" onchange="filterSales()">
+            <option value="Monthly">Monthly</option>
+            <option value="Yearly">Yearly</option>
+            <option value="Weekly">Weekly</option>
+            <option value="Daily">Daily</option>
+          </select>
+        </div>
       </div>
-    </div>
 
-    <div class="card mb-4">
-      <header class="card-header">
-        <h4 class="card-title">Latest orders</h4>
-        <div class="row align-items-center">
-          <div class="d-flex flex-row w-50">
-            <div class="custom_select">
-              <select class="form-select select-nice" name="reportType" id="reportType" onchange="generateReport()">
-                <option selected><%= currentType %></option>
-                <% reportTypes.forEach((type) => { %>
-                  <% if (type !== currentType) { %>
-                    <option><%= type %></option>
-                  <% } %>
-                <% }); %>
-              </select>
+      <div class="card mb-4">
+        <header class="card-header">
+          <h4 class="card-title">Latest orders</h4>
+          <div class="row align-items-center">
+            <div class="d-flex flex-row w-50">
+              <div class="custom_select">
+                <select class="form-select select-nice" name="reportType" id="reportType" onchange="generateReport()">
+                  <option selected>
+                    <%= currentType %>
+                  </option>
+                  <% reportTypes.forEach((type)=> { %>
+                    <% if (type !==currentType) { %>
+                      <option>
+                        <%= type %>
+                      </option>
+                      <% } %>
+                        <% }); %>
+                </select>
+              </div>
             </div>
           </div>
-        </div>
-      </header>
-      <div class="card-body">
-        <div class="table-responsive">
-          <table class="table align-middle table-nowrap mb-0">
-            <thead class="table-light">
-              <tr>
-                <th class="align-middle" scope="col">Number</th>
-                <th class="align-middle" scope="col">Order Id</th>
-                <th class="align-middle" scope="col">Product Name</th>
-                <th class="align-middle" scope="col">Date</th>
-                <th class="align-middle" scope="col">Product Price</th>
-                <th class="align-middle" scope="col">Quantity</th>
-                <th class="align-middle" scope="col">Payment Method</th>
-                <th class="align-middle" scope="col">Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% let count = 0; %>
-              <% if (sales && sales.length > 0) { %>
-                <% sales.forEach((sale) => { %>
-                  <% count++; %>
-                  <tr class="<%= count % 2 == 0 ? 'bg-light' : '' %>">
-                    <td><%= count %>.</td>
-                    <td><a href="#" class="fw-bold">#<%= sale._id.toString().slice(0, 6) %></a></td>
-                    <td><%= sale.orderItems.pName %></td>
-                    <td><%= new Date(sale.orderDate).toISOString().split('T')[0].split('-').reverse().join('-') %></td>
-                    <td>$<%= (((sale.orderItems.lPrice * sale.orderItems.quantity) - (sale.orderItems.offerDiscountAmount + sale.orderItems.couponDiscountAmount)) / sale.orderItems.quantity).toFixed(2) %></td>
-                    <td><%= sale.orderItems.quantity %></td>
-                    <td><%= sale.paymentMethod %></td>
-                    <td>$<%= ((sale.orderItems.quantity * sale.orderItems.lPrice) - (sale.orderItems.offerDiscountAmount + sale.orderItems.couponDiscountAmount)).toFixed(2) %></td>
+        </header>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table align-middle table-nowrap mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th class="align-middle" scope="col">Number</th>
+                  <th class="align-middle" scope="col">Order Id</th>
+                  <th class="align-middle" scope="col">Product Name</th>
+                  <th class="align-middle" scope="col">Date</th>
+                  <th class="align-middle" scope="col">Product Price</th>
+                  <th class="align-middle" scope="col">Quantity</th>
+                  <th class="align-middle" scope="col">Payment Method</th>
+                  <th class="align-middle" scope="col">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% let count=0; %>
+                  <% if (sales && sales.length> 0) { %>
+                    <% sales.forEach((sale)=> { %>
+                      <% count++; %>
+                        <tr class="<%= count % 2 == 0 ? 'bg-light' : '' %>">
+                          <td>
+                            <%= count %>.
+                          </td>
+                          <td><a href="#" class="fw-bold">#<%= sale._id.toString().slice(0, 6) %></a></td>
+                          <td>
+                            <%= sale.orderItems.pName %>
+                          </td>
+                          <td>
+                            <%= new Date(sale.orderDate).toISOString().split('T')[0].split('-').reverse().join('-') %>
+                          </td>
+                          <td>$<%= (((sale.orderItems.lPrice * sale.orderItems.quantity) -
+                              (sale.orderItems.offerDiscountAmount + sale.orderItems.couponDiscountAmount)) /
+                              sale.orderItems.quantity).toFixed(2) %>
+                          </td>
+                          <td>
+                            <%= sale.orderItems.quantity %>
+                          </td>
+                          <td>
+                            <%= sale.paymentMethod %>
+                          </td>
+                          <td>$<%= ((sale.orderItems.quantity * sale.orderItems.lPrice) -
+                              (sale.orderItems.offerDiscountAmount + sale.orderItems.couponDiscountAmount)).toFixed(2)
+                              %>
+                          </td>
+                        </tr>
+                        <% }); %>
+                          <% } else { %>
+                            <tr>
+                              <td colspan="8" class="text-center">No sales data available.</td>
+                            </tr>
+                            <% } %>
+              </tbody>
+              <% if (sales && sales.length> 0) { %>
+                <tfoot>
+                  <tr>
+                    <td colspan="7" class="text-right">Subtotal:</td>
+                    <td class="text-right">$<%= sales.reduce((sum, item)=> sum + (item.orderItems.quantity *
+                        item.orderItems.lPrice), 0).toFixed(2) %></td>
                   </tr>
-                <% }); %>
-              <% } else { %>
-                <tr>
-                  <td colspan="8" class="text-center">No sales data available.</td>
-                </tr>
+                  <tr>
+                    <td colspan="7" class="text-right">Discount:</td>
+                    <td class="text-right">-$<%= sales.reduce((sum, item)=> sum + item.orderItems.offerDiscountAmount,
+                        0).toFixed(2) %></td>
+                  </tr>
+                  <tr>
+                    <td colspan="7" class="font-weight-bold text-right">Total:</td>
+                    <td class="font-weight-bold text-right">$<%= (sales.reduce((sum, item)=> sum +
+                        (item.orderItems.quantity * item.orderItems.lPrice), 0) - sales.reduce((sum, item) => sum +
+                        item.orderItems.offerDiscountAmount, 0)).toFixed(2) %></td>
+                  </tr>
+                </tfoot>
+                <% } %>
+            </table>
+            <% if (sales && sales.length> 0) { %>
+              <div class="d-flex justify-content-end mt-4">
+                <button type="button" id="dwnld-exel-btn" class="btn btn-outline-dark btn-icon-text p-1 mx-1">Exel <i
+                    class="mdi mdi-printer btn-icon-append"></i></button>
+                <button type="button" id="dwnld-pdf-btn" class="btn btn-outline-dark btn-icon-text p-1 mx-1">Pdf <i
+                    class="mdi mdi-printer btn-icon-append"></i></button>
+              </div>
               <% } %>
-            </tbody>
-            <% if (sales && sales.length > 0) { %>
-              <tfoot>
-                <tr>
-                  <td colspan="7" class="text-right">Subtotal:</td>
-                  <td class="text-right">$<%= sales.reduce((sum, item) => sum + (item.orderItems.quantity * item.orderItems.lPrice), 0).toFixed(2) %></td>
-                </tr>
-                <tr>
-                  <td colspan="7" class="text-right">Discount:</td>
-                  <td class="text-right">-$<%= sales.reduce((sum, item) => sum + item.orderItems.offerDiscountAmount, 0).toFixed(2) %></td>
-                </tr>
-                <tr>
-                  <td colspan="7" class="font-weight-bold text-right">Total:</td>
-                  <td class="font-weight-bold text-right">$<%= (sales.reduce((sum, item) => sum + (item.orderItems.quantity * item.orderItems.lPrice), 0) - sales.reduce((sum, item) => sum + item.orderItems.offerDiscountAmount, 0)).toFixed(2) %></td>
-                </tr>
-              </tfoot>
-            <% } %>
-          </table>
-          <% if (sales && sales.length > 0) { %>
-            <div class="d-flex justify-content-end mt-4">
-              <button type="button" id="dwnld-exel-btn" class="btn btn-outline-dark btn-icon-text p-1 mx-1">Exel <i class="mdi mdi-printer btn-icon-append"></i></button>
-              <button type="button" id="dwnld-pdf-btn" class="btn btn-outline-dark btn-icon-text p-1 mx-1">Pdf <i class="mdi mdi-printer btn-icon-append"></i></button>
-            </div>
-          <% } %>
+          </div>
         </div>
       </div>
-    </div>
-  </main>
-</section>
+    </main>
+  </section>
 
-<!-- footer -->
-<%- include('../includes/adminSide/footer') %>
-<!-- end of footer -->
+  <!-- footer -->
+  <%- include('../includes/adminSide/footer') %>
+    <!-- end of footer -->
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
-<script src="/adminSide/js/salesReport.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+    <script src="/adminSide/js/salesReport.js"></script>

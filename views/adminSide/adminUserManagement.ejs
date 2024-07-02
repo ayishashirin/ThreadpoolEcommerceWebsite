@@ -1,100 +1,85 @@
+<!-- header -->
+<%- include('../includes/adminSide/header') %>
+  <!-- end of header -->
+
+  <link rel="stylesheet" href="/adminSide/css/adminUserManagement.css" />
 
 
+  <!-- CONTENT -->
+  <section id="content" style=" margin:40px;">
+    <!-- MAIN -->
+    <main>
 
-   <!-- header -->
-   <%- include('../includes/adminSide/header') %>
-   <!-- end of header -->
-
-   <link rel="stylesheet" href="/adminSide/css/adminUserManagement.css" />
-
-
-    <!-- CONTENT -->
-    <section id="content" style=" margin:40px;">
-      <!-- MAIN -->
-      <main>
-
-        <div class="popup z-3" id="confirmation-popup">
-          <h2>Confirmation</h2>
-          <p>Are you sure you want to <span class="nOUn"></span> <span class="cName text-capitalize"></span>?</p>
-          <div class="d-flex justify-content-end gap-2">
-            <a class="dCat">
-              <button id="confirm-btn">Yes</button>
-            </a>
-            <a>
-              <button id="cancel-btn">No</button>
-            </a>
-          </div>
+      <div class="popup z-3" id="confirmation-popup">
+        <h2>Confirmation</h2>
+        <p>Are you sure you want to <span class="nOUn"></span> <span class="cName text-capitalize"></span>?</p>
+        <div class="d-flex justify-content-end gap-2">
+          <a class="dCat">
+            <button id="confirm-btn">Yes</button>
+          </a>
+          <a>
+            <button id="cancel-btn">No</button>
+          </a>
         </div>
+      </div>
 
-        <div class="head-title">
-          <div class="left">
-            <h1>User Management</h1>
-            <ul class="breadcrumb">
-              <li>
-                <a href="#">Dashboard</a>
-              </li>
-              <li><i class="bx bx-chevron-right"></i></li>
-              <li>
-                <a class="active" href="/adminUserManagement"
-                  >User Management</a
-                >
-              </li>
-            </ul>
-          </div>
+      <div class="head-title">
+        <div class="left">
+          <h1>User Management</h1>
+          <ul class="breadcrumb">
+            <li>
+              <a href="#">Dashboard</a>
+            </li>
+            <li><i class="bx bx-chevron-right"></i></li>
+            <li>
+              <a class="active" href="/adminUserManagement">User Management</a>
+            </li>
+          </ul>
         </div>
+      </div>
 
-        <div class="table-data">
-          <div class="order">
-            <div
-              class="search d-flex align-items-center justify-content-between"
-            >
-              <h2>Search User to Manage</h2>
-              <div class="d-flex">
-                <form method="get">
-                  <% if (currentPage) { %>
-                        <input type="text" name="page" value="<%= currentPage %>" hidden >
+      <div class="table-data">
+        <div class="order">
+          <div class="search d-flex align-items-center justify-content-between">
+            <h2>Search User to Manage</h2>
+            <div class="d-flex">
+              <form method="get">
+                <% if (currentPage) { %>
+                  <input type="text" name="page" value="<%= currentPage %>" hidden>
                   <% } %>
-                  <input
-                    type="search"
-                    placeholder="Search by Name"
-                    name="Search"
-                    value="<%= filter?filter:'' %>"
-                    spellcheck="false"
-                  />
-                  <button type="submit">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 16 16"
-                      fill="none"
-                    >
-                      <path
-                        d="M14.3333 15.6101L9.08333 10.3455C8.66667 10.6798 8.1875 10.9444 7.64583 11.1394C7.10417 11.3343 6.52778 11.4318 5.91667 11.4318C4.40278 11.4318 3.12153 10.9061 2.07292 9.85454C1.02431 8.803 0.5 7.51818 0.5 6.00007C0.5 4.48196 1.02431 3.19714 2.07292 2.1456C3.12153 1.09407 4.40278 0.568298 5.91667 0.568298C7.43056 0.568298 8.71181 1.09407 9.76042 2.1456C10.809 3.19714 11.3333 4.48196 11.3333 6.00007C11.3333 6.61289 11.2361 7.19088 11.0417 7.73406C10.8472 8.27724 10.5833 8.75774 10.25 9.17557L15.5 14.4402L14.3333 15.6101ZM5.91667 9.76053C6.95833 9.76053 7.84375 9.39493 8.57292 8.66373C9.30208 7.93253 9.66667 7.04464 9.66667 6.00007C9.66667 4.9555 9.30208 4.06761 8.57292 3.33641C7.84375 2.60521 6.95833 2.23961 5.91667 2.23961C4.875 2.23961 3.98958 2.60521 3.26042 3.33641C2.53125 4.06761 2.16667 4.9555 2.16667 6.00007C2.16667 7.04464 2.53125 7.93253 3.26042 8.66373C3.98958 9.39493 4.875 9.76053 5.91667 9.76053Z"
-                        fill="black"
-                      />
-                    </svg>
-                  </button>
-                </form>
-              </div>
+                    <input type="search" placeholder="Search by Name" name="Search" value="<%= filter?filter:'' %>"
+                      spellcheck="false" />
+                    <button type="submit">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path
+                          d="M14.3333 15.6101L9.08333 10.3455C8.66667 10.6798 8.1875 10.9444 7.64583 11.1394C7.10417 11.3343 6.52778 11.4318 5.91667 11.4318C4.40278 11.4318 3.12153 10.9061 2.07292 9.85454C1.02431 8.803 0.5 7.51818 0.5 6.00007C0.5 4.48196 1.02431 3.19714 2.07292 2.1456C3.12153 1.09407 4.40278 0.568298 5.91667 0.568298C7.43056 0.568298 8.71181 1.09407 9.76042 2.1456C10.809 3.19714 11.3333 4.48196 11.3333 6.00007C11.3333 6.61289 11.2361 7.19088 11.0417 7.73406C10.8472 8.27724 10.5833 8.75774 10.25 9.17557L15.5 14.4402L14.3333 15.6101ZM5.91667 9.76053C6.95833 9.76053 7.84375 9.39493 8.57292 8.66373C9.30208 7.93253 9.66667 7.04464 9.66667 6.00007C9.66667 4.9555 9.30208 4.06761 8.57292 3.33641C7.84375 2.60521 6.95833 2.23961 5.91667 2.23961C4.875 2.23961 3.98958 2.60521 3.26042 3.33641C2.53125 4.06761 2.16667 4.9555 2.16667 6.00007C2.16667 7.04464 2.53125 7.93253 3.26042 8.66373C3.98958 9.39493 4.875 9.76053 5.91667 9.76053Z"
+                          fill="black" />
+                      </svg>
+                    </button>
+              </form>
             </div>
-            <table>
-              <thead>
-                <tr>
-                  <th>Username</th>
-                  <th>Email</th>
-                  <!-- <th>User Live Status</th> -->
-                  <th>Account Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <% for( let i = 0; i < users.length; i++ ) { %>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <!-- <th>User Live Status</th> -->
+                <th>Account Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% for( let i=0; i < users.length; i++ ) { %>
                 <tr>
                   <td>
-                    <p class="textTable"><%= users[i].fullName %></p>
+                    <p class="textTable">
+                      <%= users[i].fullName %>
+                    </p>
                   </td>
-                  <td class="textTable email"><%= users[i].email %></td>
+                  <td class="textTable email">
+                    <%= users[i].email %>
+                  </td>
                   <!-- <td>
                     <span class="textTable position-relative"
                       ><%= users[i].userLstatus?'Online':'Offline' %>
@@ -104,61 +89,64 @@
                     </span>
                   </td> -->
                   <td>
-                    <span
-                      class="textTable <%= users[i].userStatus?'text-success':'text-danger' %>"
-                      ><%= users[i].userStatus?'Active':'Blocked' %></span
-                    >
+                    <span class="textTable <%= users[i].userStatus?'text-success':'text-danger' %>">
+                      <%= users[i].userStatus?'Active':'Blocked' %>
+                    </span>
                   </td>
                   <td class="d-flex align-items-center">
                     <a
-                      onclick="showPopUp('<%= users[i]._id %>', '<%= users[i].userStatus?`0`:`1` %>', '<%= users[i].fullName %>')"
-                    >
-                      <span
-                        class="status completed blockUnblock <%= users[i].userStatus?'red':'green' %>"
-                      >
+                      onclick="showPopUp('<%= users[i]._id %>', '<%= users[i].userStatus?`0`:`1` %>', '<%= users[i].fullName %>')">
+                      <span class="status completed blockUnblock <%= users[i].userStatus?'red':'green' %>">
                         <%= users[i].userStatus?'Block':'Unblock' %>
                       </span>
                     </a>
 
-                  
+
                   </td>
                 </tr>
                 <% } %>
-              </tbody>
-            </table>
-          </div>
+            </tbody>
+          </table>
         </div>
-        <% if (totalUsers !== 0) { %>
-          <div class="row">
-            <div class="col-12">
-              <div class="text-center pagenationButton">
-                <nav aria-label="Page navigation example">
-                  <ul class="pagination justify-content-center">
-                    <li class="page-item">
-                      <a class="page-link" href="/adminUserManagement?<%= filter?`Search=${filter}&`:'' %>page=<%= (currentPage === 1 || !currentPage)?1:(currentPage - 1) %>" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                      </a>
-                    </li>
-                    <% for( let i = 0; i < (Math.ceil(totalUsers / 12)); i++ ) { %>
-                      <li class="page-item"><a class="page-link" href="/adminUserManagement?<%= filter?`Search=${filter}&`:'' %>page=<%= (i + 1) %>" ><%= (i + 1) %></a></li>
+      </div>
+      <% if (totalUsers !==0) { %>
+        <div class="row">
+          <div class="col-12">
+            <div class="text-center pagenationButton">
+              <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                  <li class="page-item">
+                    <a class="page-link"
+                      href="/adminUserManagement?<%= filter?`Search=${filter}&`:'' %>page=<%= (currentPage === 1 || !currentPage)?1:(currentPage - 1) %>"
+                      aria-label="Previous">
+                      <span aria-hidden="true">&laquo;</span>
+                    </a>
+                  </li>
+                  <% for( let i=0; i < (Math.ceil(totalUsers / 12)); i++ ) { %>
+                    <li class="page-item"><a class="page-link"
+                        href="/adminUserManagement?<%= filter?`Search=${filter}&`:'' %>page=<%= (i + 1) %>">
+                        <%= (i + 1) %>
+                      </a></li>
                     <% } %>
-                    <li class="page-item">
-                      <a class="page-link" href="/adminUserManagement?<%= filter?`Search=${filter}&`:'' %>page=<%= (((Math.ceil(totalUsers / 12)) === currentPage) || (Math.ceil(totalUsers / 12)) && !currentPage)?(currentPage?currentPage:1):(currentPage === 1 || !currentPage)?2:(currentPage + 1) %>" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                      </a>
-                    </li>
-                  </ul>
-                </nav>
-              </div>
+                      <li class="page-item">
+                        <a class="page-link"
+                          href="/adminUserManagement?<%= filter?`Search=${filter}&`:'' %>page=<%= (((Math.ceil(totalUsers / 12)) === currentPage) || (Math.ceil(totalUsers / 12)) && !currentPage)?(currentPage?currentPage:1):(currentPage === 1 || !currentPage)?2:(currentPage + 1) %>"
+                          aria-label="Next">
+                          <span aria-hidden="true">&raquo;</span>
+                        </a>
+                      </li>
+                </ul>
+              </nav>
             </div>
           </div>
+        </div>
         <% } %>
-      </main>
-      <!-- MAIN -->
-    </section>
-    <!-- CONTENT -->
-    <script src="/adminSide/js/adminUserManagement.js"></script>
+    </main>
+    <!-- MAIN -->
+  </section>
+  <!-- CONTENT -->
+  <script src="/adminSide/js/adminUserManagement.js"></script>
 
-    <!-- header -->
-    <%- include('../includes/adminSide/footer') %>
+  <!-- header -->
+  <%- include('../includes/adminSide/footer') %>
     <!-- end of header -->

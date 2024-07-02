@@ -97,7 +97,7 @@ module.exports = {
             category: category,
             _id: { $ne: productId },
           },
-           $limit: 3 ,
+          $limit: 3,
         },
 
         {
@@ -143,12 +143,10 @@ module.exports = {
     try {
       let filterConditions = { unlistedProduct: false };
 
-     
       if (search.genderCat) {
         filterConditions.category = search.genderCat;
       }
 
-      
       if (search.maxPrice) {
         filterConditions.fPrice = { $lte: parseFloat(search.maxPrice) };
       }
@@ -179,7 +177,7 @@ module.exports = {
           sortOrder = { lPrice: -1 };
           break;
         case "aATozZ":
-          sortOrder = { aATozZ: -1 }; 
+          sortOrder = { aATozZ: -1 };
           break;
         case "zZToaA":
           sortOrder = { zZToaA: -1 };
@@ -188,11 +186,10 @@ module.exports = {
           sortOrder = { date: -1 };
           break;
         default:
-          sortOrder = { _id: 1 }; 
+          sortOrder = { _id: 1 };
           break;
       }
 
-      
       const agg = [
         filter,
         {
@@ -206,11 +203,11 @@ module.exports = {
         {
           $unwind: "$variations",
         },
-        
+
         ...(validSizes.includes(search.size)
           ? [{ $match: { "variations.size": search.size } }]
           : []),
-       
+
         ...(validColors.includes(search.color)
           ? [{ $match: { "variations.color": search.color } }]
           : []),
@@ -690,12 +687,11 @@ module.exports = {
     }
   },
 
-
   getTheCountOfCompareCart: async (userId) => {
     try {
       if (!userId) {
         return {
-         CompareCount: false,
+          CompareCount: false,
           cartCount: false,
         };
       }
@@ -804,18 +800,15 @@ module.exports = {
   },
   giveOffer: async (referredByCode, newUserId) => {
     try {
-      //get the details of the user who referred the new one
       const referr = await Userdb.findOneAndUpdate(
         { referralCode: referredByCode },
         { $inc: { referralCount: 1 } }
       );
-      //get offer details of the referr and earn
       const offerRewards = await referralOfferdb.findOne(
         {},
         { _id: 0, discription: 0 }
       );
 
-      // updation the amount in wallet of the user who referred new one
       await UserWalletdb.updateOne(
         { userId: referr._id },
         {
@@ -831,7 +824,6 @@ module.exports = {
         { upsert: true }
       );
 
-      //creating the wallet for new User
       const newUserWallet = new UserWalletdb({
         userId: newUserId,
         walletBalance: offerRewards.referredUserRewards,
@@ -912,20 +904,22 @@ module.exports = {
       throw err;
     }
   },
-  userGetAllOrder : async (userId, pageNo = 1) => {
+  userGetAllOrder: async (userId, pageNo = 1) => {
     try {
       const skip = (Number(pageNo) - 1) * 12;
       const userObjectId = new mongoose.Types.ObjectId(userId);
-  
-      const totalOrders = await Orderdb.countDocuments({ userId: userObjectId });
-  
+
+      const totalOrders = await Orderdb.countDocuments({
+        userId: userObjectId,
+      });
+
       const orders = await Orderdb.aggregate([
         { $match: { userId: userObjectId } },
         { $sort: { orderDate: -1 } },
         { $skip: skip },
         { $limit: 12 },
       ]);
-  
+
       return {
         orders,
         totalOrders,
@@ -980,25 +974,24 @@ module.exports = {
           $sort: { orderDate: -1 },
         },
       ];
-  
+
       const products = await Cartdb.aggregate(agg);
-  
+
       products.forEach((each) => {
         each.allOffers = each.allOffers.reduce((total, offer) => {
           if (offer.expiry >= new Date() && offer.discount > total) {
             return (total = offer.discount);
           }
-  
+
           return total;
         }, 0);
       });
-  
+
       return products;
     } catch (err) {
       throw err;
     }
   },
-  
 
   getSingleOrderOfDetails: async (params, userId) => {
     try {
@@ -1095,7 +1088,7 @@ module.exports = {
       throw err;
     }
   },
-  //
+  
   getCompareItems: async (userId) => {
     try {
       if (!userId) {
@@ -1111,18 +1104,17 @@ module.exports = {
       if (couponId && isObjectIdOrHexString(couponId)) {
         return await coupondb.findOne({ _id: couponId });
       }
-  
-      code = code.toString().trim();  
+
+      code = code.toString().trim();
       const coupon = await coupondb.findOne({ code: code });
-  
-  
+
       return coupon;
     } catch (err) {
-      console.error("Error in getCoupon:", err);  
+      console.error("Error in getCoupon:", err);
       throw err;
     }
   },
-  
+
   UpdateCouponCount: async (couponId) => {
     try {
       if (couponId && !isObjectIdOrHexString(couponId)) {
@@ -1140,71 +1132,75 @@ module.exports = {
 
   userOrderCancel: async (orderId, productId, userId = null) => {
     try {
-        const order = await Orderdb.findOneAndUpdate(
-            {
-                $and: [{ _id: orderId }, { "orderItems.productId": productId }],
-            },
-            {
-                $set: {
-                    "orderItems.$.orderStatus": "Cancelled",
-                },
-            },
-            { new: true } 
-        );
+      const order = await Orderdb.findOneAndUpdate(
+        {
+          $and: [{ _id: orderId }, { "orderItems.productId": productId }],
+        },
+        {
+          $set: {
+            "orderItems.$.orderStatus": "Cancelled",
+          },
+        },
+        { new: true }
+      );
 
-        const orderItem = order.orderItems.find((value) => String(value.productId) === productId);
+      const orderItem = order.orderItems.find(
+        (value) => String(value.productId) === productId
+      );
 
-        if (
-            (orderItem.orderStatus === "Cancelled" || 
-             order.paymentMethode === "razorpay" || 
-             order.paymentMethode === "wallet") &&
-            userId
-        ) {
-            let refundAmount;
-            if (order.paymentMethode === "wallet") {
-                refundAmount = orderItem.totalAmount;
-            } else {
-                refundAmount = orderItem.totalAmount;                ;
-            }
-
-            await UserWalletdb.updateOne(
-                { userId: userId },
-                {
-                    $inc: {
-                        walletBalance: refundAmount,
-                    },
-                    $push: {
-                        transactions: {
-                            amount: refundAmount,
-                            status: "Order Cancelled",
-                            details: orderId
-                        },
-                    },
-                },
-                { upsert: true }
-            );
+      if (
+        (orderItem.orderStatus === "Cancelled" ||
+          order.paymentMethode === "razorpay" ||
+          order.paymentMethode === "wallet") &&
+        userId
+      ) {
+        let refundAmount;
+        if (order.paymentMethode === "wallet") {
+          refundAmount = orderItem.totalAmount;
+        } else {
+          refundAmount = orderItem.totalAmount;
         }
 
-        await ProductVariationdb.updateOne(
-            { productId: productId, "variations.color": orderItem.color, "variations.size": orderItem.size },
-            {
-                $inc: {
-                    "variations.$.quantity": orderItem.quantity,
-                },
-            }
+        await UserWalletdb.updateOne(
+          { userId: userId },
+          {
+            $inc: {
+              walletBalance: refundAmount,
+            },
+            $push: {
+              transactions: {
+                amount: refundAmount,
+                status: "Order Cancelled",
+                details: orderId,
+              },
+            },
+          },
+          { upsert: true }
         );
+      }
 
-        return;
+      await ProductVariationdb.updateOne(
+        {
+          productId: productId,
+          "variations.color": orderItem.color,
+          "variations.size": orderItem.size,
+        },
+        {
+          $inc: {
+            "variations.$.quantity": orderItem.quantity,
+          },
+        }
+      );
+
+      return;
     } catch (err) {
-        throw err;
+      throw err;
     }
-}
-,
-
+  },
   userTotalProductNumber: async (category) => {
     try {
-      const products = await Productdb.find({ unlistedProduct: false })
-      return products.length
+      const products = await Productdb.find({ unlistedProduct: false });
+      return products.length;
     } catch (err) {
       throw err;
     }
@@ -1220,15 +1216,10 @@ module.exports = {
         throw new Error("User not found");
       }
 
-      return user.walletBalance; 
+      return user.walletBalance;
     } catch (error) {
       console.error("Error in getWalletBalance:", error);
       throw new Error("Error fetching wallet balance");
     }
   },
-
-
- 
-  
-
 };

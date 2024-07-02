@@ -1,11 +1,13 @@
 const adminHelper = require("../../databaseHelpers/adminHelper");
 const path = require("path");
 const Orderdb = require("../../model/userSide/orderModel");
-const { Productdb, ProductVariationdb } = require("../../model/adminSide/productModel");
+const {
+  Productdb,
+  ProductVariationdb,
+} = require("../../model/adminSide/productModel");
 const Userdb = require("../../model/userSide/userModel");
 const userVariationdb = require("../../model/userSide/userVariationModel");
-const Categorydb = require('../../model/adminSide/category').Categorydb;
-
+const Categorydb = require("../../model/adminSide/category").Categorydb;
 
 module.exports = {
   adminLogin: (req, res) => {
@@ -36,12 +38,15 @@ module.exports = {
   adminHome: async (req, res) => {
     try {
       const details = await adminHelper.getAllDashCount();
-      const orders = await adminHelper.getAllOrders(req.query.filter, req.query.page);
+      const orders = await adminHelper.getAllOrders(
+        req.query.filter,
+        req.query.page
+      );
       const order = await Orderdb.find();
 
       const productCount = {};
-      order.forEach(orders => {
-        orders.orderItems.forEach(item => {
+      order.forEach((orders) => {
+        orders.orderItems.forEach((item) => {
           const productId = item.productId.toString();
           if (productCount[productId]) {
             productCount[productId]++;
@@ -53,17 +58,21 @@ module.exports = {
 
       const productCountArray = Object.entries(productCount);
       productCountArray.sort((a, b) => b[1] - a[1]);
-      const top10ProductCounts = productCountArray.slice(0, 4).map(first => first[0]);
+      const top10ProductCounts = productCountArray
+        .slice(0, 4)
+        .map((first) => first[0]);
 
       const matchingProduct = [];
       for (const productId of top10ProductCounts) {
-        const product = await ProductVariationdb.findOne({ productId: productId }).populate('productId');
+        const product = await ProductVariationdb.findOne({
+          productId: productId,
+        }).populate("productId");
         matchingProduct.push(product);
       }
 
       const categoryCount = {};
-      order.forEach(orders => {
-        orders.orderItems.forEach(item => {
+      order.forEach((orders) => {
+        orders.orderItems.forEach((item) => {
           const category = item.category;
           if (categoryCount[category]) {
             categoryCount[category]++;
@@ -75,7 +84,9 @@ module.exports = {
 
       const categoryCountArray = Object.entries(categoryCount);
       categoryCountArray.sort((a, b) => b[1] - a[1]);
-      const top2CategoryCounts = categoryCountArray.slice(0, 2).map(entry => entry[0]);
+      const top2CategoryCounts = categoryCountArray
+        .slice(0, 2)
+        .map((entry) => entry[0]);
 
       const matchingCategories = [];
       for (const categoryName of top2CategoryCounts) {
@@ -87,14 +98,13 @@ module.exports = {
         details,
         orders,
         doc: matchingProduct,
-        categories: matchingCategories
+        categories: matchingCategories,
       });
     } catch (err) {
       console.log("err", err);
       res.status(500).render("errorPages/500ErrorPage");
     }
   },
-
 
   adminAddProducts: async (req, res) => {
     try {
@@ -146,7 +156,6 @@ module.exports = {
     try {
       const products = await adminHelper.getProductList(false, req.query.page);
 
-      //adminHelper fn to get total listed products
       const totalProducts = await adminHelper.adminPageNation("PM", false);
 
       res.status(200).render(
@@ -198,14 +207,12 @@ module.exports = {
   },
   adminCategoryManagement: async (req, res) => {
     try {
-      //adminHelper fn to get all listed category
       const category = await adminHelper.getCategorydb(
         req.query.Search,
         true,
         req.query.page
       );
 
-      //adminHelper fn to get total number of liseted category
       const totalCategory = await adminHelper.adminPageNation("CM", true);
 
       res.render("adminSide/adminCategoryManagement", {
@@ -221,24 +228,20 @@ module.exports = {
   },
   adminUnlistedCategory: async (req, res) => {
     try {
-      //adminHelper fn to get all unlisted category
       const category = await adminHelper.getCategorydb(
         req.query.Search,
         false,
         req.query.page
       );
 
-      //adminHelper fn to get all unlisted category count
       const totalCategory = await adminHelper.adminPageNation("CM", false);
 
-      res
-        .status(200)
-        .render("adminSide/adminUnlistedCategory", {
-          filterCat: req.query.Search,
-          category,
-          currentPage: Number(req.query.page),
-          totalCategory,
-        });
+      res.status(200).render("adminSide/adminUnlistedCategory", {
+        filterCat: req.query.Search,
+        category,
+        currentPage: Number(req.query.page),
+        totalCategory,
+      });
     } catch (err) {
       console.log("err", err);
       res.status(500).render("errorPages/500ErrorPage");
@@ -246,10 +249,8 @@ module.exports = {
   },
   adminUnlistedProduct: async (req, res) => {
     try {
-      //adminHelper fn to get all unlised product
       const products = await adminHelper.getProductList(true, req.query.page);
 
-      //adminHelper fn to get total listed products
       const totalProducts = await adminHelper.adminPageNation("PM", true);
 
       res.status(200).render("adminSide/adminUnlistedProduct", {
@@ -265,10 +266,8 @@ module.exports = {
   },
   adminUpdateProduct: async (req, res) => {
     try {
-      //adminHelper fn to get listed category
       const category = await adminHelper.getCategorydb(null, true, 1, true);
 
-      //adminHelper fn to get single product details for updating
       const [product] = await adminHelper.adminGetSingleProduct(req.params.id);
 
       let updateProductInfo = req.flash("userUpdateProductFormData");
@@ -317,28 +316,23 @@ module.exports = {
     }
   },
   adminUserManagement: async (req, res) => {
-    //Admin Helper fn to get all users details
     const users = await adminHelper.adminGetAllUsers(
       req.query.Search,
       req.query.page
     );
 
-    //Admin Helper fn to get total numbers
     const totalUsers = await adminHelper.adminPageNation("UM");
 
-    res
-      .status(200)
-      .render("adminSide/adminUserManagement", {
-        users,
-        filter: req.query.Search,
-        currentPage: Number(req.query.page),
-        totalUsers,
-      });
+    res.status(200).render("adminSide/adminUserManagement", {
+      users,
+      filter: req.query.Search,
+      currentPage: Number(req.query.page),
+      totalUsers,
+    });
   },
 
   updateCategory: async (req, res) => {
     try {
-      //adminHelper fn to get all details of single category
       const singleCategory = await adminHelper.getCategorydb(
         null,
         true,
@@ -382,16 +376,13 @@ module.exports = {
         req.query.filter,
         req.query.page
       );
-      //adminHelper fn to get total number of orders
-      const orderLength = await adminHelper.adminPageNation("OM"); 
-      res
-        .status(200)
-        .render("adminSide/adminOrderManagement", {
-          orders,
-          filter: req.query.filter,
-          currentPage: Number(req.query.page),
-          orderLength,
-        });
+      const orderLength = await adminHelper.adminPageNation("OM");
+      res.status(200).render("adminSide/adminOrderManagement", {
+        orders,
+        filter: req.query.filter,
+        currentPage: Number(req.query.page),
+        orderLength,
+      });
     } catch (err) {
       console.log("err", err);
       res.status(500).render("errorPages/500ErrorPage");
@@ -399,15 +390,12 @@ module.exports = {
   },
   adminReferralOfferManagement: async (req, res) => {
     try {
-      //adminHelper fn to get all referral offer
       const referralOffers = await adminHelper.referralOffers();
 
-      res
-        .status(200)
-        .render("adminSide/adminReferralOfferManagement", {
-          referralOffers,
-          referralErr: req.flash("referralErr"),
-        });
+      res.status(200).render("adminSide/adminReferralOfferManagement", {
+        referralOffers,
+        referralErr: req.flash("referralErr"),
+      });
     } catch (err) {
       console.error("updatePage get errr", err);
       res.status(500).render("errorPages/500ErrorPage");
@@ -448,7 +436,6 @@ module.exports = {
   },
   updateReferralOffer: async (req, res) => {
     try {
-      //AdminHelper fn to get a single referral details to update
       const singleReferralOffer = await adminHelper.referralOffers(
         req.params.referralOfferId
       );
@@ -497,15 +484,12 @@ module.exports = {
         0
       );
 
-      // const totalDiscountAmount = orders?.orderItems.reduce((total, item) => total + item.DiscountAmount, 0);
 
-      res
-        .status(200)
-        .render("adminSide/adminOrderDetails", {
-          userInfo,
-          totalPrice,
-          orders,
-        });
+      res.status(200).render("adminSide/adminOrderDetails", {
+        userInfo,
+        totalPrice,
+        orders,
+      });
     } catch (error) {
       console.error(error);
       res.status(500).render("errorPages/500ErrorPage");
@@ -517,13 +501,11 @@ module.exports = {
       const totalCoupons = await adminHelper.adminPageNation("CouponM");
       const coupons = await adminHelper.getAllCoupon(null, req.query.page);
 
-      res
-        .status(200)
-        .render("adminSide/adminCouponManagement", {
-          coupons,
-          totalCoupons,
-          currentPage: Number(req.query.page),
-        });
+      res.status(200).render("adminSide/adminCouponManagement", {
+        coupons,
+        totalCoupons,
+        currentPage: Number(req.query.page),
+      });
     } catch (err) {
       console.error("updatePage get errr", err);
       res.status(500).render("errorPages/500ErrorPage");
@@ -571,10 +553,8 @@ module.exports = {
   },
   adminUpdateCoupon: async (req, res) => {
     try {
-      //adminHelper fn to get single coupon details
       const singleCoupon = await adminHelper.getAllCoupon(req.params.couponId);
 
-      //adminHelper fn to get all category for select
       const category = await adminHelper.getCategorydb(null, true, 1, true);
       if (!singleCoupon) {
         return res.status(401).redirect("/adminCouponManagement");
@@ -618,17 +598,14 @@ module.exports = {
   },
   adminOfferManagement: async (req, res) => {
     try {
-      //adminHeleper fn to get offers
       const offers = await adminHelper.getOffer(null, req.query.page);
       const totalOffers = await adminHelper.adminPageNation("OfferM");
 
-      res
-        .status(200)
-        .render("adminSide/adminOfferManagement", {
-          offers,
-          totalOffers,
-          currentPage: Number(req.query.page),
-        });
+      res.status(200).render("adminSide/adminOfferManagement", {
+        offers,
+        totalOffers,
+        currentPage: Number(req.query.page),
+      });
     } catch (err) {
       console.error("updatePage get errr", err);
       res.status(500).render("errorPages/500ErrorPage");
@@ -830,16 +807,14 @@ module.exports = {
         ]);
       }
 
-      res
-        .status(200)
-        .render("adminSide/salesReport", {
-          sales: salesData,
-          currentType,
-          reportTypes,
-          reportType,
-          startDate,
-          endDate,
-        });
+      res.status(200).render("adminSide/salesReport", {
+        sales: salesData,
+        currentType,
+        reportTypes,
+        reportType,
+        startDate,
+        endDate,
+      });
     } catch (error) {
       console.log("Error:", error);
       res.status(500).render("errorPages/500ErrorPage");
@@ -850,7 +825,9 @@ module.exports = {
       const { startDate, endDate } = req.query;
 
       if (!startDate || !endDate) {
-        return res.status(400).json({ error: "Start date and end date are required" });
+        return res
+          .status(400)
+          .json({ error: "Start date and end date are required" });
       }
 
       const start = new Date(startDate);
@@ -870,7 +847,7 @@ module.exports = {
       let salesCount = [];
 
       orders.forEach((order) => {
-        const date = order.orderDate.toISOString().split('T')[0];
+        const date = order.orderDate.toISOString().split("T")[0];
         const index = labels.indexOf(date);
         if (index === -1) {
           labels.push(date);
@@ -886,6 +863,4 @@ module.exports = {
       res.status(500).send("Internal server error");
     }
   },
-
-
 };

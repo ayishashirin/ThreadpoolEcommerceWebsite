@@ -37,7 +37,7 @@ connectDB();
 
 // CORS configuration
 const corsOptions = {
-  origin: ['https://chatrace.com/webchat/?p=1325286&id=M4CLtI92V5iJ97Gz']
+  origin: ['https://chatrace.com/webchat/?p=1894441&id=ADJKHUyKtJ']
 };
 app.use(cors(corsOptions));
 

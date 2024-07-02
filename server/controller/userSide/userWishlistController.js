@@ -1,5 +1,6 @@
 const userHelper = require("../../databaseHelpers/userHelper");
-const ProductVariationdb = require("../../model/adminSide/productModel").ProductVariationdb;
+const ProductVariationdb =
+  require("../../model/adminSide/productModel").ProductVariationdb;
 const wishlistdb = require("../../model/userSide/wishlist");
 
 module.exports = {
@@ -30,8 +31,6 @@ module.exports = {
     }
   },
 
-  
-
   userWishlistDelete: async (req, res) => {
     try {
       await wishlistdb.updateOne(
@@ -49,7 +48,7 @@ module.exports = {
     try {
       await wishlistdb.updateOne(
         { userId: req.session.isUserAuth },
-        { $set: { products: [] } } // Set the products array to an empty array to remove all items
+        { $set: { products: [] } } 
       );
 
       res.redirect("/addToWishlist");
@@ -94,7 +93,6 @@ module.exports = {
           { $inc: { "products.$.quantity": values } }
         );
 
-        // User Helper function to get all products in the wishlist
         const wishlistItems = await userHelper.getWishlistItemsAll(
           req.session.isUserAuth
         );
@@ -114,7 +112,7 @@ module.exports = {
           result: true,
           total,
           discount,
-          wishlistItems: wishlistItems, // Sending cartItems to frontend
+          wishlistItems: wishlistItems, 
           wishlistItem,
         });
       }

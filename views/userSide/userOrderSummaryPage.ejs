@@ -41,7 +41,7 @@
                   </svg>
                 </div>
                 <br>
-                <span>Order Id: <%= orderDetails._id %></span>
+                <span>Order Id: <%= orderDetails.orderId.slice(0, 6) %></span>
               </div>
            
               <div class="cartBody">
@@ -269,26 +269,20 @@
                         </tr>
                         <script>
                           document.addEventListener("DOMContentLoaded", function() {
-                              // Get subtotal from the server-rendered value
                               var subtotalElement = document.getElementById('sTotal');
                               var subtotalText = subtotalElement.textContent.replace('$', '');
                               var subtotal = parseFloat(subtotalText);
                       
-                              // Determine shipping fee based on subtotal
                               var shippingFee = subtotal < 1000 ? 10 : 0;
                       
-                              // Update subtotal with shipping fee if applicable
                               subtotal += shippingFee;
                               subtotalElement.textContent = '$' + subtotal.toFixed(2);
                       
-                              // Calculate total based on order details
                               var totalElement = document.getElementById('tPrice');
                               var total = Math.round((orderDetails.orderItems.lPrice * orderDetails.orderItems.quantity) - (orderDetails.orderItems.offerDiscountAmount));
                       
-                              // Add shipping fee to total if it applies
                               total += shippingFee;
                       
-                              // Update total in the DOM
                               totalElement.textContent = '$' + total.toFixed(2);
                           });
                       </script>

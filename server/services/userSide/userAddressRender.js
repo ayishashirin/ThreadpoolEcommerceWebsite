@@ -7,14 +7,11 @@ module.exports = {
     
   userEditAddress: async (req, res) => {
     try {
-      //userHelper fn to get all listed category
       const category = await userHelper.getAllListedCategory();
 
-      //userHelper fn to get counts of product in cart and wishlist
       const counts = await userHelper.getTheCountOfWhislistCart(
         req.session.isUserAuth
       );
-      //userHelper fn to get all details of user
       const userInfo = await userHelper.userInfo(req.session.isUserAuth);
 
       const cartItems = await userHelper.getCartItemsAll(
@@ -40,7 +37,6 @@ module.exports = {
   },
   addAddress: async (req, res) => {
     try {
-      //userHelper fn to get all listed category
       const category = await userHelper.getAllListedCategory();
 
       const counts = await userHelper.getTheCountOfWhislistCart(
@@ -104,7 +100,6 @@ module.exports = {
   },
   updateAddress: async (req, res) => {
     try {
-      //userHelper fn to get all listed category
       const category = await userHelper.getAllListedCategory();
 
       const counts = await userHelper.getTheCountOfWhislistCart(
@@ -115,7 +110,6 @@ module.exports = {
         req.session.isUserAuth
       );
 
-      //userHelper fn to get a single address for updating
       const address = await userHelper.getSingleAddress(
         req.session.isUserAuth,
         req.params.adId

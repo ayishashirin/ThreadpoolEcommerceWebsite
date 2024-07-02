@@ -76,7 +76,6 @@
             document.addEventListener('DOMContentLoaded', function() {
               var currentColor = '<%= products.variations[0].color %>';
 
-              // Get the list of colors
               var colorList = document.getElementById('colorList');
               var colorItems = colorList.getElementsByTagName('li');
 
@@ -108,7 +107,6 @@
               var sizeList = document.getElementById('sizeList');
               var sizeItems = sizeList.getElementsByTagName('li');
 
-              // Loop through the size items and hide the ones that do not match the current size
               for (var i = 0; i < sizeItems.length; i++) {
                 var sizeAnchor = sizeItems[i].getElementsByTagName('a')[0];
                 if (sizeAnchor.textContent !== currentSize) {
@@ -127,17 +125,17 @@
           <% } %>
           
           <% } %>
-          <div class=" pt-3">
+          <div class=" py-3">
             <img src="/userSide/img/errorPages/freedelivery.svg" width="30px" alt="No Data">
             <span>FREE delivery on orders dispatched by Threadpool over $1000.</span>
           </div>
 
 
 
-          <div class="item">
+          <div class="item" pt-5>
             <% if (products.variations[0].quantity=== 0) { %>
 
-            <button class="buyBtn">out of stock</button>
+            <button class="default-btn cartBtn">out of stock</button>
             <% } %>
           </div>
 
@@ -159,9 +157,7 @@
       <li><a href="#">
           <div class="dot"></div> Why Buy From Us
         </a></li>
-      <!-- <li><a href="#">
-        <div class="dot"></div> Reviews
-        </a></li> -->
+    
     </ul>
     <div class="tab-content">
       <div class="tabs-item">

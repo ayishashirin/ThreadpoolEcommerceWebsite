@@ -5,6 +5,10 @@ const orderSchema = new mongodb.Schema({
         type: mongodb.SchemaTypes.ObjectId,
         required: true,
     },
+    orderId: {
+        type: String,
+    },
+
     orderItems: [
         {
             productId: {

@@ -87,7 +87,7 @@
                       </td>
                       <td class="product-price">
                         <span class="unit-amount " id="unit_price_<%= i %>">$<%=cartItems[i].pDetails[0].fPrice %>
-                            </span>
+                        </span>
                       </td>
                       <td class="product-quantity">
                         <div class="input-counter">
@@ -127,56 +127,58 @@
             <div class="cart-totals">
               <h3>Cart Totals</h3>
               <ul>
-                <li>Subtotal <span id="subtotal1">$<%= cartItems.reduce((total, value) => {
-                  return total += (value.pDetails[0].fPrice * value.products.quantity);
-              }, 0); %>.00</span></li>
-              <li>Shipping <span id="shippingFee"></span></li>
-              <script>
-                document.addEventListener("DOMContentLoaded", function() {
+                <li>Subtotal <span id="subtotal1">$<%= cartItems.reduce((total, value)=> {
+                      return total += (value.pDetails[0].fPrice * value.products.quantity);
+                      }, 0); %>.00</span></li>
+                <li>Shipping <span id="shippingFee"></span></li>
+                <script>
+                  document.addEventListener("DOMContentLoaded", function () {
                     // Calculate the subtotal from the server-rendered value
                     var subtotalElement = document.getElementById('subtotal1');
                     var subtotalText = subtotalElement.textContent.replace('$', '').replace('.00', '');
                     var subtotal = parseFloat(subtotalText);
-            
+
                     // Determine the shipping fee based on the subtotal
                     var shippingFee = subtotal > 1000 ? 0 : 10;
-            
+
                     // Update the shipping fee in the DOM
                     var shippingFeeElement = document.getElementById('shippingFee');
                     shippingFeeElement.textContent = '$' + shippingFee + '.00';
-                });
-            </script>
-              
+                  });
+                </script>
+
                 <li>Discount <span id="discount1">
-                  - $<%= cartItems.reduce((total, value) => {
-                    const fPrice = value.pDetails[0].fPrice;
-                    const lPrice = value.pDetails[0].lPrice;
-                    const discountAmount = (fPrice - lPrice) * value.products.quantity;
-                    return total + discountAmount;
-                  }, 0).toFixed(2); %>
-                </span></li>
+                    - $<%= cartItems.reduce((total, value)=> {
+                      const fPrice = value.pDetails[0].fPrice;
+                      const lPrice = value.pDetails[0].lPrice;
+                      const discountAmount = (fPrice - lPrice) * value.products.quantity;
+                      return total + discountAmount;
+                      }, 0).toFixed(2); %>
+                  </span></li>
                 <li>Offer <span id="offer">
-                  - $<%= cartItems.reduce((total, value) => {
-                    const offerAmount = Math.round((value.pDetails[0].fPrice * value.allOffers) / 100) * value.products.quantity;
-                    return total + offerAmount;
-                  }, 0).toFixed(2); %>
-                </span></li>
+                    - $<%= cartItems.reduce((total, value)=> {
+                      const offerAmount = Math.round((value.pDetails[0].fPrice * value.allOffers) / 100) *
+                      value.products.quantity;
+                      return total + offerAmount;
+                      }, 0).toFixed(2); %>
+                  </span></li>
                 <li>Total <span id="totalAmt1">
-                  $<%= cartItems.reduce((total, value) => {
-                    const offerAmount = Math.round((value.pDetails[0].fPrice * value.allOffers) / 100) * value.products.quantity;
-                    const discountedPrice = (value.pDetails[0].lPrice * value.products.quantity) - offerAmount;
-                    return total + discountedPrice;
-                  }, 0).toFixed(2); %>
-                </span></li>
+                    $<%= cartItems.reduce((total, value)=> {
+                      const offerAmount = Math.round((value.pDetails[0].fPrice * value.allOffers) / 100) *
+                      value.products.quantity;
+                      const discountedPrice = (value.pDetails[0].lPrice * value.products.quantity) - offerAmount;
+                      return total + discountedPrice;
+                      }, 0).toFixed(2); %>
+                  </span></li>
               </ul>
               <a href="/cartCheckOut" class="default-btn">Proceed to Checkout</a>
             </div>
-            
-            
-           </form>
+
+
+          </form>
         </div>
         </form>
-      </div>
+        </div>
       </section>
 
 
