@@ -1143,24 +1143,23 @@ module.exports = {
         },
         { new: true }
       );
-
+  
       const orderItem = order.orderItems.find(
         (value) => String(value.productId) === productId
       );
-
+  
+      let refundAmount = orderItem.totalAmount;
+  
+      if (refundAmount < 1000) {
+        refundAmount += 10;
+      }
+  
       if (
         (orderItem.orderStatus === "Cancelled" ||
           order.paymentMethode === "razorpay" ||
           order.paymentMethode === "wallet") &&
         userId
       ) {
-        let refundAmount;
-        if (order.paymentMethode === "wallet") {
-          refundAmount = orderItem.totalAmount;
-        } else {
-          refundAmount = orderItem.totalAmount;
-        }
-
         await UserWalletdb.updateOne(
           { userId: userId },
           {
@@ -1178,7 +1177,7 @@ module.exports = {
           { upsert: true }
         );
       }
-
+  
       await ProductVariationdb.updateOne(
         {
           productId: productId,
@@ -1191,12 +1190,13 @@ module.exports = {
           },
         }
       );
-
+  
       return;
     } catch (err) {
       throw err;
     }
   },
+  
   userTotalProductNumber: async (category) => {
     try {
       const products = await Productdb.find({ unlistedProduct: false });

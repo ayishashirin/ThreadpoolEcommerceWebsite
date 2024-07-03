@@ -337,6 +337,11 @@ module.exports = {
         tPrice -= Number(offerPrice);
       }
   
+      // Add 10 if total amount is below 1000
+      if (tPrice < 1000) {
+        tPrice += 10;
+      }
+  
       const orderId = uuidv4(); 
   
       const newOrder = new orderdb({
@@ -431,6 +436,7 @@ module.exports = {
       res.status(500).render("errorPages/500ErrorPage");
     }
   },
+  
 
   //   ----------------------------------------------------------------------------------------------------------
 

@@ -16,9 +16,12 @@ const userOrderController = require('../../controller/userSide/userOrderControll
 const razorPayController = require('../../controller/userSide/razorPayController');
 const passport = require('passport');
 
-// Google Auth Routes
-router.get('/auth/google', passport.authenticate('google', { scope: ['email', 'profile'] }));
 
+
+
+
+
+router.get('/auth/google', passport.authenticate('google', { scope: ['email', 'profile'] }));
 router.get('/auth/google/callback', 
   passport.authenticate('google', { 
     successRedirect: '/success', 

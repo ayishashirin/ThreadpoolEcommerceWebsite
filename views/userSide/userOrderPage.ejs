@@ -137,7 +137,8 @@
                         <div class="lPrice marginRes">
                           <p class="m-0">
                             $
-                            <%= (orders[i].orderItems[j].totalAmount) %>
+                            <%= (orders[i].orderItems[j].totalAmount < 1000 ? orders[i].orderItems[j].totalAmount + 10 : orders[i].orderItems[j].totalAmount) %>
+
                           </p>
                         </div>
                         <% if (orders[i].orderItems[j].orderStatus !== "Delivered") { %>
