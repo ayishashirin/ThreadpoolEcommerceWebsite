@@ -265,9 +265,10 @@
                            
                           <tr>
                             <td>Total:</td>
-                            <td id="tPrice">$<%= (Math.round((orderDetails.orderItems.lPrice * orderDetails.orderItems.quantity)) < 1000 ?
-                              Math.round((orderDetails.orderItems.lPrice * orderDetails.orderItems.quantity) - (orderDetails.orderItems.offerDiscountAmount)) + 10 :
-                              Math.round((orderDetails.orderItems.lPrice * orderDetails.orderItems.quantity) - (orderDetails.orderItems.offerDiscountAmount))) %>
+                            <%=console.log(orderDetails) %>
+                            <td id="tPrice">$<%= (Math.round(orderDetails.orderItems.lPrice * orderDetails.orderItems.quantity) < 1000 ?
+                              Math.round((orderDetails.orderItems.lPrice * orderDetails.orderItems.quantity) - orderDetails.orderItems.offerDiscountAmount) + 10 :
+                              Math.round((orderDetails.orderItems.lPrice * orderDetails.orderItems.quantity) - orderDetails.orderItems.offerDiscountAmount)) - orderDetails.orderItems.couponDiscountAmount %>                          
                       </td>
                         </tr>
                         <script>

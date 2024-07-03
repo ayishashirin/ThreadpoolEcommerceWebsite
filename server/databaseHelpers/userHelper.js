@@ -1148,7 +1148,8 @@ module.exports = {
         (value) => String(value.productId) === productId
       );
   
-      let refundAmount = orderItem.totalAmount;
+      let refundAmount = orderItem.totalAmount - (orderItem.offerDiscountAmount + orderItem.couponDiscountAmount);
+
   
       if (refundAmount < 1000) {
         refundAmount += 10;
