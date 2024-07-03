@@ -43,7 +43,7 @@ app.use(cors(corsOptions));
 
 // Set view engine
 app.set("view engine", "ejs");
-// app.set('views', '/home/ubuntu/ThreadpoolEcommerceWebsite/views');
+app.set('views', '/home/ubuntu/ThreadpoolEcommerceWebsite/views');
 
 // Middleware
 app.use(morgan('dev'));
