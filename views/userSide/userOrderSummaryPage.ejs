@@ -265,7 +265,7 @@
                            
                           <tr>
                             <td>Total:</td>
-                            <td id="tPrice">$<%= Math.round((orderDetails.orderItems.lPrice * orderDetails.orderItems.quantity) - (orderDetails.orderItems.offerDiscountAmount)) %></td>
+                            <td id="tPrice">$<%= Math.round((orderDetails.orderItems.lPrice * orderDetails.orderItems.quantity) - (orderDetails.orderItems.offerDiscountAmount)) + 10 %></td>
                         </tr>
                         <script>
                           document.addEventListener("DOMContentLoaded", function() {

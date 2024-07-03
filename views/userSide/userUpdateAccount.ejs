@@ -43,19 +43,19 @@
                     <div>
                       <label for="fName">Full Name</label>
                       <input name="fName" class="d-block text-capitalize <%= errMesg?.fName?'errDiv':'' %>" type="text"
-                        value="<%= sInfo?.fName?sInfo.fName:user.fullName %>">
+                        value="<%= sInfo?.fName?sInfo.fName:userInfo.fullName %>">
                       <p class="err <%= errMesg?.fName?'':'d-none' %>">
                         <%= errMesg?.fName %>
                       </p>
                       <label for="email">Email</label>
                       <input name="email" class="d-block <%= errMesg?.email?'errDiv':'' %>" type="text"
-                        value="<%= sInfo?.email?sInfo.email:user.email %>">
+                        value="<%= sInfo?.email?sInfo.email:userInfo.email %>">
                       <p class="err <%= errMesg?.email?'':'d-none' %>">
                         <%= errMesg?.email %>
                       </p>
                       <label for="phone">Phone</label>
                       <input name="phone" class="d-block <%= errMesg?.phone?'errDiv':'' %>" type="number"
-                        value="<%= sInfo?.phone?sInfo.phone:user.phoneNumber %>">
+                        value="<%= sInfo?.phone?sInfo.phone:userInfo.phoneNumber %>">
                       <p class="err <%= errMesg?.phone?'':'d-none' %>">
                         <%= errMesg?.phone %>
                       </p>
