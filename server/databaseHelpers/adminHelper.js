@@ -390,11 +390,7 @@ module.exports = {
         $or: [{ productName: body.productName }, { category: body.category }],
       });
 
-      if (
-        !isOffer ||
-        (!body.productName && body.category !== isOffer.category) ||
-        (!body.category && body.productName !== isOffer.productName)
-      ) {
+      if (!isOffer) {
         const newOffer = new Offerdb(body);
 
         let query = {};

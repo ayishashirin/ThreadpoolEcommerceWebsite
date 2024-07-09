@@ -41,40 +41,43 @@ module.exports = {
 
   updateCategory: async (req, res) => {
     try {
+      console.log('dddddd');
       req.body.description = req.body.description?.trim();
       req.body.name = req.body.name?.trim();
-
+  
       const errors = {};
       if (!req.body.name) errors.name = "This Field is required";
       if (!req.body.description) errors.description = "This Field is required";
-
-      if (req.session.dErr || req.session.catErr) {
+  
+      if (Object.keys(errors).length > 0) {
         req.session.sDetails = req.body;
-        return res.status(401).json({ err: true });
+        console.log('a');
+        return res.status(401).json({ err: true, errors });
       }
-
+      
       req.body.name = capitalizeFirstLetter(req.body.name);
       req.body.description = capitalizeFirstLetter(req.body.description);
-
-      const isExisits = await Categorydb.findOne({ name: req.body.name });
-
-      if (isExisits && String(isExisits._id) !== req.params.categoryId) {
-        req.session.catErr = `Category already exist`;
+      
+      const isExists = await Categorydb.findOne({ name: req.body.name });
+      
+      if (isExists && String(isExists._id) !== req.params.categoryId) {
+        req.session.catErr = "Category already exists";
         req.session.sDetails = req.body;
+        console.log('b');
         return res.status(401).json({ err: true });
       }
-
+  
       const oldCategory = await Categorydb.findOneAndUpdate(
         { _id: req.params.categoryId },
         { $set: req.body }
       );
-
+  
       await Productdb.updateMany(
         { category: oldCategory.name },
         { $set: { category: req.body.name } }
       );
-
-      res.redirect("/adminCategoryManagement");
+  
+      res.status(200).json({ status: true });
     } catch (err) {
       console.log("ERROR in updateCategory", err);
       res.status(500).json({ err });

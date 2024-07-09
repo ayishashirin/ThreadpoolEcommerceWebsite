@@ -1,562 +1,576 @@
 <!-- header -->
 <%- include('../includes/userSide/header') %>
-  <!-- end of header -->
-  <link rel="stylesheet" href="/userSide/css/userPayment.css" />
-  <link rel="stylesheet" href="/userSide/css/checkout.css" />
+<!-- end of header -->
+<link rel="stylesheet" href="/userSide/css/userPayment.css" />
+<link rel="stylesheet" href="/userSide/css/checkout.css" />
 
-  <style>
-    #loader {
-      border: 16px solid #f3f3f3;
-      /* Light grey */
-      border-top: 16px solid #3498db;
-      /* Blue */
-      border-radius: 50%;
-      width: 120px;
-      height: 120px;
-      animation: spin 2s linear infinite;
-      position: fixed;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 1000;
+<style>
+  #loader {
+    border: 16px solid #f3f3f3;
+    /* Light grey */
+    border-top: 16px solid #3498db;
+    /* Blue */
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
     }
 
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
-
-      100% {
-        transform: rotate(360deg);
-      }
+    100% {
+      transform: rotate(360deg);
     }
-  </style>
-  <div class="page-title-area">
-    <div class="container">
-      <div class="page-title-content">
-        <h2>Checkout</h2>
-        <ul>
-          <li><a href="/">Home</a></li>
-          <li>Checkout</li>
-        </ul>
+  }
+</style>
+<div class="page-title-area">
+  <div class="container">
+    <div class="page-title-content">
+      <h2>Checkout</h2>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li>Checkout</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<% if (cartItems.length===0) { %>
+
+<div class="my-5">
+  <div class="errNoProduct d-flex justify-content-center">
+    <img src="/userSide/img/errorPages/images.jpeg" width="500px" alt="No Data">
+  </div>
+  <div class="errNoProduct d-flex justify-content-center">
+    <h3>Your Cart is empty!</h3>
+  </div>
+  <div class="row align-items-center m-2">
+    <div class="d-flex justify-content-center">
+      <a href="/category" class="optional-btn">Continue Shopping</a>
+    </div>
+
+  </div>
+</div>
+
+<% } else { %>
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-Modify">
+    <div class="modal-content bg-white eachAdd mod-body" id="modal-content">
+      <div class="modal-header">
+        <div class="cartHead">
+          <div class="d-flex align-items-center gap-2">
+            <svg viewBox="0 0 69 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g clip-path="url(#clip0_395_60)">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M55.0401 52.279C63.5259 54.6811 68.9764 58.5193 68.9764 62.847C68.9764 70.1122 53.5388 76 34.4915 76C15.4441 76 0 70.1122 0 62.847C0 58.4148 5.7377 54.4983 14.5368 52.1158L15.5029 53.4213C16.1556 54.3156 16.8932 55.2033 17.6308 56.0715C11.4754 57.5597 7.53277 59.8574 7.53277 62.4358C7.53277 66.9267 19.4716 70.5691 34.2042 70.5691C48.9369 70.5691 60.8757 66.9267 60.8757 62.4358C60.8757 60.0402 57.4553 57.8665 52.0244 56.3913C53.0949 55.0858 54.1001 53.6889 55.0401 52.279Z" fill="black" />
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M45.8175 54.0349C42.9344 57.2115 39.6133 59.9611 35.9544 62.2008C35.7259 62.3684 35.4518 62.4626 35.1684 62.4708C34.8851 62.4789 34.606 62.4007 34.3682 62.2465C29.1499 58.9551 24.5171 54.8165 20.6604 50.0009C15.6669 43.7344 12.488 36.7761 11.4109 30.0723C10.3339 23.3685 11.3391 16.7431 14.7204 11.4297C16.0944 9.2679 17.8222 7.35256 19.8314 5.76381C24.5965 1.95826 30.0274 -0.0391647 35.4714 5.10248e-07C39.265 0.104301 42.9723 1.15493 46.2566 3.05641C49.5409 4.95789 52.2979 7.64994 54.2772 10.8879C57.913 16.8737 58.6963 24.5109 57.1036 32.246C55.3363 40.374 51.4414 47.8867 45.8175 54.0153V54.0349ZM34.44 12.0825C36.7487 12.0825 39.0054 12.7671 40.9249 14.0499C42.8444 15.3326 44.3403 17.1558 45.2235 19.2888C46.1066 21.4218 46.3374 23.7688 45.8865 26.033C45.4356 28.2972 44.3234 30.3768 42.6905 32.0088C41.0576 33.6408 38.9774 34.7518 36.713 35.2014C34.4485 35.651 32.1016 35.419 29.9691 34.5346C27.8366 33.6502 26.0143 32.1533 24.7326 30.2331C23.4509 28.3129 22.7675 26.0558 22.7688 23.7471C22.7688 22.2148 23.0707 20.6974 23.6574 19.2818C24.244 17.8661 25.1038 16.5799 26.1876 15.4967C27.2715 14.4134 28.5582 13.5543 29.9741 12.9685C31.3901 12.3827 32.9077 12.0816 34.44 12.0825Z" fill="black" />
+              </g>
+              <defs>
+                <clipPath id="clip0_395_60">
+                  <rect width="68.9764" height="76" fill="white" />
+                </clipPath>
+              </defs>
+            </svg>
+            <!-- <h2 class="m-0 p-0 text-capitalize">Add Address</h2> -->
+          </div>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-0">
+        <form id="addNewAddress" method="post">
+          <div class="editBody">
+            <div class="d-flex uAcc">
+              <div class="sides">
+                <div>
+                  <label for="name">Name</label>
+                  <input name="name" class="d-block text-capitalize" type="text" value="" />
+                  <p class="err d-none">
+                    <!-- err here -->
+                  </p>
+                  <label for="country">Country</label>
+                  <input name="country" class="d-block" type="text" value="" />
+                  <p class="err d-none">
+                    <!-- err here -->
+                  </p>
+                  <label for="state">State</label>
+                  <input name="state" class="d-block" type="text" value="" />
+                  <p class="err d-none">
+                    <!-- err here -->
+                  </p>
+                  <label for="district">District</label>
+                  <input name="district" class="d-block" type="text" value="" />
+                  <p class="err d-none">
+                    <!-- err here -->
+                  </p>
+
+                </div>
+                <button type="submit" class="saveBtn oneBtn">Add Address</button>
+              </div>
+              <div class="sides">
+                <div class="left">
+                  <label for="city">City</label>
+                  <input name="city" class="d-block text-capitalize" type="text" value="" />
+                  <p class="err d-none">
+                    <!-- err here -->
+                  </p>
+                  <label for="houseName">House Name</label>
+                  <input name="houseName" class="d-block" type="text" value="" />
+                  <p class="err d-none">
+                    <!-- err here -->
+                  </p>
+                  <label for="phoneNo">Phone No</label>
+                  <input name="phoneNo" class="d-block" type="number" value="" />
+                  <p class="err d-none">
+                    <!-- err here -->
+                  </p>
+                  <label for="pin">PIN Code</label>
+                  <input name="pin" class="d-block" type="number" value="" />
+                  <p class="err d-none">
+                    <!-- err here -->
+                  </p>
+
+                </div>
+                <button type="submit" class="saveBtn twoBtn">Add Address</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer foot"></div>
+    </div>
+  </div>
+</div>
+
+<div class="popup" id="confirmation-popup">
+  <h2>Confirmation</h2>
+  <p>Are you sure you want to place order?</p>
+  <div class="d-flex justify-content-end gap-2">
+    <a class="dCat">
+      <button id="confirm-btn">Yes</button>
+    </a>
+    <a>
+      <button id="cancel-btn">No</button>
+    </a>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="changeAddressModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-white eachAdd border-0">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">
+          Address
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="/api/changeAddressPayment" method="post" class="formDiv">
+          <% for( let i=0; i < userInfo.variations[0]?.address.length; i++ ) { %>
+          <div class="chooseAdd existingAddress p-3 w-100 mb-3 position-relative">
+            <p>
+              <%= userInfo.variations[0].address[i].structuredAddress %>
+            </p>
+            <input name="adId" class="position-absolute radio" type="radio" value="<%= userInfo.variations[0].address[i]._id %>" <%=(String(userInfo.variations[0].address[i]._id)===String(userInfo.variations[0].defaultAddress))?'checked':''
+                      %>>
+          </div>
+          <% } %>
+        </form>
+        <% if (userInfo.variations[0]?.address.length===0 || !userInfo.variations[0]) { %>
+        <div class="text-center">
+          <p class="mb-3 fs-6 text-dark">Add New Address</p>
+        </div>
+        <% } %>
+        <p class="m-0"><a href="/" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="button">Add
+          </a></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary bg-danger text-white" data-bs-dismiss="modal">
+          Close
+        </button>
+        <!-- Add additional buttons or actions as needed -->
       </div>
     </div>
   </div>
-
-
-  <% if (cartItems.length===0) { %>
-
-    <div class="my-5">
-      <div class="errNoProduct d-flex justify-content-center">
-        <img src="/userSide/img/errorPages/images.jpeg" width="500px" alt="No Data">
-      </div>
-      <div class="errNoProduct d-flex justify-content-center">
-        <h3>Your Cart is empty!</h3>
-      </div>
-      <div class="row align-items-center m-2">
-        <div class="d-flex justify-content-center">
-          <a href="/category" class="optional-btn">Continue Shopping</a>
-        </div>
-
-      </div>
+</div>
+<!-- end of Modal -->
+<section class="checkout-area ptb-100">
+  <div class="container">
+    <div class="user-actions">
     </div>
+    <form id="form" method="post">
+      <div class="row">
+        <div class="col-lg-6 col-md-12">
+          <div class="billing-details">
+            <h3 class="title">Billing Details</h3>
+            <div class="row" style="padding-right:20px;">
+              <% if (userInfo.variations[0]?.address.length===0) { %>
+              <div>
 
-    <% } else { %>
+                <div class="errNoProduct d-flex justify-content-center">
+                  <img src="/userSide/img/errorPages/address.png" width="200px" alt="No Data">
+                </div>
 
-      <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-Modify">
-          <div class="modal-content bg-white eachAdd mod-body" id="modal-content">
-            <div class="modal-header">
-              <div class="cartHead">
-                <div class="d-flex align-items-center gap-2">
-                  <svg viewBox="0 0 69 76" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <g clip-path="url(#clip0_395_60)">
-                      <path fill-rule="evenodd" clip-rule="evenodd"
-                        d="M55.0401 52.279C63.5259 54.6811 68.9764 58.5193 68.9764 62.847C68.9764 70.1122 53.5388 76 34.4915 76C15.4441 76 0 70.1122 0 62.847C0 58.4148 5.7377 54.4983 14.5368 52.1158L15.5029 53.4213C16.1556 54.3156 16.8932 55.2033 17.6308 56.0715C11.4754 57.5597 7.53277 59.8574 7.53277 62.4358C7.53277 66.9267 19.4716 70.5691 34.2042 70.5691C48.9369 70.5691 60.8757 66.9267 60.8757 62.4358C60.8757 60.0402 57.4553 57.8665 52.0244 56.3913C53.0949 55.0858 54.1001 53.6889 55.0401 52.279Z"
-                        fill="black" />
-                      <path fill-rule="evenodd" clip-rule="evenodd"
-                        d="M45.8175 54.0349C42.9344 57.2115 39.6133 59.9611 35.9544 62.2008C35.7259 62.3684 35.4518 62.4626 35.1684 62.4708C34.8851 62.4789 34.606 62.4007 34.3682 62.2465C29.1499 58.9551 24.5171 54.8165 20.6604 50.0009C15.6669 43.7344 12.488 36.7761 11.4109 30.0723C10.3339 23.3685 11.3391 16.7431 14.7204 11.4297C16.0944 9.2679 17.8222 7.35256 19.8314 5.76381C24.5965 1.95826 30.0274 -0.0391647 35.4714 5.10248e-07C39.265 0.104301 42.9723 1.15493 46.2566 3.05641C49.5409 4.95789 52.2979 7.64994 54.2772 10.8879C57.913 16.8737 58.6963 24.5109 57.1036 32.246C55.3363 40.374 51.4414 47.8867 45.8175 54.0153V54.0349ZM34.44 12.0825C36.7487 12.0825 39.0054 12.7671 40.9249 14.0499C42.8444 15.3326 44.3403 17.1558 45.2235 19.2888C46.1066 21.4218 46.3374 23.7688 45.8865 26.033C45.4356 28.2972 44.3234 30.3768 42.6905 32.0088C41.0576 33.6408 38.9774 34.7518 36.713 35.2014C34.4485 35.651 32.1016 35.419 29.9691 34.5346C27.8366 33.6502 26.0143 32.1533 24.7326 30.2331C23.4509 28.3129 22.7675 26.0558 22.7688 23.7471C22.7688 22.2148 23.0707 20.6974 23.6574 19.2818C24.244 17.8661 25.1038 16.5799 26.1876 15.4967C27.2715 14.4134 28.5582 13.5543 29.9741 12.9685C31.3901 12.3827 32.9077 12.0816 34.44 12.0825Z"
-                        fill="black" />
-                    </g>
-                    <defs>
-                      <clipPath id="clip0_395_60">
-                        <rect width="68.9764" height="76" fill="white" />
-                      </clipPath>
-                    </defs>
-                  </svg>
-                  <!-- <h2 class="m-0 p-0 text-capitalize">Add Address</h2> -->
+                <div class="errNoProduct d-flex justify-content-center">
+                  <h3>No Address found!</h3>
+                </div>
+                <div class="row align-items-center">
+                  <div class="d-flex justify-content-center">
+                    <a href="/addAddress" class="optional-btn ">Add New Address</a>
+                  </div>
                 </div>
               </div>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-0">
-              <form id="addNewAddress" method="post">
-                <div class="editBody">
-                  <div class="d-flex uAcc">
-                    <div class="sides">
-                      <div>
-                        <label for="name">Name</label>
-                        <input name="name" class="d-block text-capitalize" type="text" value="" />
-                        <p class="err d-none">
-                          <!-- err here -->
-                        </p>
-                        <label for="country">Country</label>
-                        <input name="country" class="d-block" type="text" value="" />
-                        <p class="err d-none">
-                          <!-- err here -->
-                        </p>
-                        <label for="state">State</label>
-                        <input name="state" class="d-block" type="text" value="" />
-                        <p class="err d-none">
-                          <!-- err here -->
-                        </p>
-                        <label for="district">District</label>
-                        <input name="district" class="d-block" type="text" value="" />
-                        <p class="err d-none">
-                          <!-- err here -->
-                        </p>
 
-                      </div>
-                      <button type="submit" class="saveBtn oneBtn">Add Address</button>
+              <% } else { %>
+
+              <div class="orderSummary ">
+                <div class="orderHeading">
+                  <h2>Delivery Address</h2>
+                </div>
+                <div class="deleviryContent">
+                  <div class="chooseAdd position-relative">
+                    <% if (userInfo.variations[0]?.address.length===0 || !userInfo.variations[0]) { %>
+
+                    <div class="errNoProduct d-flex justify-content-center">
+                      <img src="/userSide/img/errorPages/address.png" width="20px" alt="No Data">
                     </div>
-                    <div class="sides">
-                      <div class="left">
-                        <label for="city">City</label>
-                        <input name="city" class="d-block text-capitalize" type="text" value="" />
-                        <p class="err d-none">
-                          <!-- err here -->
-                        </p>
-                        <label for="houseName">House Name</label>
-                        <input name="houseName" class="d-block" type="text" value="" />
-                        <p class="err d-none">
-                          <!-- err here -->
-                        </p>
-                        <label for="phoneNo">Phone No</label>
-                        <input name="phoneNo" class="d-block" type="number" value="" />
-                        <p class="err d-none">
-                          <!-- err here -->
-                        </p>
-                        <label for="pin">PIN Code</label>
-                        <input name="pin" class="d-block" type="number" value="" />
-                        <p class="err d-none">
-                          <!-- err here -->
-                        </p>
 
+                    <div class="errNoProduct d-flex justify-content-center"><span>No Address found!</span>
+                    </div>
+                    <div class="row align-items-center">
+                      <div class="d-flex justify-content-center">
+                        <a href="/addAddress" class="optional-btn ">Add New Address</a>
                       </div>
-                      <button type="submit" class="saveBtn twoBtn">Add Address</button>
                     </div>
                   </div>
-                </div>
-              </form>
-            </div>
-            <div class="modal-footer foot"></div>
-          </div>
-        </div>
-      </div>
 
-      <div class="popup" id="confirmation-popup">
-        <h2>Confirmation</h2>
-        <p>Are you sure you want to place order?</p>
-        <div class="d-flex justify-content-end gap-2">
-          <a class="dCat">
-            <button id="confirm-btn">Yes</button>
-          </a>
-          <a>
-            <button id="cancel-btn">No</button>
-          </a>
-        </div>
-      </div>
+                  <% } else { %>
+                  <div class="existingAddress">
 
-      <!-- Modal -->
-      <div class="modal fade" id="changeAddressModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content bg-white eachAdd border-0">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">
-                Address
-              </h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <form action="/api/changeAddressPayment" method="post" class="formDiv">
-                <% for( let i=0; i < userInfo.variations[0]?.address.length; i++ ) { %>
-                  <div class="chooseAdd existingAddress p-3 w-100 mb-3 position-relative">
                     <p>
-                      <%= userInfo.variations[0].address[i].structuredAddress %>
-                    </p>
-                    <input name="adId" class="position-absolute radio" type="radio"
-                      value="<%= userInfo.variations[0].address[i]._id %>"
-                      <%=(String(userInfo.variations[0].address[i]._id)===String(userInfo.variations[0].defaultAddress))?'checked':''
-                      %>>
-                  </div>
-                  <% } %>
-              </form>
-              <% if (userInfo.variations[0]?.address.length===0 || !userInfo.variations[0]) { %>
-                <div class="text-center">
-                  <p class="mb-3 fs-6 text-dark">Add New Address</p>
-                </div>
-                <% } %>
-                  <p class="m-0"><a href="/" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="button">Add
-                    </a></p>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary bg-danger text-white" data-bs-dismiss="modal">
-                Close
-              </button>
-              <!-- Add additional buttons or actions as needed -->
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- end of Modal -->
-      <section class="checkout-area ptb-100">
-        <div class="container">
-          <div class="user-actions">
-          </div>
-          <form id="form" method="post">
-            <div class="row">
-              <div class="col-lg-6 col-md-12">
-                <div class="billing-details">
-                  <h3 class="title">Billing Details</h3>
-                  <div class="row" style="padding-right:20px;">
-                    <% if (userInfo.variations[0]?.address.length===0) { %>
-                      <div>
-
-                        <div class="errNoProduct d-flex justify-content-center">
-                          <img src="/userSide/img/errorPages/address.png" width="200px" alt="No Data">
-                        </div>
-
-                        <div class="errNoProduct d-flex justify-content-center">
-                          <h3>No Address found!</h3>
-                        </div>
-                        <div class="row align-items-center">
-                          <div class="d-flex justify-content-center">
-                            <a href="/addAddress" class="optional-btn ">Add New Address</a>
-                          </div>
-                        </div>
-                      </div>
-
-                      <% } else { %>
-
-                        <div class="orderSummary ">
-                          <div class="orderHeading">
-                            <h2>Delivery Address</h2>
-                          </div>
-                          <div class="deleviryContent">
-                            <div class="chooseAdd position-relative">
-                              <% if (userInfo.variations[0]?.address.length===0 || !userInfo.variations[0]) { %>
-
-                                <div class="errNoProduct d-flex justify-content-center">
-                                  <img src="/userSide/img/errorPages/address.png" width="20px" alt="No Data">
-                                </div>
-
-                                <div class="errNoProduct d-flex justify-content-center"><span>No Address found!</span>
-                                </div>
-                                <div class="row align-items-center">
-                                  <div class="d-flex justify-content-center">
-                                    <a href="/addAddress" class="optional-btn ">Add New Address</a>
-                                  </div>
-                                </div>
-                            </div>
-
-                            <% } else { %>
-                              <div class="existingAddress">
-
-                                <p>
-                                  <%= userInfo.variations[0]?.address.find((value)=> String(value._id) ===
+                      <%= userInfo.variations[0]?.address.find((value)=> String(value._id) ===
                                     String(userInfo.variations[0]?.defaultAddress))?.structuredAddress %>
-                                </p>
+                    </p>
 
-                                <input type="text" name="adId" value="<%= userInfo.variations[0]?.defaultAddress %>"
-                                  hidden>
-                                <input type="text" name="couponId" id="couponId"
-                                  value="<%= coupons?._id?coupons.id:'' %>" hidden>
-                              </div>
-                              <% } %>
-                                <% if (userInfo.variations[0]?.address.length===0 || !userInfo.variations[0]) { %>
-                                  <a data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-
-                                  </a>
-                                  <% } else { %>
-                                    <a data-bs-toggle="modal" data-bs-target="#changeAddressModal">
-                                      <button type="button" class="position-absolute button">
-                                        Change
-                                      </button>
-                                    </a>
-                                    <% } %>
-
-                          </div>
-                        </div>
+                    <input type="text" name="adId" value="<%= userInfo.variations[0]?.defaultAddress %>" hidden>
+                    <input type="text" name="couponId" id="couponId" value="<%= coupons?._id?coupons.id:'' %>" hidden>
                   </div>
                   <% } %>
+                  <% if (userInfo.variations[0]?.address.length===0 || !userInfo.variations[0]) { %>
+                  <a data-bs-toggle="modal" data-bs-target="#staticBackdrop">
 
-                    <!-- -------------------------------------- -->
+                  </a>
+                  <% } else { %>
+                  <a data-bs-toggle="modal" data-bs-target="#changeAddressModal">
+                    <button type="button" class="position-absolute button">
+                      Change
+                    </button>
+                  </a>
+                  <% } %>
 
-                    <!--Modal-->
-                    <div class="button-row d-flex" style="padding-right: 20px;">
+                </div>
+              </div>
+            </div>
+            <% } %>
+
+            <!-- -------------------------------------- -->
+            <!-- View Coupons Button -->
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#allCouponsModal">
+              View Coupons
+            </button>
+
+            <!-- All Coupons Modal -->
+            <div id="allCouponsModal" class="modal fade" role="dialog">
+              <div class="modal-dialog modal-lg">
+                <!-- Modal Content-->
+                <div class="modal-content">
+                  <!-- Modal Header-->
+                  <div class="modal-header">
+                    <h3>Available Coupons</h3>
+                    <button type="button" class="close" data-dismiss="modal" style="color: white;">&times;</button>
+                  </div>
+                  <!-- Modal Body-->
+                  <div class="modal-body">
+                    <div class="button-row d-flex flex-wrap">
                       <% for(let i=0; i < coupons.length; i++) { %>
-                        <button type="button" class="btn btn-info btn-lg openmodal m-1" data-toggle="modal"
-                          data-target="#myModal<%=i%>">
+                      <div class="coupon-container m-2">
+                        <button type="button" class="btn btn-info btn-lg openmodal" data-toggle="modal" data-target="#couponModal<%=i%>">
                           <i class="fa fa-tag"></i> COUPON<br>
-                          <h5>Category:<%= coupons[i].category %>
-                          </h5>
-                          <h3>
-                            <%= coupons[i].discount %>% OFF
-                          </h3>
+                          <h3><%= coupons[i].discount %>% OFF</h3>
                         </button>
 
-                        <!--Division for Modal-->
-                        <div id="myModal<%=i%>" class="modal fade" role="dialog">
+                        <!-- Division for Individual Coupon Modal -->
+                        <div id="couponModal<%=i%>" class="modal fade" role="dialog">
                           <div class="modal-dialog">
-                            <!--Modal Content-->
+                            <!-- Modal Content-->
                             <div class="modal-content">
                               <!-- Modal Header-->
                               <div class="modal-header">
-                                <h3>
-                                  <%= coupons[i].category %> Category : <%= coupons[i].discount %>% OFF
-                                </h3>
-
-                                <button type="button" class="close" data-dismiss="modal"
-                                  style="color: white;">&times;</button>
+                                <h3> <%= coupons[i].discount %>% OFF</h3>
+                                <button type="button" class="close" data-dismiss="modal" style="color: white;">&times;</button>
                               </div>
                               <!-- Modal Body-->
                               <div class="modal-body">
                                 <div class="row">
-                                  <!--Gift Icon-->
+                                  <!-- Gift Icon-->
                                   <div class="col text-center">
                                     <i class="fa fa-gift fa-4x icon2"></i>
                                   </div>
-                                  <!--Modal Text-->
+                                  <!-- Modal Text-->
                                   <div class="col-8">
-                                    <p>We care for our visitors and from time to time we provide small gifts to them.
-                                      You
-                                      are the lucky one today!</p>
+                                    <p>We care for our visitors and from time to time we provide small gifts to them. You are the lucky one today!</p>
                                     <p>
                                     <h6>Order of $ <%= coupons[i].minPrice %> or more..!</h6>
                                     </p>
-                                    <p>Hurry! Copy the below code and use it at checkout within <u>
-                                        <%= coupons[i].expiry.toString().split(' ').slice(0, 4).join(' ') %></u></p>
-                          <h3 class="text1" id="couponCode<%=i%>"><%= coupons[i].code %></h3>
-                        </div>
-                      </div>
-                    </div>
-                    <!-- Modal Footer-->
-                    <div class="modal-footer">
-                      <a href="#" class="btn btn-danger" onclick="copyCouponCode(' <%=coupons[i].code %>')"
-                                          data-dismiss="modal">Get it now <i class="fa fa-gem"></i></a>
-                                          <a href="" class="btn btn-outline-danger" data-dismiss="modal">No, thanks</a>
+                                    <p>Hurry! Copy the below code and use it at checkout within <u><%= coupons[i].expiry.toString().split(' ').slice(0, 4).join(' ') %></u></p>
+                                    <h3 class="text1" id="couponCode<%=i%>"><%= coupons[i].code %></h3>
                                   </div>
                                 </div>
                               </div>
+                              <!-- Modal Footer-->
+                              <div class="modal-footer">
+                                <a href="#" class="btn btn-danger" onclick="applyAndCalculateOrder('<%= coupons[i].code %>')" data-dismiss="modal">Get it now <i class="fa fa-gem"></i></a>
+                                <a href="" class="btn btn-outline-danger" data-dismiss="modal">No, thanks</a>
+                              </div>
                             </div>
-                            <% } %>
                           </div>
-
-
-
-
-                          <div class="coupomSession p-3">
-                            <form action="" method="post">
-                              <label for="coupon">Enter your coupon code:</label><br>
-                              <input type="text" id="coupon" name="coupon" placeholder="Enter coupon code"><br>
-                              <p id="couponError" style="color:#ff0000; display: none;">
-                                <i class="fa-solid fa-circle-exclamation" style="color: #ff0000;"></i> Invalid Coupon
-                              </p>
-
-                              <button type="button" class="default-btn" onclick="applyCoupon()"
-                                onclick=" calculateOrderTotal()">Apply
-                                Coupon</button>
-
-                            </form>
-
-                          </div>
-
-
-                          <!-- ------------------------------------------------------------------------ -->
                         </div>
+                      </div>
+                      <% } %>
                     </div>
+                  </div>
                 </div>
+              </div>
+            </div>
 
 
-                <div class="col-lg-6 col-md-12">
-                  <div class="order-details">
-                    <h3 class="title">Your Order</h3>
-                    <div class="order-table table-responsive">
-                      <table class="table table-bordered">
-                        <thead>
-                          <tr>
-                            <th scope="col">Product Name</th>
-                            <th scope="col">Total</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <% for( let i=0; i < cartItems.length; i++ ) { %>
 
-                              <td class="product-name">
-                                <p>
-                                  <%= cartItems[i].pDetails[0].pName %> x <%= cartItems[i].products.quantity %>
-                                </p>
-                              </td>
-                              <td class="product-total">
-                                <span class="subtotal-amount">$<%=
+
+
+            <!-- ------------------------------------------------------------------------ -->
+          </div>
+        </div>
+
+        <div class="woocommerce-widget aside-trending-widget" style="padding-top: 60px; padding-right: 30px; max-width: 95%;">
+          <div class="aside-trending-products" style="position: relative;">
+            <img src="/userSide/img/offer-bg.jpg" alt="image">
+            <div class="category overlay">
+              <h3><a href="#" class="link-btn">Shop Now!</a></h3>
+              <span>Spring/Summer 2025 Collection</span>
+            </div>
+
+          </div>
+        </div>
+
+        <style>
+          .aside-trending-products {
+            position: relative;
+          }
+
+          .aside-trending-products img {
+            width: 100%;
+            height: auto;
+          }
+
+          .category.overlay {
+            position: absolute;
+            top: 50%;
+            right: 25%;
+            transform: translate(-50%, -50%);
+            color: white;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 5px;
+          }
+
+          .category.overlay h3,
+          .category.overlay span {
+            margin: 0;
+            padding: 0;
+          }
+        </style>
+      </div>
+
+
+      <div class="col-lg-6 col-md-12">
+        <div class="order-details">
+          <h3 class="title">Your Order</h3>
+          <div class="order-table table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th scope="col">Product Name</th>
+                  <th scope="col">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <% for( let i=0; i < cartItems.length; i++ ) { %>
+
+                  <td class="product-name">
+                    <p>
+                      <%= cartItems[i].pDetails[0].pName %> x <%= cartItems[i].products.quantity %>
+                    </p>
+                  </td>
+                  <td class="product-total">
+                    <span class="subtotal-amount">$<%=
                                     (cartItems[i].products.quantity)*(cartItems[i].pDetails[0].fPrice ) %></span>
-                              </td>
-                          </tr>
-                          <% } %>
-                            <tr>
-                              <td class="order-subtotal">
-                                <span>Subtotal</span>
-                              </td>
-                              <td class="order-subtotal-price">
-                                <span class="order-subtotal-amount" id="totalAmount">$<%= cartItems.reduce((total,
+                  </td>
+                </tr>
+                <% } %>
+                <tr>
+                  <td class="order-subtotal">
+                    <span>Subtotal</span>
+                  </td>
+                  <td class="order-subtotal-price">
+                    <span class="order-subtotal-amount" id="totalAmount">$<%= cartItems.reduce((total,
                                     value)=> { return total +=
                                     (value.pDetails[0].fPrice * value.products.quantity); }, 0);
                                     %></span>
-                              </td>
-                            </tr>
-                            <td class="order-shipping"><span>Shipping</span></td>
-                            <td class="shipping-price"><span id="shippingFee">$0.00</span></td>
-                            <script>
-                              document.addEventListener("DOMContentLoaded", function () {
-                                var subtotalElement = document.getElementById('totalAmount');
-                                var subtotalText = subtotalElement.textContent.replace('$', '').replace('.00', '');
-                                var totalAmount = parseFloat(subtotalText);
+                  </td>
+                </tr>
+                <td class="order-shipping"><span>Shipping</span></td>
+                <td class="shipping-price"><span id="shippingFee">$0.00</span></td>
+                <script>
+                  document.addEventListener("DOMContentLoaded", function() {
+                    var subtotalElement = document.getElementById('totalAmount');
+                    var subtotalText = subtotalElement.textContent.replace('$', '').replace('.00', '');
+                    var totalAmount = parseFloat(subtotalText);
 
-                                var shippingFee = totalAmount > 1000 ? 0 : 10;
+                    var shippingFee = totalAmount > 1000 ? 0 : 10;
 
-                                var shippingFeeElement = document.getElementById('shippingFee');
-                                shippingFeeElement.textContent = '$' + shippingFee + '.00';
-                              });
-                            </script>
-                            </tr>
-                            </tr>
-                            <tr>
-                              <td class="discount-price">
-                                <span>Discount</span>
-                              </td>
-                              <td class="discount-price">
-                                <span id="discountPrice"> -$<%= cartItems.reduce((total, value)=> {
+                    var shippingFeeElement = document.getElementById('shippingFee');
+                    shippingFeeElement.textContent = '$' + shippingFee + '.00';
+                  });
+                </script>
+                </tr>
+                </tr>
+                <tr>
+                  <td class="discount-price">
+                    <span>Discount</span>
+                  </td>
+                  <td class="discount-price">
+                    <span id="discountPrice"> -$<%= cartItems.reduce((total, value)=> {
                                     const fPrice = value.pDetails[0].fPrice;
                                     const lPrice = value.pDetails[0].lPrice;
                                     const discountAmount = (fPrice - lPrice) * value.products.quantity;
                                     return total + discountAmount;
                                     }, 0).toFixed(2); %></span>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td class="offer-price">
-                                <span>Offer</span>
-                              </td>
-                              <td class="offer-price">
-                                <span id="offerPrice">-$<%= cartItems.reduce((total, value)=> {
+                  </td>
+                </tr>
+                <tr>
+                  <td class="offer-price">
+                    <span>Offer</span>
+                  </td>
+                  <td class="offer-price">
+                    <span id="offerPrice">-$<%= cartItems.reduce((total, value)=> {
                                     const offerAmount = Math.round((value.pDetails[0].fPrice * value.allOffers) / 100)
                                     * value.products.quantity;
                                     return total + offerAmount;
                                     }, 0).toFixed(2); %></span>
-                              </td>
+                  </td>
 
-                            </tr>
-                            <tr id="couponOffer">
-                              <td class="coupon-offer">
-                                <span>Coupon Offer</span>
-                              </td>
-                              <td class="coupon-offer">
-                                <span id="cDPrice">-$0.00</span>
-                              </td>
-                            </tr>
-                            <tr id="couponRow" style="display: none;">
-                              <td>
-                                <span class="commonSub commonText  text-danger" id="code" style="display: none;"></span>
-                              </td>
-                              <td>
-                                <span class="commonSub  text-danger remove" onclick="removeCoupon()">
-                                  <svg width="17" height="17" viewBox="0 0 17 17" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                      d="M4.41602 9.21669H12.416V7.61669H4.41602V9.21669ZM8.41602 16.4167C7.30935 16.4167 6.26935 16.2067 5.29602 15.7867C4.32268 15.3667 3.47602 14.7967 2.75602 14.0767C2.03602 13.3567 1.46602 12.51 1.04602 11.5367C0.626016 10.5634 0.416016 9.52335 0.416016 8.41669C0.416016 7.31002 0.626016 6.27002 1.04602 5.29669C1.46602 4.32335 2.03602 3.47669 2.75602 2.75669C3.47602 2.03669 4.32268 1.46669 5.29602 1.04669C6.26935 0.626687 7.30935 0.416687 8.41602 0.416687C9.52268 0.416687 10.5627 0.626687 11.536 1.04669C12.5093 1.46669 13.356 2.03669 14.076 2.75669C14.796 3.47669 15.366 4.32335 15.786 5.29669C16.206 6.27002 16.416 7.31002 16.416 8.41669C16.416 9.52335 16.206 10.5634 15.786 11.5367C15.366 12.51 14.796 13.3567 14.076 14.0767C13.356 14.7967 12.5093 15.3667 11.536 15.7867C10.5627 16.2067 9.52268 16.4167 8.41602 16.4167ZM8.41602 14.8167C10.2027 14.8167 11.716 14.1967 12.956 12.9567C14.196 11.7167 14.816 10.2034 14.816 8.41669C14.816 6.63002 14.196 5.11669 12.956 3.87669C11.716 2.63669 10.2027 2.01669 8.41602 2.01669C6.62935 2.01669 5.11602 2.63669 3.87602 3.87669C2.63602 5.11669 2.01602 6.63002 2.01602 8.41669C2.01602 10.2034 2.63602 11.7167 3.87602 12.9567C5.11602 14.1967 6.62935 14.8167 8.41602 14.8167Z"
-                                      fill="#DC3545" />
-                                  </svg> remove
-                                </span>
-                              </td>
-                            </tr>
+                </tr>
+                <tr id="couponOffer">
+                  <td class="coupon-offer">
+                    <span>Coupon Offer</span>
+                  </td>
+                  <td class="coupon-offer">
+                    <span id="cDPrice">-$0.00</span>
+                  </td>
+                </tr>
+                <tr id="couponRow" style="display: none;">
+                  <td>
+                    <span class="commonSub commonText  text-danger" id="code" style="display: none;"></span>
+                  </td>
+                  <td>
+                    <span class="commonSub  text-danger remove" onclick="removeCoupon()">
+                      <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4.41602 9.21669H12.416V7.61669H4.41602V9.21669ZM8.41602 16.4167C7.30935 16.4167 6.26935 16.2067 5.29602 15.7867C4.32268 15.3667 3.47602 14.7967 2.75602 14.0767C2.03602 13.3567 1.46602 12.51 1.04602 11.5367C0.626016 10.5634 0.416016 9.52335 0.416016 8.41669C0.416016 7.31002 0.626016 6.27002 1.04602 5.29669C1.46602 4.32335 2.03602 3.47669 2.75602 2.75669C3.47602 2.03669 4.32268 1.46669 5.29602 1.04669C6.26935 0.626687 7.30935 0.416687 8.41602 0.416687C9.52268 0.416687 10.5627 0.626687 11.536 1.04669C12.5093 1.46669 13.356 2.03669 14.076 2.75669C14.796 3.47669 15.366 4.32335 15.786 5.29669C16.206 6.27002 16.416 7.31002 16.416 8.41669C16.416 9.52335 16.206 10.5634 15.786 11.5367C15.366 12.51 14.796 13.3567 14.076 14.0767C13.356 14.7967 12.5093 15.3667 11.536 15.7867C10.5627 16.2067 9.52268 16.4167 8.41602 16.4167ZM8.41602 14.8167C10.2027 14.8167 11.716 14.1967 12.956 12.9567C14.196 11.7167 14.816 10.2034 14.816 8.41669C14.816 6.63002 14.196 5.11669 12.956 3.87669C11.716 2.63669 10.2027 2.01669 8.41602 2.01669C6.62935 2.01669 5.11602 2.63669 3.87602 3.87669C2.63602 5.11669 2.01602 6.63002 2.01602 8.41669C2.01602 10.2034 2.63602 11.7167 3.87602 12.9567C5.11602 14.1967 6.62935 14.8167 8.41602 14.8167Z" fill="#DC3545" />
+                      </svg> remove
+                    </span>
+                  </td>
+                </tr>
 
 
 
 
 
-                            <tr>
-                              <td class="total-price">
-                                <span>Order Total</span>
-                              </td>
-                              <td class="product-subtotal">
-                                <span class="subtotal-amount" id="orderTotal">
-                                  $<%= cartItems.reduce((total, value)=> {
+                <tr>
+                  <td class="total-price">
+                    <span>Order Total</span>
+                  </td>
+                  <td class="product-subtotal">
+                    <span class="subtotal-amount" id="orderTotal">
+                      $<%= cartItems.reduce((total, value)=> {
                                     const offerAmount = Math.round((value.pDetails[0].fPrice * value.allOffers) / 100) *
                                     value.products.quantity;
                                     const discountedPrice = (value.pDetails[0].lPrice * value.products.quantity) -
                                     offerAmount;
                                     return total + discountedPrice;
                                     }, 0).toFixed(2); %>
-                                </span>
-                              </td>
-                            </tr>
+                    </span>
+                  </td>
+                </tr>
 
 
-                        </tbody>
-                      </table>
-                    </div>
+              </tbody>
+            </table>
+          </div>
 
-                    <div class="payment-box">
-                      <div class="payment-method">
-                        <p>
-                          <input type="radio" id="razorpay" name="paymentMethode" value="razorpay"
-                            onclick="handlePaymentSelection('razorpay')">
-                          <label for="razorpay">razorpay</label>
-                        </p>
-                        <p>
-                          <input type="radio" id="COD" name="paymentMethode" value="COD"
-                            onclick="handlePaymentSelection('cod')">
-                          <label for="COD">Cash on Delivery</label>
-                        </p>
+          <div class="payment-box">
+            <div class="payment-method">
+              <p>
+                <input type="radio" id="razorpay" name="paymentMethode" value="razorpay" onclick="handlePaymentSelection('razorpay')">
+                <label for="razorpay">razorpay</label>
+              </p>
+              <p>
+                <input type="radio" id="COD" name="paymentMethode" value="COD" onclick="handlePaymentSelection('cod')">
+                <label for="COD">Cash on Delivery</label>
+              </p>
 
-                        <p>
-                          <input type="radio" id="wallet" name="paymentMethode" value="wallet"
-                            onclick="handlePaymentSelection('wallet')">
-                          <label for="wallet">Wallet</label>
-                        </p>
-                      </div>
-                      <a href="" class="default-btn" id="placeOrderBtn" disabled>Place Order</a>
-                    </div>
-                    <% if (errMesg) { %>
-                      <div>
-                        <p class="err">
-                          <%= errMesg %>
-                        </p>
-                      </div>
-                      <% } %>
-
-
-                  </div>
-                </div>
-              </div>
-
-              <div id="loader" style="display: none;">Loading...</div>
-          </form>
-
+              <p>
+                <input type="radio" id="wallet" name="paymentMethode" value="wallet" onclick="handlePaymentSelection('wallet')">
+                <label for="wallet">Wallet</label>
+              </p>
+            </div>
+            <a href="" class="default-btn" id="placeOrderBtn" disabled>Place Order</a>
+          </div>
+          <% if (errMesg) { %>
+          <div>
+            <p class="err">
+              <%= errMesg %>
+            </p>
+          </div>
           <% } %>
+
+
         </div>
-      </section>
-      <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-      <script src="/userSide/js/userPayment.js"></script>
-      <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
-        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-      <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-      <script src="/userSide/js/checkout.js"></script>
-      <!-- footer -->
-      <%- include('../includes/userSide/footer') %>
-        <!-- end of footer -->
+      </div>
+  </div>
+
+  <div id="loader" style="display: none;">Loading...</div>
+  </form>
+
+  <% } %>
+  </div>
+</section>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="/userSide/js/userPayment.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="/userSide/js/checkout.js"></script>
+<!-- footer -->
+<%- include('../includes/userSide/footer') %>
+<!-- end of footer -->

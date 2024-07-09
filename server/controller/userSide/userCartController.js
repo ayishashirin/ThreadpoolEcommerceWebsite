@@ -439,80 +439,75 @@ module.exports = {
   
 
   //   ----------------------------------------------------------------------------------------------------------
-
   isCouponValidCart: async (req, res) => {
     try {
-      const coupon = await userHelper.getCoupon(req.body.code);
-  
-      if (!coupon) {
-        return res.status(400).json({
-          err: true,
-          reload: false,
-          message: "Invalid coupon code",
-        });
-      }
-  
-      if (new Date(coupon.expiry) < new Date()) {
-        return res.status(400).json({
-          err: true,
-          reload: false,
-          message: "Coupon expired",
-        });
-      }
-  
-      if (coupon.count <= 0) {
-        return res.status(400).json({
-          err: true,
-          reload: false,
-          message: "This coupon is no longer available",
-        });
-      }
-  
-      const cartItems = await userHelper.getCartItemsAll(req.session.isUserAuth);
-  
-      const total = cartItems.reduce((total, item) => {
-        const itemPrice = item.pDetails[0].lPrice * item.products.quantity;
-        const discountedPrice = itemPrice * (1 - item.allOffers / 100);
-        return total + Math.round(discountedPrice);
-      }, 0);
-  
-      if (total < coupon.minPrice) {
-        return res.status(400).json({
-          err: true,
-          reload: false,
-          message: `This coupon is for orders greater than or equal to ₹${coupon.minPrice}`,
-        });
-      }
-  
-      let totalDiscount = 0;
-      cartItems.forEach((item) => {
-        if (
-          item.pDetails[0].category === coupon.category ||
-          coupon.category === "All"
-        ) {
-          const itemPrice = item.pDetails[0].fPrice * item.products.quantity;
-          const discountAmount = (itemPrice * coupon.discount) / 100;
-          totalDiscount += Math.round(discountAmount);
-        }
-      });
-  
-      res.status(200).json({
-        status: true,
-        message: `Coupon code ${coupon.code} applied successfully!`,
-        totalDiscount,
-        coupon,
-        total,
-      });
-    } catch (err) {
-      console.error("isCouponValidCart error:", err);
-      res.status(500).json({
-        err: true,
-        reload: true,
-        message: "An unexpected error occurred. Please try again later.",
-      });
-    }
-  },
-  
+        const { code } = req.body;
 
-  // ------------------------------------------------------------------------------------------------------------------
+        const coupon = await userHelper.getCoupon(code);
+
+        if (!coupon) {
+            return res.status(400).json({
+                err: true,
+                reload: false,
+                errorMessage: "Invalid coupon code",
+            });
+        }
+
+        if (new Date(coupon.expiry) < new Date()) {
+            return res.status(400).json({
+                err: true,
+                reload: false,
+                errorMessage: "Coupon expired",
+            });
+        }
+
+        if (coupon.count <= 0) {
+            return res.status(400).json({
+                err: true,
+                reload: false,
+                errorMessage: "This coupon is no longer available",
+            });
+        }
+
+        const cartItems = await userHelper.getCartItemsAll(req.session.isUserAuth);
+
+        const total = cartItems.reduce((total, item) => {
+            const itemPrice = item.pDetails[0].lPrice * item.products.quantity;
+            const discountedPrice = itemPrice * (1 - item.allOffers / 100);
+            return total + Math.round(discountedPrice);
+        }, 0);
+
+        if (total < coupon.minPrice) {
+            return res.status(400).json({
+                err: true,
+                reload: false,
+                errorMessage: `This coupon is for orders greater than or equal to ₹${coupon.minPrice}`,
+            });
+        }
+
+        let totalDiscount = 0;
+        cartItems.forEach((item) => {
+            const itemPrice = item.pDetails[0].lPrice * item.products.quantity;
+            const discountAmount = (itemPrice * coupon.discount) / 100;
+            totalDiscount += Math.round(discountAmount);
+        });
+
+        res.status(200).json({
+            status: true,
+            errorMessage: `Coupon code ${coupon.code} applied successfully!`,
+            totalDiscount,
+            coupon,
+            total,
+        });
+    } catch (err) {
+        console.error("isCouponValidCart error:", err);
+        res.status(500).json({
+            err: true,
+            reload: true,
+            errorMessage: "An unexpected error occurred. Please try again later.",
+        });
+    }
+},
+
+
 };

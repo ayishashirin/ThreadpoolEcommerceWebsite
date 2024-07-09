@@ -43,6 +43,7 @@
           action="/adminUpdateCategory/<%= singleCategory._id %>"
           method="post"
         >
+        
           <h2 class="fs-3 text-black fw-bold text-center">Update Category</h2>
           <div class="d-flex align-items-center formRow">
             <div class="<%= errMesg?.catErr?'err':'' %>">
@@ -62,7 +63,7 @@
             <div class="w-100 <%= errMesg?.dErr?'err':'' %>">
               <label for="name" class="d-block fs-6">Description</label>
               <textarea name="description" id="description" class="w-100">
-<%= sDetails?.description?sDetails.description:singleCategory.description %></textarea
+                <%= sDetails?.description?sDetails.description:singleCategory.description %></textarea
               >
               <% if (errMesg?.dErr) { %>
               <p class="err p-0 d-block text-danger"><%= errMesg.dErr %></p>
@@ -80,6 +81,7 @@
   <!-- MAIN -->
 </section>
 <!-- CONTENT -->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <!-- footer -->
 <%- include('../includes/adminSide/footer') %>

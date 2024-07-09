@@ -5,29 +5,14 @@ function copyCouponCode(code) {
     tempInput.select();
     document.execCommand("copy");
     document.body.removeChild(tempInput);
+
     
-    Swal.fire({
-      icon: 'success',
-      title: 'Copied!',
-      text: "Coupon code '" + code + "' copied to clipboard!",
-    });
-  }
-  
-  // ----------------------------------------------------------------------------------------------------
-  
-  function applyCoupon() {
-    var orderTotal = parseFloat(document.getElementById("orderTotal").innerText.replace("$", ""));
-    var couponCode = document.getElementById("coupon").value;
-    
-    document.getElementById("coupon").value = "";
-    var totalAmount = parseFloat(document.getElementById("totalAmount").innerText.replace("$", ""));
-    document.getElementById("couponRow").style.display = "none";
-    document.getElementById("couponError").style.display = "none";
-  
+}
+
+function applyCoupon(couponCode, orderTotal) {
     axios.post('/isCouponValidCart', {
         code: couponCode,
-        total: totalAmount,
-        orderTotal
+        total: orderTotal
     })
     .then(function(response) {
         console.log(response.data);
@@ -37,57 +22,52 @@ function copyCouponCode(code) {
         document.getElementById("cDPrice").style.display = "block";
         document.getElementById("code").innerHTML = response.data.coupon.code;
         document.getElementById("code").style.display = "block";
-  
+
         Swal.fire({
-          icon: 'success',
-          title: 'Coupon Applied!',
-          text: response.data.message,
+            icon: 'success',
+            title: 'Coupon Applied!',
+            text: response.data.message,
         });
-  
-        calculateOrderTotal(); 
+
+        calculateOrderTotal();
     })
     .catch(function(error) {
         console.error('Error:', error);
-        document.getElementById("couponError").innerText = error.response.data.message;
-        document.getElementById("couponError").style.display = "block";
-  
+        var errorMessage = error.response.data.errorMessage || "An unexpected error occurred. Please try again later.";
+        
         Swal.fire({
-          icon: 'error',
-          title: 'Coupon Error',
-          text: error.response.data.message,
+            icon: 'error',
+            title: 'Coupon Error',
+            text: errorMessage,
         });
     });
-  }
+}
 
-// --------------------------------------------------------------------------------------------------------------
-
-    function removeCoupon() {
-    
-      document.getElementById("couponRow").style.display = "none";
-      window.location.reload()
-      var cDPrice = document.getElementById("cDPrice");
-      cDPrice.innerText="-$00.00"
-    }
-//   -----------------------------------------------------------------------------------------------------------
-
-
-  
-  function calculateOrderTotal() {
+function calculateOrderTotal() {
     var totalAmount = parseFloat(document.getElementById("totalAmount").innerText.replace("$", ""));
-    
     var discountPrice = parseFloat(document.getElementById("discountPrice").innerText.replace("-$", ""));
-    
     var cDPrice = parseFloat(document.getElementById("cDPrice").innerText.replace("-$", ""));
-    
     var offerPrice = parseFloat(document.getElementById("offerPrice").innerText.replace("-$", ""));
-
     var shippingFee = parseFloat(document.getElementById("shippingFee").innerText.replace("$", ""));
 
-    var orderTotal = (totalAmount)- (discountPrice+cDPrice+offerPrice);51
+    var orderTotal = totalAmount - (discountPrice + cDPrice + offerPrice);
 
-    document.getElementById("orderTotal").innerText =  "$" + orderTotal.toFixed(2);
-  }
+    document.getElementById("orderTotal").innerText = "$" + orderTotal.toFixed(2);
+}
 
+function applyAndCalculateOrder(code) {
+    copyCouponCode(code);
+
+    var orderTotal = parseFloat(document.getElementById("orderTotal").innerText.replace("$", ""));
+    applyCoupon(code, orderTotal);
+}
+
+function removeCoupon() {
+    document.getElementById("couponRow").style.display = "none";
+    document.getElementById("code").style.display = "none";
+    document.getElementById("cDPrice").innerText = "-$0.00";
+    calculateOrderTotal();
+}
 
 
 //   --------------------------------------------------------------------------------------------------------------

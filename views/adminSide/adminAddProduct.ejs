@@ -102,13 +102,7 @@
                 </div>
               </div>
 
-              <div class="d-flex align-items-center formRow priceInput">
-              <div class="<%= errMesg?.date?'errDiv':'' %>">
-                <label for="date" class="d-block">Date</label>
-                <input type="date" name="date" value="<%= savedDetails?.date?savedDetails?.date:'' %>">
-                <p class="err"><%= errMesg?.date %></p>
-            </div>
-          </div>
+             
 
           <div class="d-flex align-items-center formRow">
     <div class="<%= errMesg?.file?'errDiv':'' %>" id="fileDiv">
@@ -117,7 +111,7 @@
         <p class="err" id="err"><%= errMesg?.file %></p>
     </div>
     <div class="newlyLauch d-flex align-items-center gap-2">
-      <input type="checkbox" id="newlyLaunchedCheckbox" name="newlyLaunched" <%#if (productInfo.newlyLaunched) { %>checked<%#} %>>
+      <input type="checkbox" id="newlyLaunchedCheckbox" name="newlyLaunched">
       <label for="newlyLaunchedCheckbox">Newly Launched</label>
         <p class="err"></p>
     </div>

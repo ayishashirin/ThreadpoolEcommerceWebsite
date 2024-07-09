@@ -15,7 +15,6 @@ module.exports = {
       req.body.color = req.body.color?.trim();
       req.body.size = req.body.size?.trim();
       req.body.quantity = req.body.quantity?.trim();
-      req.body.date = req.body.date?.trim();
 
       const errors = {};
 
@@ -30,14 +29,7 @@ module.exports = {
       if (!req.body.quantity) errors.quantity = "This Field is required";
       if (req.body.quantity <= 0)
         errors.quantity = "Quantity must be greater than zero";
-      if (!req.body.date) {
-        errors.date = "This field is required";
-      } else {
-        const currentDate = new Date().toISOString().split("T")[0];
-        if (req.body.date !== currentDate) {
-          errors.date = "Date must be the current date";
-        }
-      }
+    
       if (req.files.length === 0) errors.files = "This Field is required";
 
       const existingProduct = await Productdb.findOne({
@@ -56,7 +48,6 @@ module.exports = {
           color: req.body.color,
           size: req.body.size,
           quantity: req.body.quantity,
-          date: req.body.date,
         };
         req.flash("userProductFormData", userProductFormData);
         return res.status(401).redirect("/adminAddProduct");
@@ -73,7 +64,6 @@ module.exports = {
         lPrice: req.body.lPrice,
         newlyLaunched: newlyLaunched,
         unlistedProduct: unlistedProduct,
-        date: req.body.date,
       });
 
       const savedProduct = await newProduct.save();
@@ -149,116 +139,57 @@ module.exports = {
 
   adminUpdateProduct: async (req, res) => {
     try {
-      req.body.pName = req.body.pName?.trim();
-      req.body.category = req.body.category?.trim();
-      req.body.pDescription = req.body.pDescription?.trim();
-      req.body.fPrice = req.body.fPrice?.trim();
-      req.body.lPrice = req.body.lPrice?.trim();
-      req.body.discount = req.body.discount?.trim();
-      req.body.color = req.body.color?.trim();
-      req.body.size = req.body.size?.trim();
-      req.body.quantity = req.body.quantity?.trim();
-      req.body.date = req.body.date?.trim();
-
+      const { pName, category, pDescription, fPrice, lPrice, discount, color, size, quantity } = req.body;
       const errors = {};
 
-      const existingUpdateProduct = await Productdb.findOne({
-        pName: req.body.pName,
-      });
-      const existingUpdateProductVariation = await ProductVariationdb.findOne({
-        productId: existingUpdateProduct._id,
-      });
+      if (!pName?.trim()) errors.pName = "This Field is required";
+      if (!pDescription?.trim()) errors.pDescription = "This Field is required";
+      if (!fPrice?.trim() || parseFloat(fPrice) <= 0) errors.fPrice = "Price must be greater than zero";
+      if (!lPrice?.trim()) errors.lPrice = "This Field is required";
+      if (!quantity?.trim() || parseInt(quantity, 10) <= 0) errors.quantity = "Quantity must be greater than zero";
+      if (!discount?.trim()) errors.discount = "This Field is required";
+      if (!color?.trim()) errors.color = "This Field is required";
+      if (!size?.trim()) errors.size = "This Field is required";
 
-      if (!req.body.pName) errors.pName = "This Field is required";
-      if (!req.body.pName) errors.pName = "This Field is required";
-      if (!req.body.pDescription)
-        errors.pDescription = "This Field is required";
-      if (!req.body.fPrice) errors.fPrice = "This Field is required";
-      if (req.body.fPrice <= 0)
-        errors.fPrice = "Quantity must be greater than zero";
-      if (!req.body.lPrice) errors.lPrice = "This Field is required";
-      if (req.body.quantity <= 0)
-        errors.quantity = "Quantity must be greater than zero";
-      if (!req.body.discount) errors.discount = "This Field is required";
-      if (!req.body.color) errors.color = "This Field is required";
-      if (!req.body.size) errors.size = "This Field is required";
-      if (!req.body.quantity) errors.quantity = "This Field is required";
-      if (req.body.quantity < 0)
-        errors.quantity = "Quantity must be greater than zero";
-      if (!req.body.date) {
-        errors.date = "This field is required";
-      } else {
-        const currentDate = new Date().toISOString().split("T")[0];
-        if (req.body.date !== currentDate) {
-          errors.date = "Date must be the current date";
-        }
-      }
-      if (!existingUpdateProductVariation.images.length && !req.files.length)
-        errors.files = "This Field is required";
+      const existingUpdateProduct = await Productdb.findOne({ pName: pName?.trim() });
 
-      if (
-        existingUpdateProduct &&
-        existingUpdateProduct._id.toString() !== req.query.id
-      ) {
+      if (existingUpdateProduct && existingUpdateProduct._id.toString() !== req.query.id) {
         errors.pName = "Product Name already exists";
+      }
+
+      if (!existingUpdateProduct) {
+        errors.pName = "Product not found";
+      } else {
+        const existingUpdateProductVariation = await ProductVariationdb.findOne({ productId: existingUpdateProduct._id });
+        if (!existingUpdateProductVariation.images.length && !req.files.length) {
+          errors.files = "This Field is required";
+        }
       }
 
       if (Object.keys(errors).length > 0) {
         req.flash("userUpdateProductErrors", errors);
-        const userUpdateProductFormData = {
-          pName: req.body.pName,
-          category: req.body.category,
-          pDescription: req.body.pDescription,
-          fPrice: req.body.fPrice,
-          lPrice: req.body.lPrice,
-          discount: req.body.discount,
-          color: req.body.color,
-          size: req.body.size,
-          quantity: req.body.quantity,
-          date: req.body.date,
-        };
-        console.log(errors, "Validation errors occurred");
-        const refferer = req.get("Referer");
         return res.json({ errors });
       }
 
       const updateProduct = {
-        pName: req.body.pName,
-        category: req.body.category,
-        pDescription: req.body.pDescription,
-        fPrice: req.body.fPrice,
-        lPrice: req.body.lPrice,
-        discount: req.body.discount,
-        color: req.body.color,
-        size: req.body.size,
-        quantity: req.body.quantity,
-        date: req.body.date,
+        pName: pName.trim(),
+        category: category?.trim(),
+        pDescription: pDescription.trim(),
+        fPrice: parseFloat(fPrice),
+        lPrice: parseFloat(lPrice),
+        discount: discount?.trim(),
       };
 
       await Productdb.updateOne({ _id: req.query.id }, { $set: updateProduct });
 
-      const files = req.files;
-      const uploadImg = files.map(
-        (value) => `uploadedImages/${value.filename}`
-      );
-
-      const updateProductVariation = {
-        color: req.body.color,
-        size: req.body.size,
-        quantity: req.body.quantity,
-      };
-
+      const uploadImg = req.files.map((value) => `/uploadedImages/${value.filename}`);
       await ProductVariationdb.updateOne(
         { productId: req.query.id },
-        { $set: updateProductVariation }
+        {
+          $set: { color: color.trim(), size: size.trim(), quantity: parseInt(quantity, 10) },
+          ...(uploadImg.length > 0 && { $push: { images: uploadImg } }),
+        }
       );
-
-      if (uploadImg.length > 0) {
-        await ProductVariationdb.updateOne(
-          { productId: req.query.id },
-          { $push: { images: uploadImg } }
-        );
-      }
 
       return res.status(200).json(true);
     } catch (error) {

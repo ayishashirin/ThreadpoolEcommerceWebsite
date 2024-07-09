@@ -9,7 +9,6 @@ const store = require("../../controller/adminSide/multer");
 const referralOfferController = require("../../controller/adminSide/adminReferralOfferController");
 const adminOfferController = require("../../controller/adminSide/adminOfferController");
 const adminCouponController = require("../../controller/adminSide/adminCouponController");
-const { default: puppeteer } = require("puppeteer");
 const ejs = require("ejs");
 const salesController = require("../../controller/adminSide/salesController");
 
@@ -124,7 +123,7 @@ router
 router
     .route("/adminUpdateCategory/:categoryId")
     .get(adminAuthMiddleware.isAdminAuth, adminRender.updateCategory)
-    .post(
+    .put(
         adminAuthMiddleware.isAdminAuth,
         adminCategoryController.updateCategory
     );

@@ -38,55 +38,92 @@
         <div class="table-data justify-content-center">
           <div id="addProduct" class="order">
             <form class="addProductForm" action="/adminAddCoupon" method="post">
-                <div class="d-flex align-items-center formRow">
-                    <div class="w-50 <%= errMesg?.code?'errDiv':'' %>">
-                        <label for="code" class="d-block">Coupon Code</label>
-                        <input type="text" name="code" value="<%= savedDetails?.code?savedDetails.code:'' %>">
-                        <p class="err"><%= errMesg?.code %></p>
-                    </div>
-                    <div class="w-50">
-                        <label for="Category" class="d-block">Category</label>
-                        <select name="category">
-                          <option value="All">All</option>
-                          <% for( let i = 0; i < category.length; i++ ) { %>
-                              <option class="text-capitalize" value="<%= category[i].name %>" <%= (savedDetails?.category === category[i].name)?'selected':'' %>><%= category[i].name %></option>
-                          <% } %>
-                        </select>
-                    </div>
+              <div class="d-flex align-items-center formRow">
+                <div class="w-50 <%= errMesg?.code ? 'errDiv' : '' %>">
+                  <label for="code" class="d-block">Coupon Code</label>
+                  <input type="text" name="code" id="codeInput" value="<%= savedDetails?.code ? savedDetails.code : '' %>">
+                  <p class="err"><%= errMesg?.code %></p>
+                </div>
+                <div class="w-50">
+                  <label for="generateCoupon" class="d-block"></label>
+                  <button type="button" class="btn btn-sm btn-secondary" onclick="generateCouponCode()">Generate Code</button>
+                </div>
+              </div>
+        
+              <div class="d-flex align-items-center formRow">
+                <div class="w-50 <%= errMesg?.discount ? 'errDiv' : '' %>">
+                  <label for="discount" class="d-block">Coupon Discount</label>
+                  <input type="number" name="discount" value="<%= savedDetails?.discount ? savedDetails.discount : '' %>">
+                  <p class="err"><%= errMesg?.discount %></p>
+                </div>
+                <div class="w-50 <%= errMesg?.count ? 'errDiv' : '' %>">
+                  <label for="count" class="d-block">Max uses</label>
+                  <input type="number" name="count" value="<%= savedDetails?.count ? savedDetails.count : '' %>">
+                  <p class="err"><%= errMesg?.count %></p>
+                </div>
+              </div>
+        
+              <div class="d-flex align-items-center formRow">
+                <div class="w-50 <%= errMesg?.minPrice ? 'errDiv' : '' %>">
+                  <label for="minPrice" class="d-block">Use Above</label>
+                  <input type="number" name="minPrice" value="<%= savedDetails?.minPrice ? savedDetails.minPrice : '' %>">
+                  <p class="err"><%= errMesg?.minPrice %></p>
                 </div>
 
-                <div class="d-flex align-items-center formRow">
-                    <div class="w-50 <%= errMesg?.discount?'errDiv':'' %>">
-                        <label for="discount" class="d-block">Coupon Discount</label>
-                        <input type="number" name="discount" value="<%= savedDetails?.discount?savedDetails.discount:'' %>">
-                        <p class="err"><%= errMesg?.discount %></p>
-                    </div>
-                    <div  class="dheading w-50 <%= errMesg?.count?'errDiv':'' %>">
-                        <label for="count" class="d-block">Max uses</label>
-                        <input type="number" name="count" value="<%= savedDetails?.count?savedDetails.count:'' %>">
-                        <p class="err"><%= errMesg?.count %></p>
-                    </div>
-                </div>
-
-                <div class="d-flex align-items-center formRow">
-                    <div class="w-50 <%= errMesg?.minPrice?'errDiv':'' %>">
-                        <label for="minPrice" class="d-block">Use Above</label>
-                        <input type="number" name="minPrice" value="<%= savedDetails?.minPrice?savedDetails?.minPrice:'' %>">
-                        <p class="err"><%= errMesg?.minPrice %></p>
-                    </div>
-                    <div class="w-50 <%= errMesg?.expiry?'errDiv':'' %>">
-                      <label for="expiry" class="d-block">Coupon Expiry</label>
-                      <input type="date" name="expiry" value="<%= savedDetails?.expiry?savedDetails?.expiry:'' %>">
-                      <p class="err"><%= errMesg?.expiry %></p>
+               
+                  <div class="w-50 <%= errMesg?.expiry ? 'errDiv' : '' %>">
+                    <label for="expiry" class="d-block">Coupon Expiry</label>
+                    <input type="date" name="expiry" id="expiryInput" value="<%= savedDetails?.expiry ? savedDetails.expiry : '' %>">
+                    <p class="err"><%= errMesg?.expiry %></p>
                   </div>
-                </div>
-
-                <div class="d-flex justify-content-center">
-                    <button type="submit" class="addBtn" id="addBtn">Add Coupon</button>
-                </div>
+                
+              </div>
+        
+           
+        
+              <div class="d-flex justify-content-center">
+                <button type="submit" class="addBtn" id="addBtn">Add Coupon</button>
+              </div>
             </form>
           </div>
         </div>
+        <script>
+          function validateExpiryDate() {
+            const expiryDate = document.getElementById('expiryInput').value;
+            const today = new Date();
+            const selectedDate = new Date(expiryDate);
+        
+            if (selectedDate <= today) {
+              alert('Expiry date must be in the future.');
+              return false;
+            }
+        
+            return true;
+          }
+        
+          document.querySelector('.addProductForm').addEventListener('submit', function(event) {
+            if (!validateExpiryDate()) {
+              event.preventDefault(); 
+            }
+          });
+        </script>
+        
+        <script>
+          function generateCouponCode() {
+            // Generate a random coupon code (example: 8 characters alphanumeric)
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            const couponLength = 8;
+            let couponCode = '';
+        
+            for (let i = 0; i < couponLength; i++) {
+              couponCode += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+        
+            // Update the input field with the generated coupon code
+            document.getElementById('codeInput').value = couponCode;
+          }
+        </script>
+        
       </main>
       <!-- MAIN -->
     </section>

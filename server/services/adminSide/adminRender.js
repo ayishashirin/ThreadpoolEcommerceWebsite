@@ -340,7 +340,7 @@ module.exports = {
         true,
         req.params.categoryId
       );
-
+  
       res.status(200).render(
         "adminSide/adminUpdateCategory",
         {
@@ -353,22 +353,23 @@ module.exports = {
         },
         (err, html) => {
           if (err) {
-            console.error("Update render err categorg", err);
+            console.error("Error rendering adminUpdateCategory:", err);
             return res.status(500).render("errorPages/500ErrorPage");
           }
-
+  
           delete req.session.catErr;
           delete req.session.dErr;
           delete req.session.sDetails;
-
+  
           res.status(200).send(html);
         }
       );
     } catch (err) {
-      console.error("updatePage get errr", err);
+      console.error("Error in updateCategory:", err);
       res.status(500).render("errorPages/500ErrorPage");
     }
-  },
+  }
+  ,
 
   adminOrderManagement: async (req, res) => {
     try {
@@ -513,21 +514,13 @@ module.exports = {
   },
   adminAddCoupon: async (req, res) => {
     try {
-      const category = await adminHelper.getCategorydb(null, true, 1, true);
+      
 
       res.status(200).render(
         "adminSide/adminAddCoupon",
         {
-          category,
-          errMesg: {
-            userId: req.session.userId,
-            code: req.session.code,
-            category: req.session.category,
-            discount: req.session.discount,
-            count: req.session.count,
-            minPrice: req.session.minPrice,
-            expiry: req.session.expiry,
-          },
+       
+          errMesg: req.session.errMesg,
           savedDetails: req.session.savedDetails,
         },
         (err, html) => {
@@ -536,7 +529,6 @@ module.exports = {
             return res.status(500).render("errorPages/500ErrorPage");
           }
           delete req.session.userId, delete req.session.code;
-          delete req.session.category;
           delete req.session.discount;
           delete req.session.count;
           delete req.session.minPrice;
@@ -555,7 +547,7 @@ module.exports = {
     try {
       const singleCoupon = await adminHelper.getAllCoupon(req.params.couponId);
 
-      const category = await adminHelper.getCategorydb(null, true, 1, true);
+     
       if (!singleCoupon) {
         return res.status(401).redirect("/adminCouponManagement");
       }
@@ -563,17 +555,9 @@ module.exports = {
         "adminSide/adminUpdateCoupon",
         {
           savedDetails: req.session.savedDetails,
-          errMesg: {
-            userId: req.session.userId,
-            code: req.session.code,
-            category: req.session.category,
-            discount: req.session.discount,
-            count: req.session.count,
-            minPrice: req.session.minPrice,
-            expiry: req.session.expiry,
-          },
+          errMesg:req.session.errMesg,
           singleCoupon,
-          category,
+          
         },
         (err, html) => {
           if (err) {
@@ -581,7 +565,6 @@ module.exports = {
             return res.status(500).render("errorPages/500ErrorPage");
           }
           delete req.session.userId, delete req.session.code;
-          delete req.session.category;
           delete req.session.discount;
           delete req.session.count;
           delete req.session.minPrice;

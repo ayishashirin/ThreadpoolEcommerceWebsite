@@ -1,12 +1,12 @@
 
 .modal-dialog{
     height: 50%;
-    width: 50%;
+    width: 40%;
     margin: auto;
 }
 
 .text1{
-    background-color: #dc3545;
+    background-color: #f53f85;
     color: white;
     width: 30%;
     margin-top: 5%;
@@ -14,19 +14,15 @@
 }
 
 .icon2{
- color: #dc3545;
+ color:  #f53f85;
 }
 
 .modal-header{
     color: white;
-    background-color: #dc3545;
+    background-color:  #f53f85;
 
 }
-.openmodal{
-    margin-left: 35%;
-    width: 35%;
-    margin-top: 40%;
-  }
+
 
 
 
