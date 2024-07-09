@@ -33,7 +33,7 @@ function applyCoupon(couponCode, orderTotal) {
     })
     .catch(function(error) {
         console.error('Error:', error);
-        var errorMessage = error.response.data.errorMessage || "An unexpected error occurred. Please try again later.";
+        var errorMessage = error.response.data.message || "An unexpected error occurred. Please try again later.";
         
         Swal.fire({
             icon: 'error',
