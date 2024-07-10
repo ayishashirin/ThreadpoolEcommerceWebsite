@@ -53,19 +53,21 @@ module.exports = {
         req.session.category ||
         req.session.discount ||
         req.session.expiry
-       
-
+      
       ) {
         req.session.savedDetails = req.body;
         return res.status(401).redirect("/adminAddOffer");
       }
+      console.log(req.body);
       const result = await adminHelper.saveOffer(req.body);
       if (result?.err) {
+        console.log("errorrr");
         req.session.productName = result.productName;
         req.session.category = result.category;
         req.session.savedDetails = req.body;
         return res.status(401).redirect("/adminAddOffer");
       }
+      
       res.status(200).redirect("/adminOfferManagement");
     } catch (err) {
       console.error("offer controller err in add coupon", err);

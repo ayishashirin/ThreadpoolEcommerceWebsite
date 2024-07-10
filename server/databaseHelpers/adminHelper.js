@@ -390,7 +390,7 @@ module.exports = {
         $or: [{ productName: body.productName }, { category: body.category }],
       });
 
-      if (!isOffer) {
+      // if (!isOffer) {
         const newOffer = new Offerdb(body);
 
         let query = {};
@@ -414,10 +414,10 @@ module.exports = {
         const pro = await Productdb.find(query);
 
         await Productdb.updateMany(query, { $push: { offers: newOffer._id } });
-        return await newOffer.save();
-      }
+         const newoff = await newOffer.save();
+      // }
       const response = {
-        err: true,
+        
       };
 
       if (body.productName && isOffer.productName === body.productName) {
