@@ -46,7 +46,7 @@ app.set("view engine", "ejs");
 app.set('views', '/home/ubuntu/ThreadpoolEcommerceWebsite/views');
 
 // Middleware
-app.use(morgan('dev'));
+// app.use(morgan('dev'));
 app.use(flash());
 app.use(session({
   secret: process.env.sessionSecret,

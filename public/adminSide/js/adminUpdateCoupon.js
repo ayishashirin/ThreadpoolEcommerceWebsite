@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-  // Selectors
+
   const updateForm = document.querySelector('.addProductForm');
   const codeInput = document.querySelector('#codeInput');
   const discountInput = document.querySelector('input[name="discount"]');
@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', function () {
   const addBtn = document.querySelector('.addBtn');
   const errMessages = document.querySelectorAll('.err');
 
-  // Function to clear error messages
   function clearErrors() {
     errMessages.forEach(err => {
       err.textContent = '';
@@ -37,10 +36,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
       })
       .catch(err => {
-        if (err.response.data.status) {
-          window.location.href = err.response.data.url;
-        } else if (err.response.status === 401) {
+        if (err.response.status === 401) {
           handleErrors(err.response.data.errors);
+          window.location.href = window.location.href;
+        } else {
+          window.location.href = window.location.href;
         }
       });
   });
